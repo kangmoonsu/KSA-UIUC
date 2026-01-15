@@ -14,10 +14,10 @@ spring:
   cloud:
     aws:
       s3:
-        bucket: ksa-bucket-241203
+        bucket: ksauiuc-test
       credentials:
-        access-key: AKIAYJ7DQODZMTRX5XEL
-        secret-key: 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
+        access-key: AKIAYJ7DQODZDFAAN2GL
+        secret-key: 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
       region:
         static: "us-east-2" # Change if needed
   data:

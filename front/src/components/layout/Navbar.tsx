@@ -34,26 +34,27 @@ export function Navbar() {
     const { openSignIn } = useClerk()
     const location = useLocation()
     const navigate = useNavigate()
-    const [nickname, setNickname] = useState<string>("")
     const [unreadCount, setUnreadCount] = useState(0)
     const [notifications, setNotifications] = useState<any[]>([])
+    const [dbNickname, setDbNickname] = useState<string>("") // DB 전용 닉네임 상태 추가
     const stompClient = useRef<Client | null>(null)
 
+    // DB 닉네임 강제 로드 로직
     useEffect(() => {
-        const fetchNickname = async () => {
+        const loadDbNickname = async () => {
             if (isAuthenticated) {
                 try {
                     const res = await client.get('/users/me')
-                    setNickname(res.data.nickname)
+                    if (res.data && res.data.nickname) {
+                        setDbNickname(res.data.nickname)
+                    }
                 } catch (err) {
-                    console.error("Failed to fetch nickname", err)
-                    if (user) setNickname(user.name)
+                    console.error("Failed to load DB nickname", err)
                 }
             }
-        }
-        fetchNickname()
-    }, [isAuthenticated, user])
-
+        };
+        loadDbNickname();
+    }, [isAuthenticated, user?.sub]) // 유저가 변경될 때마다 다시 로드
     // Close mobile menu on route change
     useEffect(() => {
         setIsOpen(false)
@@ -104,6 +105,15 @@ export function Navbar() {
             setNotifications(prev => prev.map(n => ({ ...n, isRead: true })))
         } catch (err) {
             console.error("Failed to mark notifications as read", err)
+        }
+    }
+
+    const handleDeleteReadNotifications = async () => {
+        try {
+            await client.delete('/notifications/read')
+            setNotifications(prev => prev.filter(n => !n.isRead))
+        } catch (err) {
+            console.error("Failed to delete read notifications", err)
         }
     }
 
@@ -214,10 +224,16 @@ export function Navbar() {
                                             ))
                                         )}
                                     </div>
-                                    <div className="p-3 bg-slate-50 text-center">
-                                        <Link to="/mypage" className="text-xs text-slate-500 hover:text-orange-500 font-medium">
-                                            전체 보기
-                                        </Link>
+                                    <div className="p-2 border-t bg-slate-50 text-center">
+                                        <button
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                handleDeleteReadNotifications();
+                                            }}
+                                            className="text-xs text-slate-500 hover:text-red-500 font-medium transition-colors w-full py-1"
+                                        >
+                                            읽은 알림 삭제
+                                        </button>
                                     </div>
                                 </PopoverContent>
                             </Popover>
@@ -225,10 +241,10 @@ export function Navbar() {
                             <DropdownMenu>
                                 <DropdownMenuTrigger asChild>
                                     <Button variant="ghost" className="relative h-auto w-auto rounded-full gap-2 px-2">
-                                        <span className="text-sm font-medium">{nickname || user.name}</span>
+                                        <span className="text-sm font-medium">{dbNickname || user.nickname || user.name}</span>
                                         <Avatar className="h-8 w-8">
-                                            <AvatarImage src={user.profileImage} alt={nickname || user.name} />
-                                            <AvatarFallback>{(nickname || user.name)[0]}</AvatarFallback>
+                                            <AvatarImage src={user.profileImage} alt={dbNickname || user.nickname || user.name} />
+                                            <AvatarFallback>{(dbNickname || user.nickname || user.name)[0]}</AvatarFallback>
                                         </Avatar>
                                     </Button>
                                 </DropdownMenuTrigger>
@@ -285,7 +301,7 @@ export function Navbar() {
                             <div className="flex flex-col h-full">
                                 <div className="px-7 pt-4 pb-8">
                                     <span className="font-bold text-2xl text-navy">UIUC KSA</span>
-                                    {user && <p className="mt-2 text-sm text-muted-foreground">{nickname || user.name}님 안녕하세요!</p>}
+                                    {user && <p className="mt-2 text-sm text-muted-foreground">{dbNickname || user.nickname || user.name}님 안녕하세요!</p>}
                                 </div>
                                 <div className="flex flex-col gap-2 px-4 overflow-y-auto">
                                     <MobileNavSection title="KSA 소개" items={ksaRoutes} />
@@ -307,10 +323,10 @@ export function Navbar() {
                                         <>
                                             <div className="flex items-center gap-3 mb-4 px-2">
                                                 <Avatar className="h-10 w-10">
-                                                    <AvatarImage src={user.profileImage} alt={nickname || user.name} />
-                                                    <AvatarFallback>{(nickname || user.name)[0]}</AvatarFallback>
+                                                    <AvatarImage src={user.profileImage} alt={dbNickname || user.nickname || user.name} />
+                                                    <AvatarFallback>{(dbNickname || user.nickname || user.name)[0]}</AvatarFallback>
                                                 </Avatar>
-                                                <span className="font-medium">{nickname || user.name}</span>
+                                                <span className="font-medium">{dbNickname || user.nickname || user.name}</span>
                                             </div>
                                             <Link to="/mypage" className="w-full">
                                                 <Button variant="outline" className="w-full mb-3">마이페이지</Button>

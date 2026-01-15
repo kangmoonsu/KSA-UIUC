@@ -1,4 +1,4 @@
-import { useEffect, createContext, useContext } from 'react';
+import { useEffect, useState, createContext, useContext } from 'react';
 import { useUser, useClerk } from "@clerk/clerk-react";
 import client from "@/lib/api/client"
 import { setTokenFetcher } from '@/lib/auth-utils';
@@ -7,6 +7,7 @@ interface User {
     sub: string;
     role: string;
     name: string;
+    nickname?: string;
     profileImage?: string;
     exp: number;
 }
@@ -32,29 +33,33 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         });
     }
 
-    const user: User | null = isSignedIn && clerkUser ? {
-        sub: clerkUser.id,
-        name: clerkUser.fullName || clerkUser.username || "User",
-        profileImage: clerkUser.imageUrl,
-        role: (clerkUser.publicMetadata?.role as string) || "USER",
-        exp: 0 // Not used in this adapter
-    } : null;
-
-
+    const [user, setUser] = useState<User | null>(null);
 
     useEffect(() => {
         const syncUser = async () => {
             if (isSignedIn && clerkUser) {
                 try {
-                    await client.post('/auth/sync', {
+                    const res = await client.post('/auth/sync', {
                         clerkId: clerkUser.id,
                         email: clerkUser.primaryEmailAddress?.emailAddress,
                         name: clerkUser.fullName || clerkUser.username || "User",
                         profileImageUrl: clerkUser.imageUrl
                     })
+
+                    // 서버에서 받은 실제 DB 정보를 컨텍스트에 저장
+                    setUser({
+                        sub: clerkUser.id,
+                        name: clerkUser.fullName || clerkUser.username || "User",
+                        nickname: res.data.nickname, // DB의 nickname 사용
+                        profileImage: clerkUser.imageUrl,
+                        role: (clerkUser.publicMetadata?.role as string) || "USER",
+                        exp: 0
+                    });
                 } catch (error) {
-                    console.error("Failed to sync user:", error)
+                    console.error("Failed to sync user:", error);
                 }
+            } else {
+                setUser(null);
             }
         }
         syncUser()

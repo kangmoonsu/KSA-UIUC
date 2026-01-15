@@ -163,9 +163,9 @@ export function ChatRoomPage() {
                                 {!isMine && <p className="text-[10px] font-bold opacity-70 mb-1">{msg.senderName}</p>}
                                 <p className="text-sm whitespace-pre-wrap">{msg.content}</p>
                                 <div className="flex items-center justify-end gap-1.5 mt-1">
-                                    {isMine && !msg.isRead && (
+                                    {/* {isMine && !msg.isRead && (
                                         <span className="text-[9px] text-orange-200 font-bold">1</span>
-                                    )}
+                                    )} */}
                                     <p className={`text-[9px] ${isMine ? 'text-orange-100' : 'text-slate-400'}`}>
                                         {new Date(msg.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                                     </p>

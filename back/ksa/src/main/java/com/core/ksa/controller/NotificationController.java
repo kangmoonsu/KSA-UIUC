@@ -52,4 +52,15 @@ public class NotificationController {
         notificationRepository.markAllAsRead(user);
         return ResponseEntity.ok().build();
     }
+
+    @DeleteMapping("/read")
+    @Transactional
+    public ResponseEntity<Void> deleteReadNotifications(@AuthenticationPrincipal Jwt jwt) {
+        String clerkId = jwt.getSubject();
+        User user = userRepository.findByClerkId(clerkId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        notificationRepository.deleteReadNotifications(user);
+        return ResponseEntity.ok().build();
+    }
 }
