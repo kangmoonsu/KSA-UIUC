@@ -12,6 +12,8 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { toast } from "sonner"
+import { MessageCircle } from "lucide-react"
+import { useChatRoom } from "@/hooks/use-chat-room"
 
 interface FleaItem {
     id: number
@@ -41,6 +43,8 @@ export function FleaDetailPage() {
     const navigate = useNavigate()
     const [post, setPost] = useState<FleaPostDetail | null>(null)
     const [loading, setLoading] = useState(true)
+    const { enterChatRoom } = useChatRoom()
+    const { user } = useAuth()
 
     useEffect(() => {
         const fetchPost = async () => {
@@ -75,7 +79,6 @@ export function FleaDetailPage() {
     if (loading) return <div className="container py-20 text-center">로딩중...</div>
     if (!post) return <div className="container py-20 text-center">게시글을 찾을 수 없습니다</div>
 
-    const { user } = useAuth()
     const isOwner = user?.sub === post.writerClerkId
 
     const sanitizeConfig = {
@@ -135,6 +138,7 @@ export function FleaDetailPage() {
                             {post.location}
                         </div>
                     </div>
+
                 </div>
 
                 {/* Items List */}
@@ -203,6 +207,17 @@ export function FleaDetailPage() {
                                                 <ExternalLink className="h-3 w-3 mr-1" />
                                                 상품 정보
                                             </a>
+                                        )}
+                                        {!isOwner && (
+                                            <Button
+                                                variant="outline"
+                                                size="sm"
+                                                className="w-full sm:w-auto"
+                                                onClick={() => enterChatRoom({ itemId: item.id, category: 'FLEA' })}
+                                            >
+                                                <MessageCircle className="h-4 w-4 mr-2" />
+                                                이 물품 문의하기
+                                            </Button>
                                         )}
                                     </div>
                                 </div>

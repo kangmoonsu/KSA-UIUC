@@ -8,7 +8,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "
 import { toast } from "sonner"
 import { useAuth } from "@/context/auth-context"
 import client from "@/lib/api/client"
-import { ChevronLeft, ChevronRight } from "lucide-react"
+import { ChevronLeft, ChevronRight, MessageCircle } from "lucide-react"
 
 interface UserProfile {
     email: string
@@ -35,6 +35,8 @@ export function MyPage() {
     const [myPosts, setMyPosts] = useState<MyPost[]>([])
     const [isProfileLoading, setIsProfileLoading] = useState(true)
     const [isPostsLoading, setIsPostsLoading] = useState(true)
+    const [isChatLoading, setIsChatLoading] = useState(false)
+    const [chatRooms, setChatRooms] = useState<any[]>([])
 
     // Pagination State
     const [currentPage, setCurrentPage] = useState(0)
@@ -95,6 +97,17 @@ export function MyPage() {
 
                 // Fetch Posts (Initial Page 0)
                 await fetchPosts(0)
+
+                // Fetch Chat Rooms
+                setIsChatLoading(true)
+                try {
+                    const chatRes = await client.get('/chat/rooms')
+                    setChatRooms(chatRes.data)
+                } catch (err) {
+                    console.error("Failed to fetch chat rooms", err)
+                } finally {
+                    setIsChatLoading(false)
+                }
             } catch (err) {
                 console.error(err)
                 toast.error("데이터를 불러오는데 실패했습니다.")
@@ -327,12 +340,49 @@ export function MyPage() {
                             </div>
                         </>
                     ) : (
-                        <div className="flex flex-col items-center justify-center py-20 bg-slate-50 rounded-xl border border-dashed border-slate-200">
-                            <div className="w-16 h-16 bg-blue-50 text-blue-500 rounded-full flex items-center justify-center mb-4 text-2xl">
-                                💬
-                            </div>
-                            <h3 className="text-lg font-semibold text-slate-700 mb-2">채팅 기능 준비 중</h3>
-                            <p className="text-slate-500">곧 채팅 서비스를 만나보실 수 있습니다!</p>
+                        <div className="space-y-4">
+                            {isChatLoading ? (
+                                <div className="text-center py-10 text-muted-foreground">로딩 중...</div>
+                            ) : chatRooms.length === 0 ? (
+                                <div className="text-center py-20 bg-slate-50 rounded-xl border border-dashed border-slate-200 text-muted-foreground">
+                                    <div className="text-4xl mb-4">💬</div>
+                                    <h3 className="text-lg font-semibold text-slate-700">진행 중인 채팅이 없습니다.</h3>
+                                    <p className="text-sm">관심 있는 게시글에서 '문의하기'를 눌러보세요!</p>
+                                </div>
+                            ) : (
+                                chatRooms.map((room: any) => (
+                                    <div
+                                        key={room.roomId}
+                                        className="bg-white border rounded-2xl p-5 flex items-center gap-5 hover:shadow-md transition-all cursor-pointer hover:border-orange-200 group"
+                                        onClick={() => navigate(`/chat/room/${room.roomId}`)}
+                                    >
+                                        <div className="w-16 h-16 bg-slate-100 rounded-full shrink-0 flex items-center justify-center overflow-hidden border">
+                                            {room.thumbnail ? (
+                                                <img src={room.thumbnail} alt="" className="w-full h-full object-cover" />
+                                            ) : (
+                                                <MessageCircle className="text-slate-400 w-8 h-8" />
+                                            )}
+                                        </div>
+                                        <div className="flex-1 min-w-0">
+                                            <div className="flex justify-between items-start mb-1">
+                                                <h3 className="font-bold text-slate-800 truncate">{room.partnerName}</h3>
+                                                <span className="text-[11px] text-slate-400">
+                                                    {room.lastMessageAt ? new Date(room.lastMessageAt).toLocaleDateString() : ''}
+                                                </span>
+                                            </div>
+                                            <p className="text-sm text-slate-600 truncate mb-1">
+                                                {room.lastMessage || '새로운 대화를 시작해보세요!'}
+                                            </p>
+                                            <div className="flex items-center gap-2">
+                                                <span className="text-[10px] bg-slate-100 text-slate-500 px-2 py-0.5 rounded">
+                                                    {room.postTitle}
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <ChevronRight className="w-5 h-5 text-slate-300 group-hover:text-orange-400" />
+                                    </div>
+                                ))
+                            )}
                         </div>
                     )}
                 </div>

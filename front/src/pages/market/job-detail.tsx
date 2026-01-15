@@ -12,6 +12,8 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { toast } from "sonner"
+import { MessageCircle } from "lucide-react"
+import { useChatRoom } from "@/hooks/use-chat-room"
 
 interface JobPostDetail {
     id: number
@@ -32,6 +34,7 @@ export function JobDetailPage() {
     const navigate = useNavigate()
     const [post, setPost] = useState<JobPostDetail | null>(null)
     const [loading, setLoading] = useState(true)
+    const { enterChatRoom } = useChatRoom()
 
     useEffect(() => {
         const fetchPost = async () => {
@@ -151,6 +154,17 @@ export function JobDetailPage() {
                             </div>
                         </div>
                     </div>
+                    {!isOwner && (
+                        <div className="flex justify-center mt-6">
+                            <Button
+                                className="bg-orange-600 hover:bg-orange-700 text-white w-full md:w-auto px-8 py-6 text-lg"
+                                onClick={() => enterChatRoom({ postId: post.id, category: 'JOB' })}
+                            >
+                                <MessageCircle className="h-5 w-5 mr-2" />
+                                문의하기
+                            </Button>
+                        </div>
+                    )}
                 </div>
 
                 {/* Content */}
