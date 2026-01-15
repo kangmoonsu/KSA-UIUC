@@ -17,7 +17,7 @@ public class MarketItem {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "market_post_id", nullable = false)
-    private MarketPost marketPost;
+    private Post marketPost;
 
     @Column(nullable = false)
     private String name;
@@ -37,7 +37,7 @@ public class MarketItem {
     private String imageUrls; // Comma separated for simplicity, or separate table.
 
     @Builder
-    public MarketItem(MarketPost marketPost, String name, int price, String description, String link,
+    public MarketItem(Post marketPost, String name, int price, String description, String link,
             String imageUrls, String itemStatus) {
         this.marketPost = marketPost;
         this.name = name;

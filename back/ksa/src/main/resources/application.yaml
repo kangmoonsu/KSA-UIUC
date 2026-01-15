@@ -20,6 +20,10 @@ spring:
         secret-key: so/6OytGIK/Uo33WciihAMV05KNguCcpMPc6jRie
       region:
         static: "us-east-2" # Change if needed
+  data:
+    redis:
+      host: ${SPRING_REDIS_HOST:localhost}
+      port: ${SPRING_REDIS_PORT:6379}
   messages:
     basename: i18n/messages
     encoding: UTF-8
