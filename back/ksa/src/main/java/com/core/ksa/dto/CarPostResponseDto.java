@@ -32,7 +32,10 @@ public class CarPostResponseDto {
                 .year(post.getYear())
                 .mileage(post.getMileage())
                 .modelName(post.getModelName())
-                .writer(post.getAuthor() != null ? post.getAuthor().getName() : "Unknown")
+                .writer(post.getAuthor() != null
+                        ? (post.getAuthor().getNickname() != null ? post.getAuthor().getNickname()
+                                : post.getAuthor().getName())
+                        : "Unknown")
                 .writerId(post.getAuthor() != null ? post.getAuthor().getId() : null)
                 .writerClerkId(post.getAuthor() != null ? post.getAuthor().getClerkId() : null)
                 .createdAt(post.getCreatedAt() != null ? post.getCreatedAt().toString() : "")

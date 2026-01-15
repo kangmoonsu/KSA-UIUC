@@ -25,6 +25,9 @@ public class User extends BaseEntity {
     @Column(nullable = false)
     private String name;
 
+    @Column(unique = true)
+    private String nickname;
+
     private String profileImageUrl;
 
     @Enumerated(EnumType.STRING)
@@ -35,10 +38,11 @@ public class User extends BaseEntity {
     }
 
     @Builder
-    public User(String clerkId, String email, String name, String profileImageUrl, Role role) {
+    public User(String clerkId, String email, String name, String nickname, String profileImageUrl, Role role) {
         this.clerkId = clerkId;
         this.email = email;
         this.name = name;
+        this.nickname = nickname;
         this.profileImageUrl = profileImageUrl;
         this.role = role;
     }
@@ -46,5 +50,9 @@ public class User extends BaseEntity {
     public void updateProfile(String name, String profileImageUrl) {
         this.name = name;
         this.profileImageUrl = profileImageUrl;
+    }
+
+    public void updateNickname(String nickname) {
+        this.nickname = nickname;
     }
 }

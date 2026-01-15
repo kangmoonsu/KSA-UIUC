@@ -26,7 +26,9 @@ public class MarketPostResponseDto {
         this.id = post.getId();
         this.title = post.getTitle();
         this.content = post.getContent();
-        this.authorName = post.getAuthor() != null ? post.getAuthor().getName() : "Unknown";
+        this.authorName = post.getAuthor() != null
+                ? (post.getAuthor().getNickname() != null ? post.getAuthor().getNickname() : post.getAuthor().getName())
+                : "Unknown";
         this.contactPlace = post.getContactPlace();
         this.type = post.getType();
         this.viewCount = post.getViewCount();

@@ -25,6 +25,7 @@ public class UserService {
                         .clerkId(request.getClerkId())
                         .email(request.getEmail())
                         .name(request.getName())
+                        .nickname(request.getName()) // 초기 닉네임은 이름으로 설정
                         .profileImageUrl(request.getProfileImageUrl())
                         .role(User.Role.USER) // Default role
                         .build()));
@@ -38,10 +39,18 @@ public class UserService {
     }
 
     public void updateNickname(String clerkId, String nickname) {
+        if (userRepository.existsByNickname(nickname)) {
+            throw new RuntimeException("이미 사용 중인 닉네임입니다.");
+        }
         User user = userRepository.findByClerkId(clerkId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
-        user.updateProfile(nickname, user.getProfileImageUrl());
+        user.updateNickname(nickname);
         userRepository.save(user);
+    }
+
+    @Transactional(readOnly = true)
+    public boolean checkNickname(String nickname) {
+        return userRepository.existsByNickname(nickname);
     }
 
     @Transactional(readOnly = true)

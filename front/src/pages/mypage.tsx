@@ -9,6 +9,7 @@ import { toast } from "sonner"
 import { useAuth } from "@/context/auth-context"
 import client from "@/lib/api/client"
 import { ChevronLeft, ChevronRight } from "lucide-react"
+import { cn } from "@/lib/utils"
 
 interface UserProfile {
     email: string
@@ -45,6 +46,10 @@ export function MyPage() {
     const [isEditModalOpen, setIsEditModalOpen] = useState(false)
     const [editNickname, setEditNickname] = useState("")
     const [isSaving, setIsSaving] = useState(false)
+    const [nicknameStatus, setNicknameStatus] = useState<{
+        message: string;
+        isAvailable: boolean | null;
+    }>({ message: "", isAvailable: null })
 
     // Tab State
     const [activeTab, setActiveTab] = useState<"posts" | "chat">("posts")
@@ -105,6 +110,30 @@ export function MyPage() {
         fetchData()
     }, [isAuthenticated, isLoading, navigate, fetchPosts])
 
+    useEffect(() => {
+        if (!isEditModalOpen || !editNickname || editNickname === userProfile?.nickname) {
+            setNicknameStatus({ message: "", isAvailable: null })
+            return
+        }
+
+        const checkNickname = async () => {
+            try {
+                const res = await client.get(`/users/check-nickname?nickname=${encodeURIComponent(editNickname)}`)
+                const isTaken = res.data
+                if (isTaken) {
+                    setNicknameStatus({ message: "이미 사용 중인 닉네임입니다.", isAvailable: false })
+                } else {
+                    setNicknameStatus({ message: "사용 가능한 닉네임입니다.", isAvailable: true })
+                }
+            } catch (err) {
+                console.error("Nickname check error:", err)
+            }
+        }
+
+        const timer = setTimeout(checkNickname, 500) // Debounce 500ms
+        return () => clearTimeout(timer)
+    }, [editNickname, isEditModalOpen, userProfile?.nickname])
+
     const handleUpdateProfile = async () => {
         setIsSaving(true)
         try {
@@ -116,9 +145,11 @@ export function MyPage() {
                 setUserProfile({ ...userProfile, nickname: editNickname })
             }
             setIsEditModalOpen(false)
-        } catch (e) {
+            setNicknameStatus({ message: "", isAvailable: null })
+        } catch (e: any) {
             console.error(e)
-            toast.error("수정에 실패했습니다.")
+            const errorMsg = e.response?.data?.message || "수정에 실패했습니다."
+            toast.error(errorMsg)
         } finally {
             setIsSaving(false)
         }
@@ -353,13 +384,32 @@ export function MyPage() {
                                 id="nickname"
                                 value={editNickname}
                                 onChange={(e) => setEditNickname(e.target.value)}
-                                className="col-span-3"
+                                className={cn(
+                                    "col-span-3",
+                                    nicknameStatus.isAvailable === true && "border-green-500 focus-visible:ring-green-500",
+                                    nicknameStatus.isAvailable === false && "border-red-500 focus-visible:ring-red-500"
+                                )}
                             />
                         </div>
+                        {nicknameStatus.message && (
+                            <div className="grid grid-cols-4 items-center gap-4">
+                                <div className="col-start-2 col-span-3 text-xs font-medium">
+                                    <p className={nicknameStatus.isAvailable ? "text-green-600" : "text-red-600"}>
+                                        {nicknameStatus.message}
+                                    </p>
+                                </div>
+                            </div>
+                        )}
                     </div>
                     <DialogFooter>
-                        <Button variant="outline" onClick={() => setIsEditModalOpen(false)}>취소</Button>
-                        <Button onClick={handleUpdateProfile} disabled={isSaving}>
+                        <Button variant="outline" onClick={() => {
+                            setIsEditModalOpen(false)
+                            setNicknameStatus({ message: "", isAvailable: null })
+                        }}>취소</Button>
+                        <Button
+                            onClick={handleUpdateProfile}
+                            disabled={isSaving || nicknameStatus.isAvailable === false || !editNickname || editNickname === userProfile?.nickname}
+                        >
                             {isSaving ? "저장 중..." : "저장"}
                         </Button>
                     </DialogFooter>

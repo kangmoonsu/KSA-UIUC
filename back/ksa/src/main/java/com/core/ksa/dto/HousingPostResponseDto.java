@@ -34,7 +34,10 @@ public class HousingPostResponseDto {
                 .location(post.getAddress())
                 .price(post.getPrice())
                 .housingType(post.getHousingType().name())
-                .writer(post.getAuthor() != null ? post.getAuthor().getName() : "Unknown")
+                .writer(post.getAuthor() != null
+                        ? (post.getAuthor().getNickname() != null ? post.getAuthor().getNickname()
+                                : post.getAuthor().getName())
+                        : "Unknown")
                 .writerId(post.getAuthor() != null ? post.getAuthor().getId() : null)
                 .writerClerkId(post.getAuthor() != null ? post.getAuthor().getClerkId() : null)
                 .isOwner(false) // Needs context to determine

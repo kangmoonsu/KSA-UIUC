@@ -18,12 +18,29 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { useAuth } from "@/context/auth-context"
 import { useClerk } from "@clerk/clerk-react"
+import client from "@/lib/api/client"
 
 export function Navbar() {
     const [isOpen, setIsOpen] = useState(false)
-    const { user, logout } = useAuth()
+    const { user, logout, isAuthenticated } = useAuth()
     const { openSignIn } = useClerk()
     const location = useLocation()
+    const [nickname, setNickname] = useState<string>("")
+
+    useEffect(() => {
+        const fetchNickname = async () => {
+            if (isAuthenticated) {
+                try {
+                    const res = await client.get('/users/me')
+                    setNickname(res.data.nickname)
+                } catch (err) {
+                    console.error("Failed to fetch nickname", err)
+                    if (user) setNickname(user.name)
+                }
+            }
+        }
+        fetchNickname()
+    }, [isAuthenticated, user])
 
     // Close mobile menu on route change
     useEffect(() => {
@@ -101,10 +118,10 @@ export function Navbar() {
                             <DropdownMenu>
                                 <DropdownMenuTrigger asChild>
                                     <Button variant="ghost" className="relative h-auto w-auto rounded-full gap-2 px-2">
-                                        <span className="text-sm font-medium">{user.name}</span>
+                                        <span className="text-sm font-medium">{nickname || user.name}</span>
                                         <Avatar className="h-8 w-8">
-                                            <AvatarImage src={user.profileImage} alt={user.name} />
-                                            <AvatarFallback>{user.name[0]}</AvatarFallback>
+                                            <AvatarImage src={user.profileImage} alt={nickname || user.name} />
+                                            <AvatarFallback>{(nickname || user.name)[0]}</AvatarFallback>
                                         </Avatar>
                                     </Button>
                                 </DropdownMenuTrigger>
@@ -161,7 +178,7 @@ export function Navbar() {
                             <div className="flex flex-col h-full">
                                 <div className="px-7 pt-4 pb-8">
                                     <span className="font-bold text-2xl text-navy">UIUC KSA</span>
-                                    {user && <p className="mt-2 text-sm text-muted-foreground">{user.name}님 안녕하세요!</p>}
+                                    {user && <p className="mt-2 text-sm text-muted-foreground">{nickname || user.name}님 안녕하세요!</p>}
                                 </div>
                                 <div className="flex flex-col gap-2 px-4 overflow-y-auto">
                                     <MobileNavSection title="KSA 소개" items={ksaRoutes} />
@@ -183,10 +200,10 @@ export function Navbar() {
                                         <>
                                             <div className="flex items-center gap-3 mb-4 px-2">
                                                 <Avatar className="h-10 w-10">
-                                                    <AvatarImage src={user.profileImage} alt={user.name} />
-                                                    <AvatarFallback>{user.name[0]}</AvatarFallback>
+                                                    <AvatarImage src={user.profileImage} alt={nickname || user.name} />
+                                                    <AvatarFallback>{(nickname || user.name)[0]}</AvatarFallback>
                                                 </Avatar>
-                                                <span className="font-medium">{user.name}</span>
+                                                <span className="font-medium">{nickname || user.name}</span>
                                             </div>
                                             <Link to="/mypage" className="w-full">
                                                 <Button variant="outline" className="w-full mb-3">마이페이지</Button>

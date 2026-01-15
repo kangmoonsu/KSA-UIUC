@@ -29,6 +29,11 @@ public class UserController {
         return ResponseEntity.ok().build();
     }
 
+    @GetMapping("/check-nickname")
+    public ResponseEntity<Boolean> checkNickname(@RequestParam(name = "nickname") String nickname) {
+        return ResponseEntity.ok(userService.checkNickname(nickname));
+    }
+
     @GetMapping("/me/posts")
     public ResponseEntity<org.springframework.data.domain.Page<com.core.ksa.dto.MyPostResponseDto>> getMyPosts(
             @AuthenticationPrincipal Jwt jwt,

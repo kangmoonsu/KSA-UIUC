@@ -27,7 +27,7 @@ public class UserDto {
             return UserProfileResponse.builder()
                     .email(user.getEmail())
                     .name(user.getName())
-                    .nickname(user.getName())
+                    .nickname(user.getNickname() != null ? user.getNickname() : user.getName())
                     .role(user.getRole().name())
                     .profileImageUrl(user.getProfileImageUrl())
                     .build();
