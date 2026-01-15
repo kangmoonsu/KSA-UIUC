@@ -22,6 +22,7 @@ import { HousingPage } from '@/pages/market/housing'
 import { HousingNewPage } from '@/pages/market/housing-new'
 import { HousingDetailPage } from '@/pages/market/housing-detail'
 import { HousingEditPage } from '@/pages/market/housing-edit'
+import { ChatRoomPage } from '@/pages/chat/ChatRoomPage'
 import { AuthProvider } from '@/context/auth-context'
 
 function App() {
@@ -60,6 +61,7 @@ function App() {
 
           <Route path="/admin/login" element={<div className="container max-w-screen-2xl mx-auto py-20 px-4"><h2>관리자 로그인 (준비중)</h2></div>} />
           <Route path="/mypage" element={<MyPage />} />
+          <Route path="/chat/room/:id" element={<ChatRoomPage />} />
           <Route path="/oauth/callback" element={<OAuthCallback />} />
         </Route>
       </Routes>

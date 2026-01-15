@@ -1,7 +1,8 @@
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
-import { MapPin, Calendar, DollarSign, ArrowLeft, MoreHorizontal } from "lucide-react"
+import { MapPin, Calendar, DollarSign, ArrowLeft, MoreHorizontal, MessageCircle } from "lucide-react"
+import { useChatRoom } from "@/hooks/use-chat-room"
 import { Link, useParams, useNavigate } from "react-router-dom"
 import { useState, useEffect } from "react"
 import { housingApi, type HousingPost } from "@/lib/api/housing-api"
@@ -19,6 +20,7 @@ export function HousingDetailPage() {
     const navigate = useNavigate()
     const [post, setPost] = useState<HousingPost | null>(null)
     const [loading, setLoading] = useState(true)
+    const { enterChatRoom } = useChatRoom()
 
     useEffect(() => {
         const fetchPost = async () => {
@@ -143,6 +145,17 @@ export function HousingDetailPage() {
                                 <p className="font-semibold text-lg text-navy">{post.location}</p>
                             </div>
                         </div>
+                        {!isOwner && (
+                            <div className="md:col-span-2 flex justify-end">
+                                <Button
+                                    className="bg-orange-600 hover:bg-orange-700 text-white w-full md:w-auto"
+                                    onClick={() => enterChatRoom({ postId: post.id, category: 'HOUSING' })}
+                                >
+                                    <MessageCircle className="h-4 w-4 mr-2" />
+                                    작성자에게 문의하기
+                                </Button>
+                            </div>
+                        )}
                     </div>
 
                     {post.imageUrls && post.imageUrls.length > 0 && (

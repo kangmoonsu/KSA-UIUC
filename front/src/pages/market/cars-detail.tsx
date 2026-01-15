@@ -13,6 +13,8 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { MoreHorizontal } from "lucide-react"
 import { toast } from "sonner"
+import { MessageCircle } from "lucide-react"
+import { useChatRoom } from "@/hooks/use-chat-room"
 
 interface CarPostDetail {
     id: number
@@ -35,6 +37,7 @@ export function CarsDetailPage() {
     const navigate = useNavigate()
     const [post, setPost] = useState<CarPostDetail | null>(null)
     const [loading, setLoading] = useState(true)
+    const { enterChatRoom } = useChatRoom()
 
     useEffect(() => {
         const fetchPost = async () => {
@@ -126,6 +129,15 @@ export function CarsDetailPage() {
                         <div className="font-bold text-3xl text-navy">
                             ${post.price.toLocaleString()}
                         </div>
+                        {!isOwner && (
+                            <Button
+                                className="bg-orange-600 hover:bg-orange-700 text-white"
+                                onClick={() => enterChatRoom({ postId: post.id, category: 'CAR' })}
+                            >
+                                <MessageCircle className="h-4 w-4 mr-2" />
+                                판매자에게 문의하기
+                            </Button>
+                        )}
                     </div>
 
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4 bg-muted/20 p-4 rounded-xl">

@@ -23,6 +23,12 @@ public class ChatRoom extends BaseEntity {
                        // "Post based".
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "item_id")
+    private MarketItem marketItem; // For Flea Market items
+
+    private String postCategory; // FLEA, CAR, HOUSING, JOB
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "buyer_id", nullable = false)
     private User buyer;
 
@@ -35,8 +41,10 @@ public class ChatRoom extends BaseEntity {
     private LocalDateTime lastMessageAt;
 
     @Builder
-    public ChatRoom(Post post, User buyer, User seller) {
+    public ChatRoom(Post post, MarketItem marketItem, String postCategory, User buyer, User seller) {
         this.post = post;
+        this.marketItem = marketItem;
+        this.postCategory = postCategory;
         this.buyer = buyer;
         this.seller = seller;
         this.lastMessageAt = LocalDateTime.now();

@@ -1,4 +1,4 @@
-import { Link, useLocation } from "react-router-dom"
+import { Link, useLocation, useNavigate } from "react-router-dom"
 import { Button } from "@/components/ui/button"
 import { Menu, ChevronDown } from "lucide-react"
 import {
@@ -9,6 +9,15 @@ import {
 import { useState, useEffect, useRef } from "react"
 import { cn } from "@/lib/utils"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Bell } from "lucide-react"
+import {
+    Popover,
+    PopoverContent,
+    PopoverTrigger,
+} from "@/components/ui/popover"
+import client from "@/lib/api/client"
+import { Client, type IMessage } from "@stomp/stompjs"
+import SockJS from "sockjs-client"
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -18,14 +27,17 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { useAuth } from "@/context/auth-context"
 import { useClerk } from "@clerk/clerk-react"
-import client from "@/lib/api/client"
 
 export function Navbar() {
     const [isOpen, setIsOpen] = useState(false)
     const { user, logout, isAuthenticated } = useAuth()
     const { openSignIn } = useClerk()
     const location = useLocation()
+    const navigate = useNavigate()
     const [nickname, setNickname] = useState<string>("")
+    const [unreadCount, setUnreadCount] = useState(0)
+    const [notifications, setNotifications] = useState<any[]>([])
+    const stompClient = useRef<Client | null>(null)
 
     useEffect(() => {
         const fetchNickname = async () => {
@@ -46,6 +58,54 @@ export function Navbar() {
     useEffect(() => {
         setIsOpen(false)
     }, [location.pathname])
+
+    // WebSocket for notifications
+    useEffect(() => {
+        if (!user) return
+
+        const fetchInitialData = async () => {
+            try {
+                const [countRes, listRes] = await Promise.all([
+                    client.get('/notifications/unread-count'),
+                    client.get('/notifications')
+                ])
+                setUnreadCount(countRes.data.count)
+                setNotifications(listRes.data)
+            } catch (err) {
+                console.error("Failed to fetch notifications", err)
+            }
+        }
+        fetchInitialData()
+
+        const socket = new SockJS('http://localhost:8080/ws-chat')
+        const client_stomp = new Client({
+            webSocketFactory: () => socket,
+            onConnect: () => {
+                client_stomp.subscribe(`/user/${user.sub}/queue/notifications`, (message: IMessage) => {
+                    const newNotif = JSON.parse(message.body)
+                    setNotifications(prev => [newNotif, ...prev])
+                    setUnreadCount(prev => prev + 1)
+                })
+            }
+        })
+        client_stomp.activate()
+        stompClient.current = client_stomp
+
+        return () => {
+            client_stomp.deactivate()
+        }
+    }, [user])
+
+    const handleMarkAsRead = async () => {
+        if (unreadCount === 0) return
+        try {
+            await client.post('/notifications/mark-as-read')
+            setUnreadCount(0)
+            setNotifications(prev => prev.map(n => ({ ...n, isRead: true })))
+        } catch (err) {
+            console.error("Failed to mark notifications as read", err)
+        }
+    }
 
     const handleLogout = async () => {
         await logout()
@@ -115,6 +175,53 @@ export function Navbar() {
 
                     {user ? (
                         <div className="hidden md:flex items-center gap-4">
+                            {/* Notification Bell */}
+                            <Popover onOpenChange={(open: boolean) => open && handleMarkAsRead()}>
+                                <PopoverTrigger asChild>
+                                    <Button variant="ghost" size="icon" className="relative">
+                                        <Bell className="h-5 w-5 text-muted-foreground" />
+                                        {unreadCount > 0 && (
+                                            <span className="absolute top-1.5 right-1.5 w-4 h-4 bg-orange-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center border-2 border-white">
+                                                {unreadCount > 9 ? '9+' : unreadCount}
+                                            </span>
+                                        )}
+                                    </Button>
+                                </PopoverTrigger>
+                                <PopoverContent className="w-80 p-0" align="end">
+                                    <div className="p-4 border-b">
+                                        <h3 className="font-bold">알림</h3>
+                                    </div>
+                                    <div className="max-h-[400px] overflow-y-auto">
+                                        {notifications.length === 0 ? (
+                                            <div className="p-8 text-center text-sm text-muted-foreground">
+                                                새로운 알림이 없습니다.
+                                            </div>
+                                        ) : (
+                                            notifications.map((n) => (
+                                                <div
+                                                    key={n.id}
+                                                    className={cn(
+                                                        "p-4 border-b cursor-pointer hover:bg-slate-50 transition-colors",
+                                                        !n.isRead && "bg-orange-50/50"
+                                                    )}
+                                                    onClick={() => navigate(n.relatedUrl)}
+                                                >
+                                                    <p className="text-sm text-slate-800 line-clamp-2">{n.message}</p>
+                                                    <p className="text-[10px] text-slate-400 mt-1">
+                                                        {new Date(n.createdAt).toLocaleString()}
+                                                    </p>
+                                                </div>
+                                            ))
+                                        )}
+                                    </div>
+                                    <div className="p-3 bg-slate-50 text-center">
+                                        <Link to="/mypage" className="text-xs text-slate-500 hover:text-orange-500 font-medium">
+                                            전체 보기
+                                        </Link>
+                                    </div>
+                                </PopoverContent>
+                            </Popover>
+
                             <DropdownMenu>
                                 <DropdownMenuTrigger asChild>
                                     <Button variant="ghost" className="relative h-auto w-auto rounded-full gap-2 px-2">
