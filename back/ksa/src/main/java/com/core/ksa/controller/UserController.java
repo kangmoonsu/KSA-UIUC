@@ -41,4 +41,46 @@ public class UserController {
         String clerkId = jwt.getSubject();
         return ResponseEntity.ok(userService.getMyPosts(clerkId, pageable));
     }
+
+    // Admin Endpoints
+    @GetMapping("/admin/users")
+    public ResponseEntity<org.springframework.data.domain.Page<UserDto.UserAdminResponse>> getAllUsers(
+            @RequestParam(name = "query", required = false) String query,
+            @org.springframework.data.web.PageableDefault(size = 10) org.springframework.data.domain.Pageable pageable) {
+        return ResponseEntity.ok(userService.getAllUsers(query, pageable));
+    }
+
+    @GetMapping("/admin/users/{clerkId}")
+    public ResponseEntity<UserDto.UserDetailResponse> getUserDetail(@PathVariable(name = "clerkId") String clerkId) {
+        return ResponseEntity.ok(userService.getUserDetail(clerkId));
+    }
+
+    @PostMapping("/admin/users/{clerkId}/ban")
+    public ResponseEntity<Void> banUser(@AuthenticationPrincipal Jwt jwt,
+            @PathVariable(name = "clerkId") String clerkId,
+            @RequestBody UserDto.BanRequest request) {
+        userService.banUser(clerkId, request, jwt.getSubject());
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/admin/users/{clerkId}/unban")
+    public ResponseEntity<Void> unbanUser(@AuthenticationPrincipal Jwt jwt,
+            @PathVariable(name = "clerkId") String clerkId) {
+        userService.unbanUser(clerkId, jwt.getSubject());
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/admin/users/{clerkId}/promote")
+    public ResponseEntity<Void> promoteToAdmin(@AuthenticationPrincipal Jwt jwt,
+            @PathVariable(name = "clerkId") String clerkId) {
+        userService.promoteToAdmin(clerkId, jwt.getSubject());
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/admin/users/{clerkId}/demote")
+    public ResponseEntity<Void> demoteToUser(@AuthenticationPrincipal Jwt jwt,
+            @PathVariable(name = "clerkId") String clerkId) {
+        userService.demoteToUser(clerkId, jwt.getSubject());
+        return ResponseEntity.ok().build();
+    }
 }

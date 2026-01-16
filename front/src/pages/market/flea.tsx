@@ -9,7 +9,7 @@ import type { MarketPostResponseDto, MarketItemResponseDto } from "@/types/marke
 
 export function FleaPage() {
     const navigate = useNavigate()
-    const { isAuthenticated } = useAuth()
+    const { isAuthenticated, user } = useAuth()
 
     const {
         data,
@@ -52,15 +52,17 @@ export function FleaPage() {
                     <h1 className="text-3xl font-bold tracking-tight text-navy">중고물품</h1>
                     <p className="text-muted-foreground mt-2">안 쓰는 물건을 사고 팔아보세요.</p>
                 </div>
-                <Button className="gap-2" onClick={() => {
-                    if (isAuthenticated) {
-                        navigate("/market/flea/new")
-                    } else {
-                        toast.error("로그인 후 이용해주세요")
-                    }
-                }}>
-                    <Plus className="h-4 w-4" /> 글쓰기
-                </Button>
+                {(!user || user.role === 'USER') && (
+                    <Button className="gap-2" onClick={() => {
+                        if (isAuthenticated) {
+                            navigate("/market/flea/new")
+                        } else {
+                            toast.error("로그인 후 이용해주세요")
+                        }
+                    }}>
+                        <Plus className="h-4 w-4" /> 글쓰기
+                    </Button>
+                )}
             </div>
 
 

@@ -2,6 +2,7 @@ import { useEffect, useState, createContext, useContext } from 'react';
 import { useUser, useClerk } from "@clerk/clerk-react";
 import client from "@/lib/api/client"
 import { setTokenFetcher } from '@/lib/auth-utils';
+import { toast } from "sonner"
 
 interface User {
     sub: string;
@@ -46,13 +47,22 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
                         profileImageUrl: clerkUser.imageUrl
                     })
 
+                    if (res.data.banned) {
+                        if (window.location.pathname !== '/banned') {
+                            toast.error("계정이 정지되었습니다. 관리자에게 문의하세요.");
+                            await signOut(); // Clear Clerk session immediately
+                            window.location.href = '/banned';
+                        }
+                        return;
+                    }
+
                     // 서버에서 받은 실제 DB 정보를 컨텍스트에 저장
                     setUser({
                         sub: clerkUser.id,
                         name: clerkUser.fullName || clerkUser.username || "User",
                         nickname: res.data.nickname, // DB의 nickname 사용
                         profileImage: clerkUser.imageUrl,
-                        role: (clerkUser.publicMetadata?.role as string) || "USER",
+                        role: res.data.role || "USER",
                         exp: 0
                     });
                 } catch (error) {

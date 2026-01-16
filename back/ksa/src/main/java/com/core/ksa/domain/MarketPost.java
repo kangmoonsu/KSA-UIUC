@@ -24,7 +24,7 @@ public class MarketPost extends Post {
         BUY, SELL
     }
 
-    @jakarta.persistence.OneToMany(mappedBy = "marketPost", fetch = jakarta.persistence.FetchType.EAGER)
+    @jakarta.persistence.OneToMany(mappedBy = "marketPost", fetch = jakarta.persistence.FetchType.EAGER, cascade = jakarta.persistence.CascadeType.ALL, orphanRemoval = true)
     private java.util.List<MarketItem> items = new java.util.ArrayList<>();
 
     // Items will be managed by a separate entity referencing this post or

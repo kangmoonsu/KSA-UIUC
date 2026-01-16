@@ -21,6 +21,7 @@ export function HousingDetailPage() {
     const [post, setPost] = useState<HousingPost | null>(null)
     const [loading, setLoading] = useState(true)
     const { enterChatRoom } = useChatRoom()
+    const [selectedImage, setSelectedImage] = useState<string | null>(null)
 
     useEffect(() => {
         const fetchPost = async () => {
@@ -103,11 +104,20 @@ export function HousingDetailPage() {
                                     <Calendar className="h-4 w-4" />
                                     {new Date(post.createdAt).toLocaleDateString()}
                                 </span>
-                                <span className="text-sm">작성자: {post.writer}</span>
+                                <span
+                                    className={`text-sm ${user && (user.role === 'ADMIN' || user.role === 'MASTER') ? 'cursor-pointer hover:text-primary transition-colors' : ''}`}
+                                    onClick={() => {
+                                        if (user && (user.role === 'ADMIN' || user.role === 'MASTER')) {
+                                            navigate(`/admin/users/${post.writerClerkId}`)
+                                        }
+                                    }}
+                                >
+                                    작성자: {post.writer}
+                                </span>
                             </div>
                         </div>
 
-                        {isOwner && (
+                        {(isOwner || (user && (user.role === 'ADMIN' || user.role === 'MASTER'))) && (
                             <DropdownMenu>
                                 <DropdownMenuTrigger asChild>
                                     <Button variant="ghost" size="icon">
@@ -115,9 +125,11 @@ export function HousingDetailPage() {
                                     </Button>
                                 </DropdownMenuTrigger>
                                 <DropdownMenuContent align="end">
-                                    <Link to={`/market/housing/${id}/edit`}>
-                                        <DropdownMenuItem>수정하기</DropdownMenuItem>
-                                    </Link>
+                                    {isOwner && (
+                                        <Link to={`/market/housing/${id}/edit`}>
+                                            <DropdownMenuItem>수정하기</DropdownMenuItem>
+                                        </Link>
+                                    )}
                                     <DropdownMenuItem className="text-red-600" onClick={handleDelete}>
                                         삭제하기
                                     </DropdownMenuItem>
@@ -145,11 +157,17 @@ export function HousingDetailPage() {
                                 <p className="font-semibold text-lg text-navy">{post.location}</p>
                             </div>
                         </div>
-                        {!isOwner && (
+                        {!isOwner && (!user || user.role === 'USER') && (
                             <div className="md:col-span-2 flex justify-end">
                                 <Button
                                     className="bg-orange-600 hover:bg-orange-700 text-white w-full md:w-auto"
-                                    onClick={() => enterChatRoom({ postId: post.id, category: 'HOUSING' })}
+                                    onClick={() => {
+                                        if (user) {
+                                            enterChatRoom({ postId: post.id, category: 'HOUSING' })
+                                        } else {
+                                            toast.error("로그인 후 이용해주세요")
+                                        }
+                                    }}
                                 >
                                     <MessageCircle className="h-4 w-4 mr-2" />
                                     작성자에게 문의하기
@@ -163,7 +181,10 @@ export function HousingDetailPage() {
                             <h3 className="text-lg font-semibold mb-4">사진</h3>
                             <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                                 {post.imageUrls.map((url, index) => (
-                                    <div key={index} className="aspect-square rounded-lg overflow-hidden border bg-muted">
+                                    <div key={index}
+                                        className="aspect-square rounded-lg overflow-hidden border bg-muted cursor-pointer"
+                                        onClick={() => setSelectedImage(url)}
+                                    >
                                         <img
                                             src={url}
                                             alt={`Post image ${index + 1}`}
@@ -186,6 +207,31 @@ export function HousingDetailPage() {
                     </div>
                 </div>
             </div>
+
+            {/* Lightbox Modal */}
+            {selectedImage && (
+                <div
+                    className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4"
+                    onClick={() => setSelectedImage(null)}
+                >
+                    <div className="relative max-w-5xl max-h-[90vh] w-full h-full flex items-center justify-center">
+                        <img
+                            src={selectedImage || undefined}
+                            alt="Full size"
+                            className="max-w-full max-h-full object-contain"
+                        />
+                        <button
+                            onClick={(e) => {
+                                e.stopPropagation()
+                                setSelectedImage(null)
+                            }}
+                            className="absolute top-4 right-4 bg-white/10 hover:bg-white/20 text-white rounded-full p-2 transition-colors"
+                        >
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                        </button>
+                    </div>
+                </div>
+            )}
         </div>
     )
 }

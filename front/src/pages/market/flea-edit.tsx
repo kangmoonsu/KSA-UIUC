@@ -13,6 +13,7 @@ import client from "@/lib/api/client"
 import { useUploadImages } from "@/lib/api/market"
 
 interface FleaItem {
+    id?: number
     name: string
     price: string
     productLink: string
@@ -25,7 +26,7 @@ interface FleaItem {
 export function FleaEditPage() {
     const { id } = useParams()
     const navigate = useNavigate()
-    const { isAuthenticated, isLoading } = useAuth()
+    const { isAuthenticated, isLoading, user } = useAuth()
     const [title, setTitle] = useState("")
     const [content, setContent] = useState("")
     const [location, setLocation] = useState("")
@@ -35,7 +36,7 @@ export function FleaEditPage() {
 
     // Initial item state
     const [items, setItems] = useState<FleaItem[]>([
-        { name: "", price: "", productLink: "", description: "", status: "AVAILABLE", imageUrls: [], pendingImages: [] }
+        { id: undefined, name: "", price: "", productLink: "", description: "", status: "AVAILABLE", imageUrls: [], pendingImages: [] }
     ])
 
     useEffect(() => {
@@ -53,13 +54,12 @@ export function FleaEditPage() {
                 const res = await client.get(`/flea/${id}`)
                 const post = res.data
 
-                // TODO: Check ownership - backend needs to include writerId in response
-                // For now, we'll skip this check and allow editing
-                // if (post.writerId !== currentUserId) {
-                //     toast.error("수정 권한이 없습니다.")
-                //     navigate(`/market/flea/${id}`)
-                //     return
-                // }
+                // Check ownership
+                if (post.writerClerkId !== user?.sub && user?.role === 'USER') {
+                    toast.error("수정 권한이 없습니다.")
+                    navigate(`/market/flea/${id}`)
+                    return
+                }
 
                 setTitle(post.title || "")
                 setContent(post.content || "")
@@ -68,6 +68,7 @@ export function FleaEditPage() {
 
                 // Map items
                 const mappedItems = post.items.map((item: any) => ({
+                    id: item.id,
                     name: item.name || "",
                     price: String(item.price || ""),
                     productLink: item.link || "",      // Backend uses 'link'
@@ -77,6 +78,7 @@ export function FleaEditPage() {
                     pendingImages: []
                 }))
                 setItems(mappedItems.length > 0 ? mappedItems : [{
+                    id: undefined,
                     name: "",
                     price: "",
                     productLink: "",
@@ -98,7 +100,7 @@ export function FleaEditPage() {
     }, [id, navigate, isAuthenticated, isLoading])
 
     const handleAddItem = () => {
-        setItems([...items, { name: "", price: "", productLink: "", description: "", status: "AVAILABLE", imageUrls: [], pendingImages: [] }])
+        setItems([...items, { id: undefined, name: "", price: "", productLink: "", description: "", status: "AVAILABLE", imageUrls: [], pendingImages: [] }])
     }
 
     const handleRemoveItem = (index: number) => {
@@ -184,6 +186,7 @@ export function FleaEditPage() {
                 contactPlace: location,  // Backend expects 'contactPlace'
                 type: category,          // Backend expects 'type'
                 items: finalItemsFn.map(item => ({
+                    id: item.id,
                     name: item.name,
                     price: Number(item.price),
                     link: item.productLink,  // Backend expects 'link'

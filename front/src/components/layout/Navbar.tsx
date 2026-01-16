@@ -249,9 +249,21 @@ export function Navbar() {
                                     </Button>
                                 </DropdownMenuTrigger>
                                 <DropdownMenuContent className="w-56" align="end" forceMount>
-                                    <DropdownMenuItem asChild>
-                                        <Link to="/mypage">마이페이지</Link>
-                                    </DropdownMenuItem>
+                                    {(user.role === 'ADMIN' || user.role === 'MASTER') && (
+                                        <>
+                                            <DropdownMenuItem asChild>
+                                                <Link to="/admin">대시보드</Link>
+                                            </DropdownMenuItem>
+                                            <DropdownMenuItem asChild>
+                                                <Link to="/mypage">마이페이지</Link>
+                                            </DropdownMenuItem>
+                                        </>
+                                    )}
+                                    {!(user.role === 'ADMIN' || user.role === 'MASTER') && (
+                                        <DropdownMenuItem asChild>
+                                            <Link to="/mypage">마이페이지</Link>
+                                        </DropdownMenuItem>
+                                    )}
                                     <DropdownMenuSeparator />
                                     <DropdownMenuItem onClick={handleLogout} className="cursor-pointer text-red-600 focus:text-red-600">
                                         로그아웃
@@ -328,9 +340,20 @@ export function Navbar() {
                                                 </Avatar>
                                                 <span className="font-medium">{dbNickname || user.nickname || user.name}</span>
                                             </div>
-                                            <Link to="/mypage" className="w-full">
-                                                <Button variant="outline" className="w-full mb-3">마이페이지</Button>
-                                            </Link>
+                                            <div className="flex flex-col gap-2 w-full mb-3">
+                                                {(user.role === 'ADMIN' || user.role === 'MASTER') && (
+                                                    <Link to="/admin" className="w-full">
+                                                        <Button variant="outline" className="w-full">
+                                                            대시보드
+                                                        </Button>
+                                                    </Link>
+                                                )}
+                                                <Link to="/mypage" className="w-full">
+                                                    <Button variant="outline" className="w-full">
+                                                        마이페이지
+                                                    </Button>
+                                                </Link>
+                                            </div>
                                             <Button
                                                 className="w-full bg-red-500 hover:bg-red-600 text-white"
                                                 size="lg"

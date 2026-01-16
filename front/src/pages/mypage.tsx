@@ -174,7 +174,7 @@ export function MyPage() {
 
         let apiPath = ""
         switch (category) {
-            case "FLEA": apiPath = `/fleamarket/${id}`; break;
+            case "FLEA": apiPath = `/flea/${id}`; break;
             case "JOB": apiPath = `/jobs/${id}`; break;
             case "HOUSING": apiPath = `/housing/${id}`; break;
             case "CAR": apiPath = `/cars/${id}`; break;

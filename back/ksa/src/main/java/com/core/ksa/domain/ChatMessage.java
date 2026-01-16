@@ -18,6 +18,7 @@ public class ChatMessage extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "chat_room_id", nullable = false)
+    @org.hibernate.annotations.OnDelete(action = org.hibernate.annotations.OnDeleteAction.CASCADE)
     private ChatRoom chatRoom;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -29,12 +30,20 @@ public class ChatMessage extends BaseEntity {
 
     private boolean isRead;
 
+    public enum MessageType {
+        TALK, ENTER, LEAVE
+    }
+
+    @Enumerated(EnumType.STRING)
+    private MessageType messageType;
+
     @Builder
-    public ChatMessage(ChatRoom chatRoom, User sender, String content) {
+    public ChatMessage(ChatRoom chatRoom, User sender, String content, MessageType messageType) {
         this.chatRoom = chatRoom;
         this.sender = sender;
         this.content = content;
         this.isRead = false;
+        this.messageType = messageType != null ? messageType : MessageType.TALK;
     }
 
     public void read() {

@@ -29,9 +29,12 @@ public class ChatRoomResponseDto {
     private Long itemId;
     private String itemName;
 
+    private boolean partnerActive;
+
     public static ChatRoomResponseDto from(ChatRoom room, Long currentUserId) {
         boolean isBuyer = room.getBuyer().getId().equals(currentUserId);
         var partner = isBuyer ? room.getSeller() : room.getBuyer();
+        boolean partnerActive = isBuyer ? room.isSellerActive() : room.isBuyerActive();
 
         String thumbnail = null;
         if (room.getMarketItem() != null) {
@@ -56,6 +59,7 @@ public class ChatRoomResponseDto {
                 .thumbnail(thumbnail)
                 .itemId(room.getMarketItem() != null ? room.getMarketItem().getId() : null)
                 .itemName(room.getMarketItem() != null ? room.getMarketItem().getName() : null)
+                .partnerActive(partnerActive)
                 .build();
     }
 

@@ -95,7 +95,7 @@ export function FleaDetailPage() {
                     <ArrowLeft className="h-4 w-4 mr-2" />
                     목록으로 돌아가기
                 </Button>
-                {isOwner && (
+                {(isOwner || (user && (user.role === 'ADMIN' || user.role === 'MASTER'))) && (
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                             <Button variant="ghost" size="icon">
@@ -103,9 +103,11 @@ export function FleaDetailPage() {
                             </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
-                            <DropdownMenuItem onClick={() => navigate(`/market/flea/${id}/edit`)}>
-                                수정하기
-                            </DropdownMenuItem>
+                            {isOwner && (
+                                <DropdownMenuItem onClick={() => navigate(`/market/flea/${id}/edit`)}>
+                                    수정하기
+                                </DropdownMenuItem>
+                            )}
                             <DropdownMenuItem className="text-red-600" onClick={handleDelete}>
                                 삭제하기
                             </DropdownMenuItem>
@@ -125,7 +127,14 @@ export function FleaDetailPage() {
                     </div>
 
                     <div className="flex flex-wrap gap-4 text-sm text-muted-foreground items-center">
-                        <div className="flex items-center gap-1">
+                        <div
+                            className={`flex items-center gap-1 ${user && (user.role === 'ADMIN' || user.role === 'MASTER') ? 'cursor-pointer hover:text-primary transition-colors' : ''}`}
+                            onClick={() => {
+                                if (user && (user.role === 'ADMIN' || user.role === 'MASTER')) {
+                                    navigate(`/admin/users/${post.writerClerkId}`)
+                                }
+                            }}
+                        >
                             <User className="h-4 w-4" />
                             {post.writer}
                         </div>
@@ -208,12 +217,18 @@ export function FleaDetailPage() {
                                                 상품 정보
                                             </a>
                                         )}
-                                        {!isOwner && (
+                                        {!isOwner && (!user || user.role === 'USER') && (
                                             <Button
                                                 variant="outline"
                                                 size="sm"
                                                 className="w-full sm:w-auto"
-                                                onClick={() => enterChatRoom({ itemId: item.id, category: 'FLEA' })}
+                                                onClick={() => {
+                                                    if (user) {
+                                                        enterChatRoom({ itemId: item.id, category: 'FLEA' })
+                                                    } else {
+                                                        toast.error("로그인 후 이용해주세요")
+                                                    }
+                                                }}
                                             >
                                                 <MessageCircle className="h-4 w-4 mr-2" />
                                                 이 물품 문의하기

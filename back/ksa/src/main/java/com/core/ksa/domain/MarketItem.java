@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
+@lombok.Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class MarketItem {
 

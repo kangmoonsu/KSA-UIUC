@@ -21,4 +21,9 @@ public interface NotificationRepository extends JpaRepository<Notification, Long
     @Modifying
     @Query("DELETE FROM Notification n WHERE n.recipient = :recipient AND n.isRead = true")
     void deleteReadNotifications(@Param("recipient") User recipient);
+
+    @Modifying
+    @org.springframework.transaction.annotation.Transactional
+    @Query("DELETE FROM Notification n WHERE n.relatedChatRoom IN :chatRooms")
+    void deleteByRelatedChatRoomIn(@Param("chatRooms") java.util.Collection<com.core.ksa.domain.ChatRoom> chatRooms);
 }

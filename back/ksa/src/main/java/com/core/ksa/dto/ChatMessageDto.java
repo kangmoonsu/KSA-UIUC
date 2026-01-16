@@ -21,6 +21,7 @@ public class ChatMessageDto {
     private String content;
     private boolean isRead;
     private LocalDateTime createdAt;
+    private String messageType;
 
     public static ChatMessageDto from(ChatMessage message) {
         return ChatMessageDto.builder()
@@ -32,6 +33,7 @@ public class ChatMessageDto {
                 .content(message.getContent())
                 .isRead(message.isRead())
                 .createdAt(message.getCreatedAt())
+                .messageType(message.getMessageType().name())
                 .build();
     }
 }

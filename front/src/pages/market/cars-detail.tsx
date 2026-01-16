@@ -96,7 +96,7 @@ export function CarsDetailPage() {
                     <ArrowLeft className="h-4 w-4 mr-2" />
                     목록으로 돌아가기
                 </Button>
-                {isOwner && (
+                {(isOwner || (user && (user.role === 'ADMIN' || user.role === 'MASTER'))) && (
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                             <Button variant="ghost" size="icon">
@@ -104,9 +104,11 @@ export function CarsDetailPage() {
                             </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
-                            <DropdownMenuItem onClick={() => navigate(`/market/cars/${id}/edit`)}>
-                                수정하기
-                            </DropdownMenuItem>
+                            {isOwner && (
+                                <DropdownMenuItem onClick={() => navigate(`/market/cars/${id}/edit`)}>
+                                    수정하기
+                                </DropdownMenuItem>
+                            )}
                             <DropdownMenuItem className="text-red-600" onClick={handleDelete}>
                                 삭제하기
                             </DropdownMenuItem>
@@ -129,10 +131,16 @@ export function CarsDetailPage() {
                         <div className="font-bold text-3xl text-navy">
                             ${post.price.toLocaleString()}
                         </div>
-                        {!isOwner && (
+                        {!isOwner && (!user || user.role === 'USER') && (
                             <Button
                                 className="bg-orange-600 hover:bg-orange-700 text-white"
-                                onClick={() => enterChatRoom({ postId: post.id, category: 'CAR' })}
+                                onClick={() => {
+                                    if (user) {
+                                        enterChatRoom({ postId: post.id, category: 'CAR' })
+                                    } else {
+                                        toast.error("로그인 후 이용해주세요")
+                                    }
+                                }}
                             >
                                 <MessageCircle className="h-4 w-4 mr-2" />
                                 판매자에게 문의하기
@@ -162,7 +170,14 @@ export function CarsDetailPage() {
                                 {post.modelName}
                             </div>
                         </div>
-                        <div className="flex flex-col items-center justify-center p-2 border-l border-muted-foreground/20">
+                        <div
+                            className={`flex flex-col items-center justify-center p-2 border-l border-muted-foreground/20 ${user && (user.role === 'ADMIN' || user.role === 'MASTER') ? 'cursor-pointer hover:bg-muted/50 rounded-lg transition-colors' : ''}`}
+                            onClick={() => {
+                                if (user && (user.role === 'ADMIN' || user.role === 'MASTER')) {
+                                    navigate(`/admin/users/${post.writerClerkId}`)
+                                }
+                            }}
+                        >
                             <span className="text-xs text-muted-foreground uppercase tracking-wider font-semibold mb-1">작성자</span>
                             <div className="flex items-center gap-2 font-medium">
                                 <User className="h-4 w-4 text-primary" />

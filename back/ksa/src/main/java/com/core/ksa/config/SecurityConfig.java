@@ -15,7 +15,16 @@ import java.util.List;
 
 @Configuration
 @EnableWebSecurity
+@org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity
 public class SecurityConfig {
+
+    private final BanCheckFilter banCheckFilter;
+    private final com.core.ksa.repository.UserRepository userRepository;
+
+    public SecurityConfig(BanCheckFilter banCheckFilter, com.core.ksa.repository.UserRepository userRepository) {
+        this.banCheckFilter = banCheckFilter;
+        this.userRepository = userRepository;
+    }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -27,9 +36,22 @@ public class SecurityConfig {
                         .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/flea/**", "/api/cars/**",
                                 "/api/housings/**", "/api/jobs/**")
                         .permitAll()
+                        .requestMatchers("/api/users/admin/**").hasAnyAuthority("ADMIN", "MASTER")
                         .anyRequest().authenticated())
                 .oauth2ResourceServer(oauth2 -> oauth2.jwt(jwt -> {
-                }));
+                    jwt.jwtAuthenticationConverter(jwt1 -> {
+                        String clerkId = jwt1.getSubject();
+                        java.util.List<org.springframework.security.core.GrantedAuthority> authorities = new java.util.ArrayList<>();
+                        userRepository.findByClerkId(clerkId).ifPresent(user -> {
+                            authorities.add(new org.springframework.security.core.authority.SimpleGrantedAuthority(
+                                    user.getRole().name()));
+                        });
+                        return new org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken(
+                                jwt1, authorities);
+                    });
+                }))
+                .addFilterAfter(banCheckFilter,
+                        org.springframework.security.oauth2.server.resource.web.authentication.BearerTokenAuthenticationFilter.class);
 
         return http.build();
     }

@@ -33,8 +33,19 @@ public class User extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private Role role;
 
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private UserBan currentBan;
+
+    public boolean isBanned() {
+        return currentBan != null && !currentBan.isExpired();
+    }
+
+    public String getBanReason() {
+        return currentBan != null ? currentBan.getReason() : null;
+    }
+
     public enum Role {
-        USER, ADMIN
+        USER, ADMIN, MASTER
     }
 
     @Builder
@@ -44,7 +55,7 @@ public class User extends BaseEntity {
         this.name = name;
         this.nickname = nickname;
         this.profileImageUrl = profileImageUrl;
-        this.role = role;
+        this.role = role != null ? role : Role.USER;
     }
 
     public void updateProfile(String name, String profileImageUrl) {
@@ -54,5 +65,21 @@ public class User extends BaseEntity {
 
     public void updateNickname(String nickname) {
         this.nickname = nickname;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
+    }
+
+    public void ban(String reason, java.time.LocalDateTime expiresAt) {
+        this.currentBan = UserBan.builder()
+                .user(this)
+                .reason(reason)
+                .expiresAt(expiresAt)
+                .build();
+    }
+
+    public void unban() {
+        this.currentBan = null;
     }
 }

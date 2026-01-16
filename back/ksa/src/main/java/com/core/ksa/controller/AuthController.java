@@ -1,5 +1,6 @@
 package com.core.ksa.controller;
 
+import com.core.ksa.domain.User;
 import com.core.ksa.dto.UserDto;
 import com.core.ksa.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -25,7 +26,7 @@ public class AuthController {
             return ResponseEntity.status(403).body("Clerk ID mismatch");
         }
 
-        userService.syncUser(request);
-        return ResponseEntity.ok().build();
+        User user = userService.syncUser(request);
+        return ResponseEntity.ok(UserDto.UserProfileResponse.from(user));
     }
 }

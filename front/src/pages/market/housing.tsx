@@ -8,7 +8,7 @@ import { type HousingPost, useHousingPosts } from "@/lib/api/housing-api"
 
 export function HousingPage() {
     const navigate = useNavigate()
-    const { isAuthenticated } = useAuth()
+    const { isAuthenticated, user } = useAuth()
     const { data, fetchNextPage, hasNextPage, isFetchingNextPage, status } = useHousingPosts()
     const observer = useRef<IntersectionObserver>()
     const lastPostRef = useRef<HTMLDivElement>(null)
@@ -42,15 +42,17 @@ export function HousingPage() {
                     <h1 className="text-3xl font-bold tracking-tight text-navy">하우징</h1>
                     <p className="text-muted-foreground mt-2">서브리즈, 룸메이트 구하기.</p>
                 </div>
-                <Button className="gap-2" onClick={() => {
-                    if (isAuthenticated) {
-                        navigate("/market/housing/new")
-                    } else {
-                        toast.error("로그인 후 이용해주세요")
-                    }
-                }}>
-                    <Plus className="h-4 w-4" /> 글쓰기
-                </Button>
+                {(!user || user.role === 'USER') && (
+                    <Button className="gap-2" onClick={() => {
+                        if (isAuthenticated) {
+                            navigate("/market/housing/new")
+                        } else {
+                            toast.error("로그인 후 이용해주세요")
+                        }
+                    }}>
+                        <Plus className="h-4 w-4" /> 글쓰기
+                    </Button>
+                )}
             </div>
 
             {status === 'pending' ? (

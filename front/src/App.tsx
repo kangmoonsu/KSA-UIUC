@@ -24,6 +24,9 @@ import { HousingDetailPage } from '@/pages/market/housing-detail'
 import { HousingEditPage } from '@/pages/market/housing-edit'
 import { ChatRoomPage } from '@/pages/chat/ChatRoomPage'
 import { AuthProvider } from '@/context/auth-context'
+import { AdminDashboard } from '@/pages/admin/AdminDashboard'
+import { UserDetailPage } from '@/pages/admin/UserDetailPage'
+import { BannedPage } from '@/pages/BannedPage'
 
 function App() {
   return (
@@ -60,6 +63,9 @@ function App() {
           <Route path="/contact" element={<div className="container max-w-screen-2xl mx-auto py-20 px-4"><h2>CONTACT US (준비중)</h2></div>} />
 
           <Route path="/admin/login" element={<div className="container max-w-screen-2xl mx-auto py-20 px-4"><h2>관리자 로그인 (준비중)</h2></div>} />
+          <Route path="/admin" element={<AdminDashboard />} />
+          <Route path="/admin/users/:id" element={<UserDetailPage />} />
+          <Route path="/banned" element={<BannedPage />} />
           <Route path="/mypage" element={<MyPage />} />
           <Route path="/chat/room/:id" element={<ChatRoomPage />} />
           <Route path="/oauth/callback" element={<OAuthCallback />} />

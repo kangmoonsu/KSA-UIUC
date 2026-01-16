@@ -19,4 +19,20 @@ public interface ChatRoomRepository extends JpaRepository<ChatRoom, Long> {
 
     // List all chat rooms for a user (either buyer or seller)
     List<ChatRoom> findByBuyerOrSellerOrderByLastMessageAtDesc(User buyer, User seller);
+
+    List<ChatRoom> findAllByPost(Post post);
+
+    List<ChatRoom> findAllByMarketItemIn(java.util.Collection<MarketItem> marketItems);
+
+    @org.springframework.data.jpa.repository.Modifying
+    @org.springframework.transaction.annotation.Transactional
+    void deleteByPost(Post post);
+
+    @org.springframework.data.jpa.repository.Modifying
+    @org.springframework.transaction.annotation.Transactional
+    void deleteByMarketItem(MarketItem marketItem);
+
+    @org.springframework.data.jpa.repository.Modifying
+    @org.springframework.transaction.annotation.Transactional
+    void deleteByMarketItemIn(List<MarketItem> marketItems);
 }

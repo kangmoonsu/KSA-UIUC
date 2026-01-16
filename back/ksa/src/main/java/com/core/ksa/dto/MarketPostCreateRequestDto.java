@@ -21,6 +21,7 @@ public class MarketPostCreateRequestDto {
     @Setter
     @NoArgsConstructor
     public static class MarketItemDto {
+        private Long id;
         private String name;
         private int price;
         private String description;

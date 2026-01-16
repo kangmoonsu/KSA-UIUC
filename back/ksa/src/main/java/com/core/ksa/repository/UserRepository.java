@@ -12,4 +12,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     boolean existsByClerkId(String clerkId);
 
     boolean existsByNickname(String nickname);
+
+    org.springframework.data.domain.Page<User> findByEmailContainingIgnoreCaseOrNicknameContainingIgnoreCase(
+            String email, String nickname, org.springframework.data.domain.Pageable pageable);
 }

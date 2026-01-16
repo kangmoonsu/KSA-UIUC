@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
+import java.time.LocalDateTime;
 
 @RestController
 @RequestMapping("/api/chat")
@@ -25,6 +26,8 @@ public class ChatController {
         private final PostRepository postRepository;
         private final MarketItemRepository marketItemRepository;
         private final UserRepository userRepository;
+        private final org.springframework.messaging.simp.SimpMessagingTemplate messagingTemplate;
+        private final NotificationRepository notificationRepository;
 
         @PostMapping("/room")
         @Transactional
@@ -34,7 +37,14 @@ public class ChatController {
 
                 String clerkId = jwt.getSubject();
                 User buyer = userRepository.findByClerkId(clerkId)
-                                .orElseThrow(() -> new RuntimeException("User not found"));
+                                .orElseThrow(() -> new org.springframework.web.server.ResponseStatusException(
+                                                org.springframework.http.HttpStatus.NOT_FOUND, "User not found"));
+
+                // MASTER and ADMIN roles cannot start inquiries
+                if (buyer.getRole() == User.Role.ADMIN || buyer.getRole() == User.Role.MASTER) {
+                        return ResponseEntity.status(org.springframework.http.HttpStatus.FORBIDDEN)
+                                        .body("Admins/Masters cannot initiate inquiries");
+                }
 
                 Long postId = params.get("postId") != null ? Long.valueOf(params.get("postId").toString()) : null;
                 Long itemId = params.get("itemId") != null ? Long.valueOf(params.get("itemId").toString()) : null;
@@ -53,6 +63,14 @@ public class ChatController {
                         }
 
                         chatRoom = chatRoomRepository.findByMarketItemAndBuyerAndSeller(item, buyer, seller)
+                                        .map(room -> {
+                                                // Re-activate if buyer had left
+                                                if (!room.isBuyerActive()) {
+                                                        room.setBuyerActive(true);
+                                                        chatRoomRepository.save(room);
+                                                }
+                                                return room;
+                                        })
                                         .orElseGet(() -> chatRoomRepository.save(ChatRoom.builder()
                                                         .post(item.getMarketPost())
                                                         .marketItem(item)
@@ -71,6 +89,14 @@ public class ChatController {
                         }
 
                         chatRoom = chatRoomRepository.findByPostAndBuyerAndSeller(post, buyer, seller)
+                                        .map(room -> {
+                                                // Re-activate if buyer had left
+                                                if (!room.isBuyerActive()) {
+                                                        room.setBuyerActive(true);
+                                                        chatRoomRepository.save(room);
+                                                }
+                                                return room;
+                                        })
                                         .orElseGet(() -> chatRoomRepository.save(ChatRoom.builder()
                                                         .post(post)
                                                         .postCategory(category)
@@ -92,6 +118,13 @@ public class ChatController {
 
                 List<ChatRoom> rooms = chatRoomRepository.findByBuyerOrSellerOrderByLastMessageAtDesc(user, user);
                 List<ChatRoomResponseDto> response = rooms.stream()
+                                .filter(room -> {
+                                        if (room.getBuyer().getId().equals(user.getId())) {
+                                                return room.isBuyerActive();
+                                        } else {
+                                                return room.isSellerActive();
+                                        }
+                                })
                                 .map(room -> {
                                         if (room.getPost() != null) {
                                                 org.hibernate.Hibernate.initialize(room.getPost());
@@ -180,6 +213,57 @@ public class ChatController {
                                 .toList();
 
                 unreadMessages.forEach(ChatMessage::read);
+                return ResponseEntity.ok().build();
+        }
+
+        @PostMapping("/room/{roomId}/leave")
+        @Transactional
+        public ResponseEntity<Void> leaveRoom(
+                        @PathVariable("roomId") Long roomId,
+                        @AuthenticationPrincipal Jwt jwt) {
+                String clerkId = jwt.getSubject();
+                User user = userRepository.findByClerkId(clerkId)
+                                .orElseThrow(() -> new RuntimeException("User not found"));
+
+                ChatRoom room = chatRoomRepository.findById(roomId)
+                                .orElseThrow(() -> new RuntimeException("Room not found"));
+
+                if (!room.getBuyer().getId().equals(user.getId()) && !room.getSeller().getId().equals(user.getId())) {
+                        return ResponseEntity.status(403).build();
+                }
+
+                room.leave(user);
+
+                // Create LEAVE system message
+                ChatMessage leaveMessage = ChatMessage.builder()
+                                .chatRoom(room)
+                                .sender(user)
+                                .content(user.getNickname() + "님이 채팅방을 나갔습니다.")
+                                .messageType(ChatMessage.MessageType.LEAVE)
+                                .build();
+                chatMessageRepository.save(leaveMessage);
+
+                // Update last message
+                room.updateLastMessage(leaveMessage.getContent(), LocalDateTime.now());
+                chatRoomRepository.save(room);
+
+                // Broadcast leave message
+                messagingTemplate.convertAndSend("/topic/room." + room.getId(),
+                                com.core.ksa.dto.ChatMessageDto.from(leaveMessage));
+
+                // Send Notification to Partner
+                User recipient = room.getBuyer().getId().equals(user.getId()) ? room.getSeller() : room.getBuyer();
+                Notification notification = Notification.builder()
+                                .recipient(recipient)
+                                .message(user.getNickname() + "님이 채팅방을 나갔습니다.")
+                                .relatedUrl("/chat/room/" + room.getId())
+                                .relatedChatRoom(room)
+                                .build();
+                notificationRepository.save(notification);
+
+                messagingTemplate.convertAndSendToUser(recipient.getClerkId(), "/queue/notifications",
+                                com.core.ksa.dto.NotificationDto.from(notification));
+
                 return ResponseEntity.ok().build();
         }
 }
