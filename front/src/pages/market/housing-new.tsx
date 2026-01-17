@@ -8,7 +8,6 @@ import { useNavigate } from "react-router-dom"
 import { housingApi, type HousingType } from "@/lib/api/housing-api"
 import { toast } from "sonner"
 import { X, Image as ImageIcon } from "lucide-react"
-import client from "@/lib/api/client"
 import { useUploadImages } from "@/lib/api/market"
 
 export function HousingNewPage() {

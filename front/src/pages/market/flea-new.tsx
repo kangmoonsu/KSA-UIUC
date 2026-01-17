@@ -9,7 +9,6 @@ import { toast } from "sonner"
 import { X, Plus, Image as ImageIcon } from "lucide-react"
 import { useAuth } from "@/context/auth-context"
 import { useCreateMarketPost, useUploadImages } from "@/lib/api/market"
-import type { MarketPostCreateRequestDto, MarketItemDto } from "@/types/market"
 
 interface FleaItemState {
     name: string
