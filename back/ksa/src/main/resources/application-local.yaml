@@ -1,0 +1,28 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://ksadb.cf4a6wge6vrb.us-east-2.rds.amazonaws.com:5432/ksadb
+    username: root
+    password: dlfflshdl1!
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: create
+    properties:
+      hibernate:
+        format_sql: true
+        show_sql: false
+        use_sql_comments: true
+  data:
+    redis:
+      host: localhost
+      port: 6379
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: https://logical-quagga-36.clerk.accounts.dev
+
+logging:
+  level:
+    org.springframework: INFO
+    com.core.ksa: DEBUG

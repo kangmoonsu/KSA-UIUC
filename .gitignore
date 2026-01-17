@@ -20,7 +20,7 @@ back/ksa/out/
 back/ksa/*.iml
 back/ksa/*.ipr
 back/ksa/*.iws
-back/ksa/src/main/resources/application-*.yaml
-back/ksa/src/main/resources/application-*.yml
+# back/ksa/src/main/resources/application-*.yaml
+# back/ksa/src/main/resources/application-*.yml
 !back/ksa/src/main/resources/application.yaml
 !back/ksa/src/main/resources/application.yml

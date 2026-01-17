@@ -1,0 +1,34 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://ksadb.cf4a6wge6vrb.us-east-2.rds.amazonaws.com:5432/ksadb
+    username: root
+    password: dlfflshdl1!
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: false
+        show_sql: false
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+  data:
+    redis:
+      host: redis
+      port: 6379
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: https://logical-quagga-36.clerk.accounts.dev
+
+clerk:
+  webhook:
+    secret: whsec_IYdm0C6uY3kOoJUarW67EDFZUNdQA+JL
+  secret-key: sk_test_8igwejUpRiYOdpePJUDlDD8DDndyXCccc1hjyy1sZO
+
+
+logging:
+  level:
+    root: INFO
+    com.core.ksa: INFO
