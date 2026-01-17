@@ -63,7 +63,9 @@ public class SecurityConfig {
                 "http://localhost:5173",
                 "https://illinoisksa.cloud",
                 "https://www.illinoisksa.cloud",
-                "https://api.illinoisksa.cloud"));
+                "https://api.illinoisksa.cloud",
+                "https://ksa-uiuc.vercel.app",
+                "https://*.vercel.app"));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
         configuration.setAllowedHeaders(List.of("*"));
         configuration.setAllowCredentials(true);
