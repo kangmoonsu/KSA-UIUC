@@ -68,8 +68,9 @@ export function ChatRoomPage() {
     useEffect(() => {
         if (!id || !user) return
 
-        const baseURL = import.meta.env.VITE_API_BASE_URL.replace('/api', '');
-        const socket = new SockJS(`${baseURL}/ws-chat`)
+        const baseURL = import.meta.env.VITE_API_BASE_URL;
+        const socketURL = new URL(baseURL).origin;
+        const socket = new SockJS(`${socketURL}/ws-chat`)
         const stompClientInstance = new Client({
             webSocketFactory: () => socket,
             onConnect: () => {
