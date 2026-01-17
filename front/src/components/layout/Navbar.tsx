@@ -78,7 +78,8 @@ export function Navbar() {
         }
         fetchInitialData()
 
-        const socket = new SockJS('http://localhost:8080/ws-chat')
+        const baseURL = import.meta.env.VITE_API_BASE_URL.replace('/api', '');
+        const socket = new SockJS(`${baseURL}/ws-chat`)
         const client_stomp = new Client({
             webSocketFactory: () => socket,
             onConnect: () => {
