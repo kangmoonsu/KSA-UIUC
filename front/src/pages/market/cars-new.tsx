@@ -8,6 +8,8 @@ import client from "@/lib/api/client"
 import { toast } from "sonner"
 import { X, Image as ImageIcon } from "lucide-react"
 import { useUploadImages } from "@/lib/api/market"
+import { resizeImage } from "@/lib/utils/image-processing"
+
 
 export function CarsNewPage() {
     const navigate = useNavigate()
@@ -25,14 +27,20 @@ export function CarsNewPage() {
     // const [imageUrls, setImageUrls] = useState<string[]>([]) // To store uploaded URLs if we did partial upload, but here we upload all at submit or pre-upload. 
     // Actually consistent with Flea, let's upload at submit. But to show preview we need local URLs.
 
-    const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleImageSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files && e.target.files.length > 0) {
             const files = Array.from(e.target.files)
             if (pendingImages.length + files.length > 5) {
                 toast.error("최대 5장까지 업로드 가능합니다.")
                 return
             }
-            setPendingImages([...pendingImages, ...files])
+            try {
+                const resizedFiles = await Promise.all(files.map(file => resizeImage(file)))
+                setPendingImages(prev => [...prev, ...resizedFiles])
+            } catch (error) {
+                console.error("Image processing error:", error)
+                toast.error("이미지 처리 중 오류가 발생했습니다.")
+            }
         }
     }
 

@@ -9,6 +9,8 @@ import { toast } from "sonner"
 import { X, Plus, Image as ImageIcon } from "lucide-react"
 import { useAuth } from "@/context/auth-context"
 import { useCreateMarketPost, useUploadImages } from "@/lib/api/market"
+import { resizeImage } from "@/lib/utils/image-processing"
+
 
 interface FleaItemState {
     name: string
@@ -61,7 +63,7 @@ export function FleaNewPage() {
         setItems(newItems)
     }
 
-    const handleImageSelect = (index: number, e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleImageSelect = async (index: number, e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files && e.target.files.length > 0) {
             const files = Array.from(e.target.files)
             const currentImagesCount = items[index].imageUrls.length + items[index].pendingImages.length
@@ -71,9 +73,15 @@ export function FleaNewPage() {
                 return
             }
 
-            const newItems = [...items]
-            newItems[index].pendingImages = [...newItems[index].pendingImages, ...files]
-            setItems(newItems)
+            try {
+                const resizedFiles = await Promise.all(files.map(file => resizeImage(file)))
+                const newItems = [...items]
+                newItems[index].pendingImages = [...newItems[index].pendingImages, ...resizedFiles]
+                setItems(newItems)
+            } catch (error) {
+                console.error("Image processing error:", error)
+                toast.error("이미지 처리 중 오류가 발생했습니다.")
+            }
         }
     }
 

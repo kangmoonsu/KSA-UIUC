@@ -176,14 +176,7 @@ export function Navbar() {
                 </div>
 
                 <div className="flex items-center gap-4">
-                    {/* Admin Login Link - hide if logged in or check role */}
-                    {!user && (
-                        <Link to="/admin/login" className="hidden md:block">
-                            <Button variant="ghost" size="sm" className="text-muted-foreground w-full">
-                                Admin
-                            </Button>
-                        </Link>
-                    )}
+
 
                     {user ? (
                         <div className="hidden md:flex items-center gap-4">
@@ -392,9 +385,7 @@ export function Navbar() {
                                                 </svg>
                                                 로그인
                                             </Button>
-                                            <Link to="/admin/login">
-                                                <Button variant="outline" className="w-full">관리자 로그인</Button>
-                                            </Link>
+
                                         </>
                                     )}
                                 </div>

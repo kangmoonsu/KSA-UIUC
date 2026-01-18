@@ -10,6 +10,8 @@ import { X, Image as ImageIcon } from "lucide-react"
 import { useAuth } from "@/context/auth-context"
 import client from "@/lib/api/client"
 import { useUploadImages } from "@/lib/api/market"
+import { resizeImage } from "@/lib/utils/image-processing"
+
 
 export function CarsEditPage() {
     const { id } = useParams()
@@ -65,14 +67,20 @@ export function CarsEditPage() {
         if (id) fetchPost()
     }, [id, navigate, isAuthenticated, authLoading])
 
-    const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleImageSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files && e.target.files.length > 0) {
             const files = Array.from(e.target.files)
             if (existingImages.length + pendingImages.length + files.length > 5) {
                 toast.error("최대 5장까지 업로드 가능합니다.")
                 return
             }
-            setPendingImages([...pendingImages, ...files])
+            try {
+                const resizedFiles = await Promise.all(files.map(file => resizeImage(file)))
+                setPendingImages(prev => [...prev, ...resizedFiles])
+            } catch (error) {
+                console.error("Image processing error:", error)
+                toast.error("이미지 처리 중 오류가 발생했습니다.")
+            }
         }
     }
 
