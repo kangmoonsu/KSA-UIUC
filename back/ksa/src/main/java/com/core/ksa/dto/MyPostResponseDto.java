@@ -42,6 +42,8 @@ public class MyPostResponseDto {
             return "HOUSING";
         if (post instanceof CarPost)
             return "CAR";
+        if (post instanceof FreePost)
+            return "FREE";
         return "UNKNOWN";
     }
 

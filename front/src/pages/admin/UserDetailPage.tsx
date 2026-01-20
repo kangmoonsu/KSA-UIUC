@@ -129,7 +129,8 @@ export function UserDetailPage() {
             const endpoint = category === 'FLEA' ? `/flea/${postId}` :
                 category === 'CAR' ? `/cars/${postId}` :
                     category === 'HOUSING' ? `/housings/${postId}` :
-                        category === 'JOB' ? `/jobs/${postId}` : null;
+                        category === 'JOB' ? `/jobs/${postId}` :
+                            category === 'FREE' ? `/free/${postId}` : null;
 
             if (!endpoint) return;
 
@@ -293,7 +294,19 @@ export function UserDetailPage() {
                                                 case 'CAR': return `/market/cars/${postId}`;
                                                 case 'HOUSING': return `/market/housing/${postId}`;
                                                 case 'JOB': return `/market/job/${postId}`;
+                                                case 'FREE': return `/community/free/${postId}`;
                                                 default: return '#';
+                                            }
+                                        }
+
+                                        const getCategoryLabel = (category: string) => {
+                                            switch (category) {
+                                                case 'FLEA': return '중고물품';
+                                                case 'CAR': return '자동차';
+                                                case 'HOUSING': return '하우징';
+                                                case 'JOB': return '구인구직';
+                                                case 'FREE': return 'free';
+                                                default: return category || 'General';
                                             }
                                         }
 
@@ -307,7 +320,7 @@ export function UserDetailPage() {
                                                     {post.title}
                                                 </TableCell>
                                                 <TableCell>
-                                                    <Badge variant="outline">{post.category || 'General'}</Badge>
+                                                    <Badge variant="outline">{getCategoryLabel(post.category)}</Badge>
                                                 </TableCell>
                                                 <TableCell className="text-muted-foreground text-sm">
                                                     {new Date(post.createdAt).toLocaleDateString()}

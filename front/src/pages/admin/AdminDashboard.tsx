@@ -72,8 +72,11 @@ export function AdminDashboard() {
 
     const handleSearch = (e: React.FormEvent) => {
         e.preventDefault()
-        setPage(0)
-        fetchUsers()
+        if (page === 0) {
+            fetchUsers()
+        } else {
+            setPage(0)
+        }
     }
 
     const openUserDetail = (clerkId: string) => {
