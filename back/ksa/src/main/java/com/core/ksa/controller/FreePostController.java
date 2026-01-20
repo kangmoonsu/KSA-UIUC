@@ -4,7 +4,6 @@ import com.core.ksa.dto.FreePostCreateRequestDto;
 import com.core.ksa.dto.FreePostResponseDto;
 import com.core.ksa.service.FreePostService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;

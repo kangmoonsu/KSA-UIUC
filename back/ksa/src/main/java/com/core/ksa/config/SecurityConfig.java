@@ -34,7 +34,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/**", "/ws-chat/**", "/api/users/webhook", "/error").permitAll()
                         .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/flea/**", "/api/cars/**",
-                                "/api/housings/**", "/api/jobs/**")
+                                "/api/housings/**", "/api/jobs/**", "/api/free/**")
                         .permitAll()
                         .requestMatchers("/api/users/admin/**").hasAnyAuthority("ADMIN", "MASTER")
                         .anyRequest().authenticated())
