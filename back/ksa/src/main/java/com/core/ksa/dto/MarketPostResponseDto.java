@@ -14,11 +14,12 @@ public class MarketPostResponseDto {
     private Long id;
     private String title;
     private String content;
-    private String authorName;
-    private String contactPlace;
+    private String writer;
+    private Long writerId;
+    private String location;
     private MarketPost.TradeType type;
     private int viewCount;
-    private String createdDate;
+    private String createdAt;
     private String writerClerkId;
     private List<MarketItemResponseDto> items;
 
@@ -26,13 +27,14 @@ public class MarketPostResponseDto {
         this.id = post.getId();
         this.title = post.getTitle();
         this.content = post.getContent();
-        this.authorName = post.getAuthor() != null
+        this.writer = post.getAuthor() != null
                 ? (post.getAuthor().getNickname() != null ? post.getAuthor().getNickname() : post.getAuthor().getName())
                 : "Unknown";
-        this.contactPlace = post.getContactPlace();
+        this.writerId = post.getAuthor() != null ? post.getAuthor().getId() : null;
+        this.location = post.getContactPlace();
         this.type = post.getType();
         this.viewCount = post.getViewCount();
-        this.createdDate = post.getCreatedAt() != null ? post.getCreatedAt().toString() : "";
+        this.createdAt = post.getCreatedAt() != null ? post.getCreatedAt().toString() : "";
         this.writerClerkId = post.getAuthor() != null ? post.getAuthor().getClerkId() : null;
         this.items = items.stream().map(MarketItemResponseDto::new).collect(Collectors.toList());
     }
@@ -44,7 +46,7 @@ public class MarketPostResponseDto {
         private String name;
         private int price;
         private String description;
-        private String link;
+        private String productLink;
         private String status;
         private List<String> imageUrls;
 
@@ -53,7 +55,7 @@ public class MarketPostResponseDto {
             this.name = item.getName();
             this.price = item.getPrice();
             this.description = item.getDescription();
-            this.link = item.getLink();
+            this.productLink = item.getLink();
             this.status = item.getItemStatus();
             // Assuming imageUrls is comma separated
             this.imageUrls = item.getImageUrls() != null && !item.getImageUrls().isEmpty()

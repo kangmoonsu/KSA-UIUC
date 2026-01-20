@@ -65,7 +65,7 @@ export function CarsNewPage() {
                 price: Number(formData.price),
                 year: Number(formData.year),
                 mileage: Number(formData.mileage),
-                model: formData.model,
+                modelName: formData.model,
                 content: formData.content,
                 imageUrls: uploadedUrls,
                 status: "AVAILABLE"

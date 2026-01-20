@@ -11,8 +11,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Map;
-
 @Slf4j
 @RestController
 @RequestMapping("/api/users")
@@ -27,21 +25,22 @@ public class WebhookController {
 
     @PostMapping("/webhook")
     public ResponseEntity<String> handleClerkWebhook(
-            @RequestHeader Map<String, String> headers,
+            @RequestHeader(value = "svix-id", required = false) String svixId,
+            @RequestHeader(value = "svix-timestamp", required = false) String svixTimestamp,
+            @RequestHeader(value = "svix-signature", required = false) String svixSignature,
             @RequestBody String payload) {
-        // Verify Webhook manually
-        String svixId = headers.get("svix-id");
-        String svixTimestamp = headers.get("svix-timestamp");
-        String svixSignature = headers.get("svix-signature");
+
+        log.info("Received Clerk Webhook Request. svix-id: {}, svix-timestamp: {}", svixId, svixTimestamp);
 
         if (svixId == null || svixTimestamp == null || svixSignature == null) {
+            log.warn("Missing Svix headers. Verification skipped.");
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Missing svix headers");
         }
 
         try {
             verifySignature(payload, svixId, svixTimestamp, svixSignature, webhookSecret);
         } catch (Exception e) {
-            log.error("Webhook Verification Failed", e);
+            log.error("Webhook Verification Failed for svix-id {}: {}", svixId, e.getMessage());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid signature");
         }
 

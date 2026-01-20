@@ -214,7 +214,7 @@ export function FleaDetailPage() {
                                                 className="inline-flex items-center text-sm text-blue-600 hover:underline"
                                             >
                                                 <ExternalLink className="h-3 w-3 mr-1" />
-                                                상품 정보
+                                                상품 링크
                                             </a>
                                         )}
                                         {!isOwner && (!user || user.role === 'USER') && (

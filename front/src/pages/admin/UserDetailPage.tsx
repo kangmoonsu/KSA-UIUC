@@ -286,27 +286,48 @@ export function UserDetailPage() {
                                         </TableCell>
                                     </TableRow>
                                 ) : (
-                                    user.posts.map((post: any) => (
-                                        <TableRow key={post.id}>
-                                            <TableCell className="font-medium">{post.title}</TableCell>
-                                            <TableCell>
-                                                <Badge variant="outline">{post.category || 'General'}</Badge>
-                                            </TableCell>
-                                            <TableCell className="text-muted-foreground text-sm">
-                                                {new Date(post.createdAt).toLocaleDateString()}
-                                            </TableCell>
-                                            <TableCell className="text-right">
-                                                <Button
-                                                    variant="ghost"
-                                                    size="sm"
-                                                    className="text-red-600 hover:text-red-700 hover:bg-red-50"
-                                                    onClick={() => handleDeletePost(post.id, post.category)}
-                                                >
-                                                    Delete
-                                                </Button>
-                                            </TableCell>
-                                        </TableRow>
-                                    ))
+                                    user.posts.map((post: any) => {
+                                        const getPostPath = (postId: number, category: string) => {
+                                            switch (category) {
+                                                case 'FLEA': return `/market/flea/${postId}`;
+                                                case 'CAR': return `/market/cars/${postId}`;
+                                                case 'HOUSING': return `/market/housing/${postId}`;
+                                                case 'JOB': return `/market/job/${postId}`;
+                                                default: return '#';
+                                            }
+                                        }
+
+                                        return (
+                                            <TableRow
+                                                key={post.id}
+                                                className="cursor-pointer hover:bg-muted/50 transition-colors"
+                                                onClick={() => navigate(getPostPath(post.id, post.category))}
+                                            >
+                                                <TableCell className="font-medium">
+                                                    {post.title}
+                                                </TableCell>
+                                                <TableCell>
+                                                    <Badge variant="outline">{post.category || 'General'}</Badge>
+                                                </TableCell>
+                                                <TableCell className="text-muted-foreground text-sm">
+                                                    {new Date(post.createdAt).toLocaleDateString()}
+                                                </TableCell>
+                                                <TableCell className="text-right">
+                                                    <Button
+                                                        variant="ghost"
+                                                        size="sm"
+                                                        className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                                                        onClick={(e) => {
+                                                            e.stopPropagation();
+                                                            handleDeletePost(post.id, post.category);
+                                                        }}
+                                                    >
+                                                        Delete
+                                                    </Button>
+                                                </TableCell>
+                                            </TableRow>
+                                        )
+                                    })
                                 )}
                             </TableBody>
                         </Table>

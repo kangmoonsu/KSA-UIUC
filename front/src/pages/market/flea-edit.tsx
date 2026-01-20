@@ -65,7 +65,7 @@ export function FleaEditPage() {
 
                 setTitle(post.title || "")
                 setContent(post.content || "")
-                setLocation(post.contactPlace || "")  // Backend uses 'contactPlace'
+                setLocation(post.location || "")  // Backend response uses 'location'
                 setCategory(post.type || "SELL")      // Backend uses 'type'
 
                 // Map items
@@ -73,7 +73,7 @@ export function FleaEditPage() {
                     id: item.id,
                     name: item.name || "",
                     price: String(item.price || ""),
-                    productLink: item.link || "",      // Backend uses 'link'
+                    productLink: item.productLink || "",      // Backend response uses 'productLink'
                     description: item.description || "",
                     status: item.status || "AVAILABLE",
                     imageUrls: item.imageUrls || [],

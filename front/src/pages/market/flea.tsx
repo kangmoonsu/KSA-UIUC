@@ -91,13 +91,13 @@ export function FleaPage() {
                                         </div>
                                         <div className="p-4">
                                             <div className="flex justify-end items-start mb-2">
-                                                <span className="text-xs text-muted-foreground">{new Date(typedPost.createdDate).toLocaleDateString()}</span>
+                                                <span className="text-xs text-muted-foreground">{new Date(typedPost.createdAt).toLocaleDateString()}</span>
                                             </div>
                                             <h3 className="font-semibold text-lg mb-1 group-hover:text-primary transition-colors line-clamp-1">{typedPost.title}</h3>
 
                                             <div className="flex justify-between items-center text-sm text-muted-foreground">
-                                                <span>{typedPost.contactPlace}</span>
-                                                <span>By {typedPost.authorName}</span>
+                                                <span>{typedPost.location}</span>
+                                                <span>By {typedPost.writer}</span>
                                             </div>
                                         </div>
                                         <Link to={`/market/flea/${typedPost.id}`} className="absolute inset-0 z-10">

@@ -21,7 +21,7 @@ export interface MarketItemResponseDto {
     name: string;
     price: number;
     description: string;
-    link: string;
+    productLink: string;
     status: string;
     imageUrls: string[];
 }
@@ -30,10 +30,12 @@ export interface MarketPostResponseDto {
     id: number;
     title: string;
     content: string;
-    authorName: string;
-    contactPlace: string;
+    writer: string;
+    writerId?: number;
+    location: string;
     type: 'BUY' | 'SELL';
     viewCount: number;
-    createdDate: string;
+    createdAt: string;
+    writerClerkId?: string;
     items: MarketItemResponseDto[];
 }
