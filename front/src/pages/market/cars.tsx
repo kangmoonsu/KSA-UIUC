@@ -4,6 +4,8 @@ import { Link, useNavigate } from "react-router-dom"
 import { toast } from "sonner"
 import { useAuth } from "@/context/auth-context"
 import { Plus, Gauge, Calendar } from "lucide-react"
+import { isAfter, subHours } from "date-fns"
+import { Badge } from "@/components/ui/badge"
 import { useCarPosts } from "@/lib/api/cars"
 
 
@@ -30,6 +32,12 @@ export function CarsPage() {
 
         return () => observer.current?.disconnect()
     }, [fetchNextPage, hasNextPage, isFetchingNextPage])
+
+    const isNew = (createdAt: string) => {
+        const postDate = new Date(createdAt)
+        const dayAgo = subHours(new Date(), 24)
+        return isAfter(postDate, dayAgo)
+    }
 
     return (
         <div className="container max-w-7xl mx-auto py-10 px-4">
@@ -76,6 +84,9 @@ export function CarsPage() {
                             return (
                                 <div key={post.id} className="group relative bg-card rounded-xl border shadow-sm hover:shadow-md transition-shadow overflow-hidden">
                                     <div className="aspect-video bg-muted/50 w-full object-cover relative overflow-hidden">
+                                        {isNew(post.createdAt) && (
+                                            <Badge className="absolute top-2 left-2 z-20 bg-rose-500 hover:bg-rose-500 border-none px-1.5 py-0 text-[10px] h-4">New</Badge>
+                                        )}
                                         {displayThumbnail ? (
                                             <img src={displayThumbnail} alt={post.title} className="w-full h-full object-cover transition-transform group-hover:scale-105" />
                                         ) : (

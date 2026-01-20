@@ -4,6 +4,8 @@ import { Link, useNavigate } from "react-router-dom"
 import { Plus, MapPin } from "lucide-react"
 import { toast } from "sonner"
 import { useAuth } from "@/context/auth-context"
+import { isAfter, subHours } from "date-fns"
+import { Badge } from "@/components/ui/badge"
 import { type HousingPost, useHousingPosts } from "@/lib/api/housing-api"
 
 export function HousingPage() {
@@ -28,6 +30,12 @@ export function HousingPage() {
 
         return () => observer.current?.disconnect()
     }, [fetchNextPage, hasNextPage, isFetchingNextPage])
+
+    const isNew = (createdAt: string) => {
+        const postDate = new Date(createdAt)
+        const dayAgo = subHours(new Date(), 24)
+        return isAfter(postDate, dayAgo)
+    }
 
     const typeMap: Record<string, string> = {
         SUBLEASE: "서브리즈",
@@ -66,9 +74,14 @@ export function HousingPage() {
                             <div key={post.id} className="group relative bg-card rounded-xl border shadow-sm hover:shadow-md transition-shadow overflow-hidden">
                                 <div className="p-6">
                                     <div className="flex items-center justify-between mb-4">
-                                        <span className="text-xs font-semibold px-2 py-1 bg-blue-50 text-blue-600 rounded-md uppercase">
-                                            {typeMap[post.housingType] || post.housingType}
-                                        </span>
+                                        <div className="flex gap-2 items-center">
+                                            {isNew(post.createdAt) && (
+                                                <Badge className="bg-rose-500 hover:bg-rose-500 border-none px-1.5 py-0 text-[10px] h-4">New</Badge>
+                                            )}
+                                            <span className="text-xs font-semibold px-2 py-1 bg-blue-50 text-blue-600 rounded-md uppercase">
+                                                {typeMap[post.housingType] || post.housingType}
+                                            </span>
+                                        </div>
                                         <span className="text-muted-foreground text-xs">{new Date(post.createdAt).toLocaleDateString()}</span>
                                     </div>
                                     <h3 className="font-semibold text-xl mb-2 group-hover:text-primary transition-colors">{post.title}</h3>

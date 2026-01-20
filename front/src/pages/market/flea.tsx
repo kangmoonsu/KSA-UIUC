@@ -4,6 +4,8 @@ import { Link, useNavigate } from "react-router-dom"
 import { toast } from "sonner"
 import { useAuth } from "@/context/auth-context"
 import { Plus, Image as ImageIcon } from "lucide-react"
+import { isAfter, subHours } from "date-fns"
+import { Badge } from "@/components/ui/badge"
 import { useMarketPosts } from "@/lib/api/market"
 import type { MarketPostResponseDto, MarketItemResponseDto } from "@/types/market"
 
@@ -45,6 +47,12 @@ export function FleaPage() {
         return imageUrl.startsWith('http') ? imageUrl : imageUrl
     }
 
+    const isNew = (createdAt: string) => {
+        const postDate = new Date(createdAt)
+        const dayAgo = subHours(new Date(), 24)
+        return isAfter(postDate, dayAgo)
+    }
+
     return (
         <div className="container max-w-7xl mx-auto py-10 px-4">
             <div className="flex justify-between items-center mb-8">
@@ -81,6 +89,9 @@ export function FleaPage() {
                                 return (
                                     <div key={typedPost.id} className="group relative bg-card rounded-xl border shadow-sm hover:shadow-md transition-shadow overflow-hidden">
                                         <div className="aspect-square bg-muted/50 w-full object-cover relative overflow-hidden">
+                                            {isNew(typedPost.createdAt) && (
+                                                <Badge className="absolute top-2 left-2 z-20 bg-rose-500 hover:bg-rose-500 border-none px-1.5 py-0 text-[10px] h-4">New</Badge>
+                                            )}
                                             {thumbnail ? (
                                                 <img src={thumbnail} alt={typedPost.title} className="w-full h-full object-cover transition-transform group-hover:scale-105" />
                                             ) : (

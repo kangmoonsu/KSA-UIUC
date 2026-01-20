@@ -23,6 +23,11 @@ import { HousingNewPage } from '@/pages/market/housing-new'
 import { HousingDetailPage } from '@/pages/market/housing-detail'
 import { HousingEditPage } from '@/pages/market/housing-edit'
 import { ChatRoomPage } from '@/pages/chat/ChatRoomPage'
+// Community Pages
+import { FreeBoardList } from '@/pages/community/FreeBoardList'
+import { FreeBoardNew } from '@/pages/community/FreeBoardNew'
+import { FreeBoardDetail } from '@/pages/community/FreeBoardDetail'
+import { FreeBoardEdit } from '@/pages/community/FreeBoardEdit'
 import { AuthProvider } from '@/context/auth-context'
 import { AdminDashboard } from '@/pages/admin/AdminDashboard'
 import { UserDetailPage } from '@/pages/admin/UserDetailPage'
@@ -52,8 +57,11 @@ function App() {
           <Route path="/market/housing/:id" element={<HousingDetailPage />} />
           <Route path="/market/housing/:id/edit" element={<HousingEditPage />} />
 
-          {/* Placeholder routes for now */}
-          <Route path="/free" element={<div className="container max-w-screen-2xl mx-auto py-20 px-4"><h2>자유게시판 (준비중)</h2></div>} />
+          {/* Community Routes */}
+          <Route path="/community/free" element={<FreeBoardList />} />
+          <Route path="/community/free/new" element={<FreeBoardNew />} />
+          <Route path="/community/free/:id" element={<FreeBoardDetail />} />
+          <Route path="/community/free/:id/edit" element={<FreeBoardEdit />} />
           <Route path="/info" element={<div className="container max-w-screen-2xl mx-auto py-20 px-4"><h2>정보게시판 (준비중)</h2></div>} />
 
           <Route path="/ksa/greeting" element={<div className="container max-w-screen-2xl mx-auto py-20 px-4"><h2>인사말 (준비중)</h2></div>} />

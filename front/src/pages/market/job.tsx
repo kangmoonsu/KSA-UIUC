@@ -4,6 +4,8 @@ import { Link, useNavigate } from "react-router-dom"
 import { toast } from "sonner"
 import { useAuth } from "@/context/auth-context"
 import { Plus, MapPin, DollarSign } from "lucide-react"
+import { isAfter, subHours } from "date-fns"
+import { Badge } from "@/components/ui/badge"
 import { useJobPosts } from "@/lib/api/job"
 
 export function JobPage() {
@@ -28,6 +30,12 @@ export function JobPage() {
 
         return () => observer.current?.disconnect()
     }, [fetchNextPage, hasNextPage, isFetchingNextPage])
+
+    const isNew = (createdAt: string) => {
+        const postDate = new Date(createdAt)
+        const dayAgo = subHours(new Date(), 24)
+        return isAfter(postDate, dayAgo)
+    }
 
     return (
         <div className="container max-w-7xl mx-auto py-10 px-4">
@@ -70,9 +78,14 @@ export function JobPage() {
                                 <div key={post.id} className="group relative bg-card rounded-xl border shadow-sm hover:shadow-md transition-shadow overflow-hidden flex flex-col">
                                     <div className="p-6 flex-1">
                                         <div className="flex justify-between items-start mb-4">
-                                            <span className={`text-xs font-semibold px-2 py-1 rounded-full ${statusBadgeClass}`}>
-                                                {statusText}
-                                            </span>
+                                            <div className="flex gap-2 items-center">
+                                                {isNew(post.createdAt) && (
+                                                    <Badge className="bg-rose-500 hover:bg-rose-500 border-none px-1.5 py-0 text-[10px] h-4">New</Badge>
+                                                )}
+                                                <span className={`text-xs font-semibold px-2 py-1 rounded-full ${statusBadgeClass}`}>
+                                                    {statusText}
+                                                </span>
+                                            </div>
                                             <span className="text-xs text-muted-foreground">{new Date(post.createdAt).toLocaleDateString()}</span>
                                         </div>
                                         <h3 className="font-semibold text-xl mb-3 group-hover:text-primary transition-colors line-clamp-2">{post.title}</h3>

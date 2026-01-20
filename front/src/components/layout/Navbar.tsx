@@ -27,6 +27,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { useAuth } from "@/context/auth-context"
 import { useClerk } from "@clerk/clerk-react"
+import logo from "@/assets/images/logo.png"
 
 export function Navbar() {
     const [isOpen, setIsOpen] = useState(false)
@@ -147,7 +148,7 @@ export function Navbar() {
 
     // Community Routes (moved Free/Info here)
     const communityRoutes = [
-        { name: "자유게시판", href: "/free" },
+        { name: "자유게시판", href: "/community/free" },
         { name: "정보게시판", href: "/info" },
     ]
 
@@ -155,8 +156,8 @@ export function Navbar() {
         <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/80 backdrop-blur-md supports-backdrop-filter:bg-background/60">
             <div className="mx-auto flex h-16 w-full max-w-7xl items-center justify-between px-4 md:px-8">
                 <div className="flex items-center gap-8">
-                    <Link to="/" className="flex items-center space-x-2">
-                        <span className="font-extrabold text-2xl text-navy tracking-tight">UIUC KSA</span>
+                    <Link to="/" className="flex items-center">
+                        <img src={logo} alt="UIUC KSA Logo" className="h-12 w-auto object-contain" />
                     </Link>
                     <nav className="hidden md:flex items-center gap-1 text-sm font-medium">
                         <NavMenu title="KSA 소개" items={ksaRoutes} />
@@ -307,7 +308,7 @@ export function Navbar() {
                         <SheetContent side="right" className="w-[300px] sm:w-[400px] pr-0">
                             <div className="flex flex-col h-full">
                                 <div className="px-7 pt-4 pb-8">
-                                    <span className="font-bold text-2xl text-navy">UIUC KSA</span>
+                                    <img src={logo} alt="UIUC KSA Logo" className="h-16 w-auto object-contain" />
                                     {user && <p className="mt-2 text-sm text-muted-foreground">{dbNickname || user.nickname || user.name}님 안녕하세요!</p>}
                                 </div>
                                 <div className="flex flex-col gap-2 px-4 overflow-y-auto">

@@ -8,7 +8,7 @@ interface ResizeOptions {
 }
 
 const defaultOptions: ResizeOptions = {
-    maxWidthOrHeight: 1600,
+    maxWidthOrHeight: 1200,
     maxSizeMB: 0.8,
     useWebWorker: true,
     fileType: 'image/webp',
