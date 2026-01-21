@@ -305,7 +305,7 @@ export function UserDetailPage() {
                                                 case 'CAR': return '자동차';
                                                 case 'HOUSING': return '하우징';
                                                 case 'JOB': return '구인구직';
-                                                case 'FREE': return 'free';
+                                                case 'FREE': return '자유게시판';
                                                 default: return category || 'General';
                                             }
                                         }

@@ -22,46 +22,46 @@ import java.time.LocalDateTime;
 @RequiredArgsConstructor
 public class MessageController {
 
-    private final SimpMessagingTemplate messagingTemplate;
-    private final ChatMessageRepository chatMessageRepository;
-    private final ChatRoomRepository chatRoomRepository;
-    private final NotificationRepository notificationRepository;
-    private final UserRepository userRepository;
+        private final SimpMessagingTemplate messagingTemplate;
+        private final ChatMessageRepository chatMessageRepository;
+        private final ChatRoomRepository chatRoomRepository;
+        private final NotificationRepository notificationRepository;
+        private final UserRepository userRepository;
 
-    @MessageMapping("/chat/send")
-    @Transactional
-    public void sendMessage(ChatMessageDto messageDto) {
-        ChatRoom room = chatRoomRepository.findById(messageDto.getRoomId())
-                .orElseThrow(() -> new RuntimeException("Room not found"));
-        User sender = userRepository.findByClerkId(messageDto.getSenderClerkId())
-                .orElseThrow(() -> new RuntimeException("User not found"));
+        @MessageMapping("/chat/send")
+        @Transactional
+        public void sendMessage(ChatMessageDto messageDto) {
+                ChatRoom room = chatRoomRepository.findById(messageDto.getRoomId())
+                                .orElseThrow(() -> new RuntimeException("Room not found"));
+                User sender = userRepository.findByClerkId(messageDto.getSenderClerkId())
+                                .orElseThrow(() -> new RuntimeException("User not found"));
 
-        ChatMessage message = ChatMessage.builder()
-                .chatRoom(room)
-                .sender(sender)
-                .content(messageDto.getContent())
-                .build();
+                ChatMessage message = ChatMessage.builder()
+                                .chatRoom(room)
+                                .sender(sender)
+                                .content(messageDto.getContent())
+                                .build();
 
-        chatMessageRepository.save(message);
+                chatMessageRepository.save(message);
 
-        // Update last message in room
-        room.updateLastMessage(message.getContent(), LocalDateTime.now());
+                // Update last message in room
+                room.updateLastMessage(message.getContent(), LocalDateTime.now());
 
-        // Broadcast message to room topic
-        messagingTemplate.convertAndSend("/topic/room." + room.getId(), ChatMessageDto.from(message));
+                // Broadcast message to room topic
+                messagingTemplate.convertAndSend("/topic/room." + room.getId(), ChatMessageDto.from(message));
 
-        // Send Notification to Recipient
-        User recipient = room.getBuyer().getId().equals(sender.getId()) ? room.getSeller() : room.getBuyer();
-        Notification notification = Notification.builder()
-                .recipient(recipient)
-                .message(sender.getName() + "님으로부터 새 메시지: " + message.getContent())
-                .relatedUrl("/chat/room/" + room.getId())
-                .relatedChatRoom(room)
-                .build();
-        notificationRepository.save(notification);
+                // Send Notification to Recipient
+                User recipient = room.getBuyer().getId().equals(sender.getId()) ? room.getSeller() : room.getBuyer();
+                Notification notification = Notification.builder()
+                                .recipient(recipient)
+                                .message(sender.getName() + "님으로부터 새 메시지: " + message.getContent())
+                                .relatedUrl("/chat/room/" + room.getId())
+                                .relatedChatRoom(room)
+                                .build();
+                notificationRepository.save(notification);
 
-        // Real-time notification via user-specific topic
-        messagingTemplate.convertAndSendToUser(recipient.getClerkId(), "/queue/notifications",
-                NotificationDto.from(notification));
-    }
+                // Real-time notification via user-specific topic
+                messagingTemplate.convertAndSendToUser(recipient.getClerkId(), "/queue/notifications",
+                                NotificationDto.from(notification));
+        }
 }
