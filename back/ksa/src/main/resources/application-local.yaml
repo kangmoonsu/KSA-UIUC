@@ -22,6 +22,21 @@ spring:
       resourceserver:
         jwt:
           issuer-uri: https://logical-quagga-36.clerk.accounts.dev
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: contact.michaeldev@gmail.com
+    password: lvkl lqps rudk tfbt
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true
+          connectiontimeout: 5000
+          timeout: 5000
+          writetimeout: 5000
 
 logging:
   level:

@@ -23,6 +23,7 @@ import { HousingNewPage } from '@/pages/market/housing-new'
 import { HousingDetailPage } from '@/pages/market/housing-detail'
 import { HousingEditPage } from '@/pages/market/housing-edit'
 import { ChatRoomPage } from '@/pages/chat/ChatRoomPage'
+import ContactPage from '@/pages/contact/ContactPage'
 // Community Pages
 import { FreeBoardList } from '@/pages/community/FreeBoardList'
 import { FreeBoardNew } from '@/pages/community/FreeBoardNew'
@@ -68,7 +69,7 @@ function App() {
           <Route path="/ksa/executives" element={<div className="container max-w-screen-2xl mx-auto py-20 px-4"><h2>KSA 임원진 (준비중)</h2></div>} />
           <Route path="/ksa/history" element={<div className="container max-w-screen-2xl mx-auto py-20 px-4"><h2>역대 임원진 (준비중)</h2></div>} />
           <Route path="/job/consulting" element={<div className="container max-w-screen-2xl mx-auto py-20 px-4"><h2>채용설명회/상담 (준비중)</h2></div>} />
-          <Route path="/contact" element={<div className="container max-w-screen-2xl mx-auto py-20 px-4"><h2>CONTACT US (준비중)</h2></div>} />
+          <Route path="/contact" element={<ContactPage />} />
 
 
           <Route path="/admin" element={<AdminDashboard />} />

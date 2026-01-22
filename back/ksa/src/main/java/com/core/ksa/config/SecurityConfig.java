@@ -32,10 +32,12 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/**", "/ws-chat/**", "/api/users/webhook", "/error").permitAll()
+                        .requestMatchers("/api/auth/**", "/ws-chat/**", "/api/users/webhook", "/error", "/api/contact")
+                        .permitAll()
                         .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/flea/**", "/api/cars/**",
                                 "/api/housings/**", "/api/jobs/**", "/api/free/**")
                         .permitAll()
+                        .requestMatchers(org.springframework.http.HttpMethod.POST, "/api/contact").permitAll()
                         .requestMatchers("/api/users/admin/**").hasAnyAuthority("ADMIN", "MASTER")
                         .anyRequest().authenticated())
                 .oauth2ResourceServer(oauth2 -> oauth2.jwt(jwt -> {
