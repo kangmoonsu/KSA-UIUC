@@ -148,6 +148,7 @@ export function Navbar() {
 
     // Community Routes (moved Free/Info here)
     const communityRoutes = [
+        { name: "KSA 소식", href: "/community/news" },
         { name: "자유게시판", href: "/community/free" },
         { name: "정보게시판", href: "/info" },
     ]

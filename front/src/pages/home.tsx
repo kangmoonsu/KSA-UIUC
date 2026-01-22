@@ -6,7 +6,7 @@ export function HomePage() {
             <section className="w-full py-20 md:py-32 lg:py-40 flex flex-col items-center text-center px-4 animate-in fade-in duration-700 slide-in-from-bottom-4">
                 <div className="space-y-6 max-w-4xl">
                     <div className="inline-block rounded-full bg-orange/10 px-4 py-1.5 text-sm font-semibold text-orange mb-4">
-                        UIUC 유학생을 위한 모든 것
+                         유학생을 위한 모든 것
                     </div>
                     <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight text-navy leading-[1.1]">
                         함께 나누고, 성장하는<br className="hidden sm:inline" />

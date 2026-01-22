@@ -59,6 +59,7 @@ function App() {
           <Route path="/market/housing/:id/edit" element={<HousingEditPage />} />
 
           {/* Community Routes */}
+          <Route path="/community/news" element={<div className="container max-w-screen-2xl mx-auto py-20 px-4"><h2>KSA 소식 (준비중)</h2></div>} />
           <Route path="/community/free" element={<FreeBoardList />} />
           <Route path="/community/free/new" element={<FreeBoardNew />} />
           <Route path="/community/free/:id" element={<FreeBoardDetail />} />
