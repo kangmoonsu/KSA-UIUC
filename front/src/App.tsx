@@ -29,6 +29,10 @@ import { FreeBoardList } from '@/pages/community/FreeBoardList'
 import { FreeBoardNew } from '@/pages/community/FreeBoardNew'
 import { FreeBoardDetail } from '@/pages/community/FreeBoardDetail'
 import { FreeBoardEdit } from '@/pages/community/FreeBoardEdit'
+import { NewsBoardList } from '@/pages/community/NewsBoardList'
+import { NewsBoardNew } from '@/pages/community/NewsBoardNew'
+import { NewsBoardDetail } from '@/pages/community/NewsBoardDetail'
+import { NewsBoardEdit } from '@/pages/community/NewsBoardEdit'
 import { AuthProvider } from '@/context/auth-context'
 import { AdminDashboard } from '@/pages/admin/AdminDashboard'
 import { UserDetailPage } from '@/pages/admin/UserDetailPage'
@@ -59,7 +63,10 @@ function App() {
           <Route path="/market/housing/:id/edit" element={<HousingEditPage />} />
 
           {/* Community Routes */}
-          <Route path="/community/news" element={<div className="container max-w-screen-2xl mx-auto py-20 px-4"><h2>KSA 소식 (준비중)</h2></div>} />
+          <Route path="/community/news" element={<NewsBoardList />} />
+          <Route path="/community/news/new" element={<NewsBoardNew />} />
+          <Route path="/community/news/:id" element={<NewsBoardDetail />} />
+          <Route path="/community/news/:id/edit" element={<NewsBoardEdit />} />
           <Route path="/community/free" element={<FreeBoardList />} />
           <Route path="/community/free/new" element={<FreeBoardNew />} />
           <Route path="/community/free/:id" element={<FreeBoardDetail />} />
