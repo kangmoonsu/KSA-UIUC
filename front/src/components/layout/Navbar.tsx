@@ -252,6 +252,9 @@ export function Navbar() {
                                                 <Link to="/admin">대시보드</Link>
                                             </DropdownMenuItem>
                                             <DropdownMenuItem asChild>
+                                                <Link to="/admin/popups">팝업 관리</Link>
+                                            </DropdownMenuItem>
+                                            <DropdownMenuItem asChild>
                                                 <Link to="/mypage">마이페이지</Link>
                                             </DropdownMenuItem>
                                         </>

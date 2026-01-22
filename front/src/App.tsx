@@ -36,6 +36,8 @@ import { NewsBoardEdit } from '@/pages/community/NewsBoardEdit'
 import { AuthProvider } from '@/context/auth-context'
 import { AdminDashboard } from '@/pages/admin/AdminDashboard'
 import { UserDetailPage } from '@/pages/admin/UserDetailPage'
+import { PopupManagement } from '@/pages/admin/PopupManagement'
+import { PopupForm } from '@/pages/admin/PopupForm'
 import { BannedPage } from '@/pages/BannedPage'
 
 function App() {
@@ -82,6 +84,9 @@ function App() {
 
           <Route path="/admin" element={<AdminDashboard />} />
           <Route path="/admin/users/:id" element={<UserDetailPage />} />
+          <Route path="/admin/popups" element={<PopupManagement />} />
+          <Route path="/admin/popups/new" element={<PopupForm />} />
+          <Route path="/admin/popups/:id/edit" element={<PopupForm />} />
           <Route path="/banned" element={<BannedPage />} />
           <Route path="/mypage" element={<MyPage />} />
           <Route path="/chat/room/:id" element={<ChatRoomPage />} />
