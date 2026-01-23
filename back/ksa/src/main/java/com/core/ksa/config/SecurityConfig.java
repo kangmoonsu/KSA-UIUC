@@ -36,7 +36,7 @@ public class SecurityConfig {
                         .permitAll()
                         .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/flea/**", "/api/cars/**",
                                 "/api/housings/**", "/api/jobs/**", "/api/free/**", "/api/news/**",
-                                "/api/popups/active")
+                                "/api/market/recruit/**", "/api/job/consulting/**", "/api/popups/active")
                         .permitAll()
                         .requestMatchers(org.springframework.http.HttpMethod.POST, "/api/contact").permitAll()
                         .requestMatchers("/api/users/admin/**").hasAnyAuthority("ADMIN", "MASTER")

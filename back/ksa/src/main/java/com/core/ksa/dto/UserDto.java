@@ -1,8 +1,11 @@
 package com.core.ksa.dto;
 
 import com.core.ksa.domain.User;
+import com.core.ksa.domain.UserActionLog;
 import lombok.Builder;
 import lombok.Data;
+import java.time.LocalDateTime;
+import java.util.List;
 
 public class UserDto {
 
@@ -17,21 +20,27 @@ public class UserDto {
     @Data
     @Builder
     public static class UserProfileResponse {
+        private Long id;
+        private String clerkId;
         private String email;
         private String name;
         private String nickname;
-        private String role;
         private String profileImageUrl;
-        private boolean banned;
+        private String role;
+        private boolean isBanned;
+        private LocalDateTime banExpiresAt;
 
         public static UserProfileResponse from(User user) {
             return UserProfileResponse.builder()
+                    .id(user.getId())
+                    .clerkId(user.getClerkId())
                     .email(user.getEmail())
                     .name(user.getName())
-                    .nickname(user.getNickname() != null ? user.getNickname() : user.getName())
-                    .role(user.getRole().name())
+                    .nickname(user.getNickname())
                     .profileImageUrl(user.getProfileImageUrl())
-                    .banned(user.isBanned())
+                    .role(user.getRole().name())
+                    .isBanned(user.isBanned())
+                    .banExpiresAt(user.getCurrentBan() != null ? user.getCurrentBan().getExpiresAt() : null)
                     .build();
         }
     }
@@ -44,25 +53,25 @@ public class UserDto {
     @Data
     @Builder
     public static class UserAdminResponse {
+        private Long id;
         private String clerkId;
         private String email;
         private String name;
         private String nickname;
         private String role;
-        private boolean banned;
-        private java.time.LocalDateTime createdAt;
-        private java.time.LocalDateTime banExpiresAt;
+        private boolean isBanned;
+        private LocalDateTime banExpiresAt;
 
         public static UserAdminResponse from(User user) {
             return UserAdminResponse.builder()
+                    .id(user.getId())
                     .clerkId(user.getClerkId())
                     .email(user.getEmail())
                     .name(user.getName())
                     .nickname(user.getNickname())
                     .role(user.getRole().name())
-                    .banned(user.isBanned())
-                    .createdAt(user.getCreatedAt())
-                    .banExpiresAt(user.isBanned() ? user.getCurrentBan().getExpiresAt() : null)
+                    .isBanned(user.isBanned())
+                    .banExpiresAt(user.getCurrentBan() != null ? user.getCurrentBan().getExpiresAt() : null)
                     .build();
         }
     }
@@ -70,30 +79,14 @@ public class UserDto {
     @Data
     @Builder
     public static class UserDetailResponse {
-        private String clerkId;
-        private String email;
-        private String name;
-        private String nickname;
-        private String role;
-        private boolean banned;
-        private String banReason;
-        private java.time.LocalDateTime banExpiresAt;
-        private String profileImageUrl;
-        private java.util.List<MyPostResponseDto> posts;
-        private java.util.List<UserActionLogResponse> logs;
+        private UserAdminResponse user;
+        private List<MyPostResponseDto> posts;
+        private List<UserActionLogResponse> logs;
 
-        public static UserDetailResponse from(User user, java.util.List<MyPostResponseDto> posts,
-                java.util.List<UserActionLogResponse> logs) {
+        public static UserDetailResponse from(User user, List<MyPostResponseDto> posts,
+                List<UserActionLogResponse> logs) {
             return UserDetailResponse.builder()
-                    .clerkId(user.getClerkId())
-                    .email(user.getEmail())
-                    .name(user.getName())
-                    .nickname(user.getNickname())
-                    .role(user.getRole().name())
-                    .banned(user.isBanned())
-                    .banReason(user.isBanned() ? user.getBanReason() : null)
-                    .banExpiresAt(user.isBanned() ? user.getCurrentBan().getExpiresAt() : null)
-                    .profileImageUrl(user.getProfileImageUrl())
+                    .user(UserAdminResponse.from(user))
                     .posts(posts)
                     .logs(logs)
                     .build();
@@ -101,26 +94,28 @@ public class UserDto {
     }
 
     @Data
+    public static class BanRequest {
+        private String reason;
+        private LocalDateTime expiresAt;
+    }
+
+    @Data
     @Builder
     public static class UserActionLogResponse {
+        private Long id;
         private String actionType;
         private String description;
         private String actorName;
-        private java.time.LocalDateTime createdAt;
+        private LocalDateTime createdAt;
 
-        public static UserActionLogResponse from(com.core.ksa.domain.UserActionLog log) {
+        public static UserActionLogResponse from(UserActionLog log) {
             return UserActionLogResponse.builder()
+                    .id(log.getId())
                     .actionType(log.getActionType().name())
                     .description(log.getDescription())
                     .actorName(log.getActorName())
                     .createdAt(log.getCreatedAt())
                     .build();
         }
-    }
-
-    @Data
-    public static class BanRequest {
-        private String reason;
-        private java.time.LocalDateTime expiresAt;
     }
 }
