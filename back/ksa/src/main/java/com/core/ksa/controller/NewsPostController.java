@@ -4,6 +4,8 @@ import com.core.ksa.dto.NewsBoardListResponseDto;
 import com.core.ksa.dto.NewsPostCreateRequestDto;
 import com.core.ksa.dto.NewsPostResponseDto;
 import com.core.ksa.service.NewsPostService;
+import com.core.ksa.service.ViewCountService;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -19,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 public class NewsPostController {
 
     private final NewsPostService newsPostService;
+    private final ViewCountService viewCountService;
 
     @PostMapping
     @PreAuthorize("hasAnyAuthority('ADMIN', 'MASTER')")
@@ -34,8 +37,11 @@ public class NewsPostController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<NewsPostResponseDto> getPost(@PathVariable(name = "id") Long id) {
-        return ResponseEntity.ok(newsPostService.getPost(id));
+    public ResponseEntity<NewsPostResponseDto> getPost(@PathVariable(name = "id") Long id,
+            HttpServletRequest request,
+            @AuthenticationPrincipal Jwt jwt) {
+        String identifier = viewCountService.getClientIdentifier(request, jwt);
+        return ResponseEntity.ok(newsPostService.getPost(id, identifier));
     }
 
     @PutMapping("/{id}")
