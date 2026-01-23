@@ -3,11 +3,14 @@ package com.core.ksa.controller;
 import com.core.ksa.dto.FreePostCreateRequestDto;
 import com.core.ksa.dto.FreePostResponseDto;
 import com.core.ksa.service.FreePostService;
+import com.core.ksa.service.ViewCountService;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -16,10 +19,11 @@ import org.springframework.web.bind.annotation.*;
 public class FreePostController {
 
     private final FreePostService freePostService;
+    private final ViewCountService viewCountService;
 
     @PostMapping
     public ResponseEntity<Long> createPost(@RequestBody FreePostCreateRequestDto requestDto,
-            @AuthenticationPrincipal org.springframework.security.oauth2.jwt.Jwt jwt) {
+            @AuthenticationPrincipal Jwt jwt) {
         return ResponseEntity.ok(freePostService.createPost(requestDto, jwt.getSubject()));
     }
 
@@ -30,21 +34,24 @@ public class FreePostController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<FreePostResponseDto> getPost(@PathVariable(name = "id") Long id) {
-        return ResponseEntity.ok(freePostService.getPost(id));
+    public ResponseEntity<FreePostResponseDto> getPost(@PathVariable(name = "id") Long id,
+            HttpServletRequest request,
+            @AuthenticationPrincipal Jwt jwt) {
+        String identifier = viewCountService.getClientIdentifier(request, jwt);
+        return ResponseEntity.ok(freePostService.getPost(id, identifier));
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<Void> updatePost(@PathVariable(name = "id") Long id,
             @RequestBody FreePostCreateRequestDto requestDto,
-            @AuthenticationPrincipal org.springframework.security.oauth2.jwt.Jwt jwt) {
+            @AuthenticationPrincipal Jwt jwt) {
         freePostService.updatePost(id, requestDto, jwt.getSubject());
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletePost(@PathVariable(name = "id") Long id,
-            @AuthenticationPrincipal org.springframework.security.oauth2.jwt.Jwt jwt) {
+            @AuthenticationPrincipal Jwt jwt) {
         freePostService.deletePost(id, jwt.getSubject());
         return ResponseEntity.ok().build();
     }
