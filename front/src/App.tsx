@@ -43,9 +43,11 @@ import { BannedPage } from '@/pages/BannedPage'
 import { RecruitPage } from '@/pages/market/recruit/RecruitPage'
 import { RecruitNewPage } from '@/pages/market/recruit/RecruitNewPage'
 import { RecruitDetailPage } from '@/pages/market/recruit/RecruitDetailPage'
+import { RecruitEditPage } from '@/pages/market/recruit/RecruitEditPage'
 import { ConsultingPage } from '@/pages/job/consulting/ConsultingPage'
 import { ConsultingNewPage } from '@/pages/job/consulting/ConsultingNewPage'
 import { ConsultingDetailPage } from '@/pages/job/consulting/ConsultingDetailPage'
+import { ConsultingEditPage } from '@/pages/job/consulting/ConsultingEditPage'
 
 function App() {
   return (
@@ -83,6 +85,7 @@ function App() {
           <Route path="/market/recruit" element={<RecruitPage />} />
           <Route path="/market/recruit/new" element={<RecruitNewPage />} />
           <Route path="/market/recruit/:id" element={<RecruitDetailPage />} />
+          <Route path="/market/recruit/:id/edit" element={<RecruitEditPage />} />
           <Route path="/info" element={<div className="container max-w-screen-2xl mx-auto py-20 px-4"><h2>정보게시판 (준비중)</h2></div>} />
 
           <Route path="/ksa/greeting" element={<div className="container max-w-screen-2xl mx-auto py-20 px-4"><h2>인사말 (준비중)</h2></div>} />
@@ -91,6 +94,7 @@ function App() {
           <Route path="/job/consulting" element={<ConsultingPage />} />
           <Route path="/job/consulting/new" element={<ConsultingNewPage />} />
           <Route path="/job/consulting/:id" element={<ConsultingDetailPage />} />
+          <Route path="/job/consulting/:id/edit" element={<ConsultingEditPage />} />
           <Route path="/contact" element={<ContactPage />} />
 
 
