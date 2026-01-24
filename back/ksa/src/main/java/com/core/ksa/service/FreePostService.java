@@ -21,6 +21,7 @@ public class FreePostService {
 
     private final FreePostRepository freePostRepository;
     private final UserRepository userRepository;
+    private final ViewCountService viewCountService;
 
     @Transactional
     public Long createPost(FreePostCreateRequestDto requestDto, String clerkId) {
@@ -50,10 +51,14 @@ public class FreePostService {
     }
 
     @Transactional
-    public FreePostResponseDto getPost(Long id) {
+    public FreePostResponseDto getPost(Long id, String identifier) {
         FreePost post = freePostRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Post not found"));
-        post.setViewCount(post.getViewCount() + 1);
+
+        if (viewCountService.shouldIncrementView("free", id, identifier)) {
+            post.setViewCount(post.getViewCount() + 1);
+        }
+
         return new FreePostResponseDto(post);
     }
 
@@ -93,3 +98,5 @@ public class FreePostService {
         freePostRepository.delete(post);
     }
 }
+
+
