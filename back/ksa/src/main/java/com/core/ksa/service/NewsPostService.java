@@ -43,11 +43,11 @@ public class NewsPostService {
         }
 
         @Transactional
-        public NewsPostResponseDto getPost(Long id, String identifier) {
+        public NewsPostResponseDto getPost(Long id, String clientIdentifier) {
                 NewsPost newsPost = newsPostRepository.findById(id)
                                 .orElseThrow(() -> new IllegalArgumentException("Post not found"));
 
-                if (viewCountService.shouldIncrementView("news", id, identifier)) {
+                if (viewCountService.shouldIncrementView("NEWS", id, clientIdentifier)) {
                         newsPost.setViewCount(newsPost.getViewCount() + 1);
                 }
 

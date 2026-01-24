@@ -28,7 +28,7 @@ export function RecruitPage() {
     const navigate = useNavigate()
     const { user } = useAuth()
     const [page, setPage] = useState(0)
-    const { data, status, isPlaceholderData } = useRecruitPosts(page)
+    const { data, status } = useRecruitPosts(page)
 
     const isNew = (createdAt: string) => {
         const postDate = new Date(createdAt)

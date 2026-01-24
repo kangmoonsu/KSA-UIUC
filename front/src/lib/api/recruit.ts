@@ -1,6 +1,6 @@
-import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import client from './client';
-import type { RecruitPostResponseDto, RecruitPostCreateRequestDto } from '../../types/recruit';
+import type { RecruitPostResponseDto, RecruitPostCreateRequestDto } from '@/types/recruit';
 
 // List (Infinite Scroll)
 // List (Standard Pagination)
