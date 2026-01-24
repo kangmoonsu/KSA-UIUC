@@ -19,6 +19,15 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v3
 
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "20" # 프로젝트에 맞는 노드 버전
+
+      - name: Install dependencies
+        run: npm install
+        working-directory: ./front
+
       - name: Install Vercel CLI
         run: npm install --global vercel@latest
 
