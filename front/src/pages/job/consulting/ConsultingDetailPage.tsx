@@ -59,6 +59,9 @@ export function ConsultingDetailPage() {
                             </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
+                            <DropdownMenuItem onClick={() => navigate(`/job/consulting/${id}/edit`)}>
+                                수정하기
+                            </DropdownMenuItem>
                             <DropdownMenuItem className="text-red-600" onClick={handleDelete}>
                                 삭제하기
                             </DropdownMenuItem>
