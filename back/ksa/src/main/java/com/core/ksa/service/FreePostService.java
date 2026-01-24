@@ -98,3 +98,5 @@ public class FreePostService {
         freePostRepository.delete(post);
     }
 }
+
+
