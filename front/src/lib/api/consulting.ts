@@ -1,6 +1,6 @@
-import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import client from './client';
-import type { ConsultingPostResponseDto, ConsultingPostCreateRequestDto } from '../../types/consulting';
+import type { ConsultingPostResponseDto, ConsultingPostCreateRequestDto, ConsultingPostListResponseDto } from '@/types/consulting';
 
 // List (Infinite Scroll)
 // List (Standard Pagination)
@@ -13,7 +13,7 @@ export const useConsultingPosts = (page: number = 0, size: number = 10) => {
             params.append('size', size.toString());
             params.append('sort', 'createdAt,desc');
 
-            const { data } = await client.get<any>(`/job/consulting?${params.toString()}`);
+            const { data } = await client.get<ConsultingPostListResponseDto>(`/job/consulting?${params.toString()}`);
             return data.posts;
         },
         placeholderData: (previousData) => previousData,

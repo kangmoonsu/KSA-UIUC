@@ -28,7 +28,7 @@ export function ConsultingPage() {
     const navigate = useNavigate()
     const { user } = useAuth()
     const [page, setPage] = useState(0)
-    const { data, status, isPlaceholderData } = useConsultingPosts(page)
+    const { data, status } = useConsultingPosts(page)
 
     const isNew = (createdAt: string) => {
         const postDate = new Date(createdAt)

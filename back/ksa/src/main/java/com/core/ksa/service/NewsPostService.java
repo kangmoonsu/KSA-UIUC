@@ -20,6 +20,7 @@ public class NewsPostService {
 
         private final NewsPostRepository newsPostRepository;
         private final UserRepository userRepository;
+        private final ViewCountService viewCountService;
 
         @Transactional
         public Long createPost(NewsPostCreateRequestDto requestDto, String clerkId) {
@@ -42,10 +43,14 @@ public class NewsPostService {
         }
 
         @Transactional
-        public NewsPostResponseDto getPost(Long id) {
+        public NewsPostResponseDto getPost(Long id, String clientIdentifier) {
                 NewsPost newsPost = newsPostRepository.findById(id)
                                 .orElseThrow(() -> new IllegalArgumentException("Post not found"));
-                newsPost.setViewCount(newsPost.getViewCount() + 1);
+
+                if (viewCountService.shouldIncrementView("NEWS", id, clientIdentifier)) {
+                        newsPost.setViewCount(newsPost.getViewCount() + 1);
+                }
+
                 return new NewsPostResponseDto(newsPost);
         }
 
