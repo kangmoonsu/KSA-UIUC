@@ -44,6 +44,10 @@ public class User extends BaseEntity {
         return currentBan != null ? currentBan.getReason() : null;
     }
 
+    public java.time.LocalDateTime getBanExpiresAt() {
+        return currentBan != null ? currentBan.getExpiresAt() : null;
+    }
+
     public enum Role {
         USER, ADMIN, MASTER
     }
