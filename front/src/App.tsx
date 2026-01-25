@@ -39,6 +39,7 @@ import { UserDetailPage } from '@/pages/admin/UserDetailPage'
 import { PopupManagement } from '@/pages/admin/PopupManagement'
 import { PopupForm } from '@/pages/admin/PopupForm'
 import { BannedPage } from '@/pages/BannedPage'
+import { ProtectedRoute } from '@/components/auth/protected-route'
 
 import { RecruitPage } from '@/pages/market/recruit/RecruitPage'
 import { RecruitNewPage } from '@/pages/market/recruit/RecruitNewPage'
@@ -57,55 +58,55 @@ function App() {
           <Route path="/" element={<HomePage />} />
           {/* Market Routes */}
           <Route path="/market/flea" element={<FleaPage />} />
-          <Route path="/market/flea/new" element={<FleaNewPage />} />
+          <Route path="/market/flea/new" element={<ProtectedRoute allowedRoles={['USER']}><FleaNewPage /></ProtectedRoute>} />
           <Route path="/market/flea/:id" element={<FleaDetailPage />} />
-          <Route path="/market/flea/:id/edit" element={<FleaEditPage />} />
+          <Route path="/market/flea/:id/edit" element={<ProtectedRoute allowedRoles={['USER']}><FleaEditPage /></ProtectedRoute>} />
           <Route path="/market/job" element={<JobPage />} />
-          <Route path="/market/job/new" element={<JobNewPage />} />
+          <Route path="/market/job/new" element={<ProtectedRoute allowedRoles={['USER']}><JobNewPage /></ProtectedRoute>} />
           <Route path="/market/job/:id" element={<JobDetailPage />} />
-          <Route path="/market/job/:id/edit" element={<JobEditPage />} />
+          <Route path="/market/job/:id/edit" element={<ProtectedRoute allowedRoles={['USER']}><JobEditPage /></ProtectedRoute>} />
           <Route path="/market/cars" element={<CarsPage />} />
-          <Route path="/market/cars/new" element={<CarsNewPage />} />
+          <Route path="/market/cars/new" element={<ProtectedRoute allowedRoles={['USER']}><CarsNewPage /></ProtectedRoute>} />
           <Route path="/market/cars/:id" element={<CarsDetailPage />} />
-          <Route path="/market/cars/:id/edit" element={<CarsEditPage />} />
+          <Route path="/market/cars/:id/edit" element={<ProtectedRoute allowedRoles={['USER']}><CarsEditPage /></ProtectedRoute>} />
           <Route path="/market/housing" element={<HousingPage />} />
-          <Route path="/market/housing/new" element={<HousingNewPage />} />
+          <Route path="/market/housing/new" element={<ProtectedRoute allowedRoles={['USER']}><HousingNewPage /></ProtectedRoute>} />
           <Route path="/market/housing/:id" element={<HousingDetailPage />} />
-          <Route path="/market/housing/:id/edit" element={<HousingEditPage />} />
+          <Route path="/market/housing/:id/edit" element={<ProtectedRoute allowedRoles={['USER']}><HousingEditPage /></ProtectedRoute>} />
 
           {/* Community Routes */}
           <Route path="/community/news" element={<NewsBoardList />} />
-          <Route path="/community/news/new" element={<NewsBoardNew />} />
+          <Route path="/community/news/new" element={<ProtectedRoute allowedRoles={['ADMIN', 'MASTER']}><NewsBoardNew /></ProtectedRoute>} />
           <Route path="/community/news/:id" element={<NewsBoardDetail />} />
-          <Route path="/community/news/:id/edit" element={<NewsBoardEdit />} />
+          <Route path="/community/news/:id/edit" element={<ProtectedRoute allowedRoles={['ADMIN', 'MASTER']}><NewsBoardEdit /></ProtectedRoute>} />
           <Route path="/community/free" element={<FreeBoardList />} />
-          <Route path="/community/free/new" element={<FreeBoardNew />} />
+          <Route path="/community/free/new" element={<ProtectedRoute allowedRoles={['USER', 'ADMIN', 'MASTER']}><FreeBoardNew /></ProtectedRoute>} />
           <Route path="/community/free/:id" element={<FreeBoardDetail />} />
-          <Route path="/community/free/:id/edit" element={<FreeBoardEdit />} />
+          <Route path="/community/free/:id/edit" element={<ProtectedRoute allowedRoles={['USER', 'ADMIN', 'MASTER']}><FreeBoardEdit /></ProtectedRoute>} />
           <Route path="/market/recruit" element={<RecruitPage />} />
-          <Route path="/market/recruit/new" element={<RecruitNewPage />} />
+          <Route path="/market/recruit/new" element={<ProtectedRoute allowedRoles={['ADMIN', 'MASTER']}><RecruitNewPage /></ProtectedRoute>} />
           <Route path="/market/recruit/:id" element={<RecruitDetailPage />} />
-          <Route path="/market/recruit/:id/edit" element={<RecruitEditPage />} />
+          <Route path="/market/recruit/:id/edit" element={<ProtectedRoute allowedRoles={['ADMIN', 'MASTER']}><RecruitEditPage /></ProtectedRoute>} />
           <Route path="/info" element={<div className="container max-w-screen-2xl mx-auto py-20 px-4"><h2>정보게시판 (준비중)</h2></div>} />
 
           <Route path="/ksa/greeting" element={<div className="container max-w-screen-2xl mx-auto py-20 px-4"><h2>인사말 (준비중)</h2></div>} />
           <Route path="/ksa/executives" element={<div className="container max-w-screen-2xl mx-auto py-20 px-4"><h2>KSA 임원진 (준비중)</h2></div>} />
           <Route path="/ksa/history" element={<div className="container max-w-screen-2xl mx-auto py-20 px-4"><h2>역대 임원진 (준비중)</h2></div>} />
           <Route path="/job/consulting" element={<ConsultingPage />} />
-          <Route path="/job/consulting/new" element={<ConsultingNewPage />} />
+          <Route path="/job/consulting/new" element={<ProtectedRoute allowedRoles={['ADMIN', 'MASTER']}><ConsultingNewPage /></ProtectedRoute>} />
           <Route path="/job/consulting/:id" element={<ConsultingDetailPage />} />
-          <Route path="/job/consulting/:id/edit" element={<ConsultingEditPage />} />
+          <Route path="/job/consulting/:id/edit" element={<ProtectedRoute allowedRoles={['ADMIN', 'MASTER']}><ConsultingEditPage /></ProtectedRoute>} />
           <Route path="/contact" element={<ContactPage />} />
 
 
-          <Route path="/admin" element={<AdminDashboard />} />
-          <Route path="/admin/users/:id" element={<UserDetailPage />} />
-          <Route path="/admin/popups" element={<PopupManagement />} />
-          <Route path="/admin/popups/new" element={<PopupForm />} />
-          <Route path="/admin/popups/:id/edit" element={<PopupForm />} />
+          <Route path="/admin" element={<ProtectedRoute allowedRoles={['ADMIN', 'MASTER']}><AdminDashboard /></ProtectedRoute>} />
+          <Route path="/admin/users/:id" element={<ProtectedRoute allowedRoles={['ADMIN', 'MASTER']}><UserDetailPage /></ProtectedRoute>} />
+          <Route path="/admin/popups" element={<ProtectedRoute allowedRoles={['ADMIN', 'MASTER']}><PopupManagement /></ProtectedRoute>} />
+          <Route path="/admin/popups/new" element={<ProtectedRoute allowedRoles={['ADMIN', 'MASTER']}><PopupForm /></ProtectedRoute>} />
+          <Route path="/admin/popups/:id/edit" element={<ProtectedRoute allowedRoles={['ADMIN', 'MASTER']}><PopupForm /></ProtectedRoute>} />
           <Route path="/banned" element={<BannedPage />} />
-          <Route path="/mypage" element={<MyPage />} />
-          <Route path="/chat/room/:id" element={<ChatRoomPage />} />
+          <Route path="/mypage" element={<ProtectedRoute allowedRoles={['USER', 'ADMIN', 'MASTER']}><MyPage /></ProtectedRoute>} />
+          <Route path="/chat/room/:id" element={<ProtectedRoute allowedRoles={['USER', 'ADMIN', 'MASTER']}><ChatRoomPage /></ProtectedRoute>} />
           <Route path="/oauth/callback" element={<OAuthCallback />} />
         </Route>
       </Routes>
