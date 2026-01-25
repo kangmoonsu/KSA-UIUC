@@ -206,34 +206,42 @@ export function FleaDetailPage() {
                                                 {item.description}
                                             </p>
                                         )}
-                                        {item.productLink && (
-                                            <a
-                                                href={item.productLink}
-                                                target="_blank"
-                                                rel="noopener noreferrer"
-                                                className="inline-flex items-center text-sm text-blue-600 hover:underline"
-                                            >
-                                                <ExternalLink className="h-3 w-3 mr-1" />
-                                                상품 링크
-                                            </a>
-                                        )}
-                                        {!isOwner && (!user || user.role === 'USER') && (
-                                            <Button
-                                                variant="outline"
-                                                size="sm"
-                                                className="w-full sm:w-auto"
-                                                onClick={() => {
-                                                    if (user) {
-                                                        enterChatRoom({ itemId: item.id, category: 'FLEA' })
-                                                    } else {
-                                                        toast.error("로그인 후 이용해주세요")
-                                                    }
-                                                }}
-                                            >
-                                                <MessageCircle className="h-4 w-4 mr-2" />
-                                                이 물품 문의하기
-                                            </Button>
-                                        )}
+                                        <div className="flex flex-wrap gap-2 pt-2">
+                                            {!isOwner && (!user || user.role === 'USER') && (
+                                                <Button
+                                                    variant="outline"
+                                                    size="sm"
+                                                    className="flex-1 sm:flex-none border-orange-200 hover:bg-orange-50 text-orange-600"
+                                                    onClick={() => {
+                                                        if (user) {
+                                                            enterChatRoom({ itemId: item.id, category: 'FLEA' })
+                                                        } else {
+                                                            toast.error("로그인 후 이용해주세요")
+                                                        }
+                                                    }}
+                                                >
+                                                    <MessageCircle className="h-4 w-4 mr-2" />
+                                                    이 물품 문의하기
+                                                </Button>
+                                            )}
+                                            {item.productLink && (
+                                                <Button
+                                                    variant="outline"
+                                                    size="sm"
+                                                    className="flex-1 sm:flex-none"
+                                                    asChild
+                                                >
+                                                    <a
+                                                        href={item.productLink}
+                                                        target="_blank"
+                                                        rel="noopener noreferrer"
+                                                    >
+                                                        <ExternalLink className="h-4 w-4 mr-2" />
+                                                        기존 상품 링크
+                                                    </a>
+                                                </Button>
+                                            )}
+                                        </div>
                                     </div>
                                 </div>
                             )

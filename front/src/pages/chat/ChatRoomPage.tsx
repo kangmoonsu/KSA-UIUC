@@ -29,6 +29,7 @@ interface RoomInfo {
     thumbnail?: string
     itemName?: string
     partnerActive: boolean
+    postId: number
 }
 
 export function ChatRoomPage() {
@@ -155,80 +156,104 @@ export function ChatRoomPage() {
     return (
         <div className="flex flex-col h-[calc(100vh-64px)] bg-slate-50">
             {/* Header */}
-            <div className="bg-white border-b px-4 py-3 flex items-center gap-4 sticky top-0 z-10 shadow-sm">
-                <Button variant="ghost" size="icon" onClick={() => navigate(-1)}>
-                    <ArrowLeft className="h-5 w-5" />
-                </Button>
-                <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2">
-                        <h2 className="font-bold text-slate-800 truncate">{room.partnerName}</h2>
-                        {isConnected ? (
-                            <span className="w-2 h-2 rounded-full bg-green-500" title="Connected"></span>
-                        ) : (
-                            <span className="w-2 h-2 rounded-full bg-slate-300" title="Disconnected"></span>
-                        )}
+            <div className="bg-white border-b sticky top-0 z-10 shadow-sm">
+                <div className="max-w-7xl mx-auto px-4 py-3 flex items-center gap-4">
+                    <Button variant="ghost" size="icon" onClick={() => navigate(-1)}>
+                        <ArrowLeft className="h-5 w-5" />
+                    </Button>
+                    <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2">
+                            <h2 className="font-bold text-slate-800 truncate">{room.partnerName}</h2>
+                            {isConnected ? (
+                                <span className="w-2 h-2 rounded-full bg-green-500" title="Connected"></span>
+                            ) : (
+                                <span className="w-2 h-2 rounded-full bg-slate-300" title="Disconnected"></span>
+                            )}
+                        </div>
+                        <div
+                            className="text-xs text-slate-500 truncate cursor-pointer hover:text-orange-500 hover:underline transition-colors"
+                            onClick={() => {
+                                const getPostPath = (postId: number, category: string) => {
+                                    switch (category) {
+                                        case 'FLEA': return `/market/flea/${postId}`;
+                                        case 'CAR': return `/market/cars/${postId}`;
+                                        case 'HOUSING': return `/market/housing/${postId}`;
+                                        case 'JOB': return `/market/job/${postId}`;
+                                        case 'FREE': return `/community/free/${postId}`;
+                                        case 'NEWS': return `/community/news/${postId}`;
+                                        case 'RECRUIT': return `/market/recruit/${postId}`;
+                                        default: return '#';
+                                    }
+                                }
+                                const path = getPostPath(room.postId, room.category);
+                                if (path !== '#') navigate(path);
+                            }}
+                        >
+                            {room.itemName ? `[물품: ${room.itemName}] ` : ''}{room.postTitle}
+                        </div>
                     </div>
-                    <p className="text-xs text-slate-500 truncate">
-                        {room.itemName ? `[물품: ${room.itemName}] ` : ''}{room.postTitle}
-                    </p>
+                    <Button variant="outline" size="sm" onClick={handleLeaveRoom} className="text-red-500 hover:text-red-600 border-red-200 hover:bg-red-50">
+                        나가기
+                    </Button>
                 </div>
-                <Button variant="outline" size="sm" onClick={handleLeaveRoom} className="text-red-500 hover:text-red-600 border-red-200 hover:bg-red-50">
-                    나가기
-                </Button>
             </div>
 
             {/* Messages */}
-            <div className="flex-1 overflow-y-auto p-4 space-y-4">
-                {messages.map((msg, idx) => {
-                    const isMine = msg.senderClerkId === user?.sub
+            <div className="flex-1 overflow-y-auto">
+                <div className="max-w-7xl mx-auto p-4 space-y-4">
+                    {messages.map((msg, idx) => {
+                        const isMine = msg.senderClerkId === user?.sub
 
-                    if (msg.messageType === 'LEAVE') {
+                        if (msg.messageType === 'LEAVE') {
+                            return (
+                                <div key={msg.id || idx} className="flex justify-center my-4">
+                                    <div className="bg-slate-200 text-slate-500 text-[11px] px-3 py-1 rounded-full">
+                                        {msg.content}
+                                    </div>
+                                </div>
+                            )
+                        }
+
                         return (
-                            <div key={msg.id || idx} className="flex justify-center my-4">
-                                <div className="bg-slate-200 text-slate-500 text-[11px] px-3 py-1 rounded-full">
-                                    {msg.content}
+                            <div key={msg.id || idx} className={`flex ${isMine ? 'justify-end' : 'justify-start'}`}>
+                                <div className={`max-w-[80%] rounded-2xl px-4 py-2 shadow-sm ${isMine ? 'bg-orange-500 text-white rounded-tr-none' : 'bg-white text-slate-800 rounded-tl-none border'
+                                    }`}>
+                                    {!isMine && <p className="text-[10px] font-bold opacity-70 mb-1">{msg.senderName}</p>}
+                                    <p className="text-sm whitespace-pre-wrap">{msg.content}</p>
+                                    <div className="flex items-center justify-end gap-1.5 mt-1">
+                                        <p className={`text-[9px] ${isMine ? 'text-orange-100' : 'text-slate-400'}`}>
+                                            {new Date(msg.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                        </p>
+                                    </div>
                                 </div>
                             </div>
                         )
-                    }
-
-                    return (
-                        <div key={msg.id || idx} className={`flex ${isMine ? 'justify-end' : 'justify-start'}`}>
-                            <div className={`max-w-[80%] rounded-2xl px-4 py-2 shadow-sm ${isMine ? 'bg-orange-500 text-white rounded-tr-none' : 'bg-white text-slate-800 rounded-tl-none border'
-                                }`}>
-                                {!isMine && <p className="text-[10px] font-bold opacity-70 mb-1">{msg.senderName}</p>}
-                                <p className="text-sm whitespace-pre-wrap">{msg.content}</p>
-                                <div className="flex items-center justify-end gap-1.5 mt-1">
-                                    <p className={`text-[9px] ${isMine ? 'text-orange-100' : 'text-slate-400'}`}>
-                                        {new Date(msg.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                    )
-                })}
-                <div ref={messagesEndRef} />
+                    })}
+                    <div ref={messagesEndRef} />
+                </div>
             </div>
 
             {/* Input */}
-            <div className="p-4 bg-white border-t sticky bottom-0">
-                {!room.partnerActive && (
-                    <div className="text-center text-xs text-slate-400 mb-2">
-                        상대방이 채팅방을 나갔습니다. 메시지를 보낼 수 없습니다.
-                    </div>
-                )}
-                <form onSubmit={sendMessage} className="flex gap-2 max-w-4xl mx-auto">
-                    <Input
-                        value={input}
-                        onChange={(e) => setInput(e.target.value)}
-                        placeholder={!room.partnerActive ? "상대방이 나갔습니다" : isConnected ? "메시지를 입력하세요..." : "연결 중..."}
-                        className="flex-1"
-                        disabled={!isConnected || !room.partnerActive}
-                    />
-                    <Button type="submit" disabled={!input.trim() || !isConnected || !room.partnerActive} className="bg-orange-500 hover:bg-orange-600">
-                        <Send className="h-4 w-4" />
-                    </Button>
-                </form>
+            <div className="bg-white border-t sticky bottom-0">
+                <div className="max-w-7xl mx-auto p-4">
+                    {!room.partnerActive && (
+                        <div className="text-center text-xs text-slate-400 mb-2">
+                            상대방이 채팅방을 나갔습니다. 메시지를 보낼 수 없습니다.
+                        </div>
+                    )}
+                    <form onSubmit={sendMessage} className="flex gap-2">
+                        <Input
+                            value={input}
+                            onChange={(e) => setInput(e.target.value)}
+                            placeholder={!room.partnerActive ? "상대방이 나갔습니다" : isConnected ? "메시지를 입력하세요..." : "연결 중..."}
+                            className="flex-1"
+                            disabled={!isConnected || !room.partnerActive}
+                        />
+                        <Button type="submit" disabled={!input.trim() || !isConnected || !room.partnerActive} className="bg-orange-500 hover:bg-orange-600">
+                            <Send className="h-4 w-4" />
+                        </Button>
+                    </form>
+                </div>
             </div>
 
         </div>
