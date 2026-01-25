@@ -18,16 +18,20 @@ interface UserActionLog {
     createdAt: string;
 }
 
-interface UserDetailResponse {
+interface UserAdminResponse {
     clerkId: string;
     email: string;
     name: string;
     nickname: string;
     role: string;
+    profileImageUrl?: string;
     banned: boolean;
     banReason?: string;
     banExpiresAt?: string;
-    profileImageUrl?: string;
+}
+
+interface UserDetailResponse {
+    user: UserAdminResponse;
     posts: any[];
     logs: UserActionLog[];
 }
@@ -37,6 +41,7 @@ export function UserDetailPage() {
     const navigate = useNavigate()
     const { user: currentUser, isAuthenticated, isLoading: authLoading } = useAuth()
     const [user, setUser] = useState<UserDetailResponse | null>(null)
+    const [userData, setUserData] = useState<any>(null)
     const [banReason, setBanReason] = useState("")
     const [banUntil, setBanUntil] = useState("")
     const [isPermanent, setIsPermanent] = useState(false)
@@ -48,6 +53,7 @@ export function UserDetailPage() {
         try {
             const res = await client.get(`/users/admin/users/${id}`)
             setUser(res.data)
+            setUserData(res.data.user)
         } catch (err) {
             console.error("Failed to fetch user details", err)
             toast.error("Failed to load user details")
@@ -126,11 +132,15 @@ export function UserDetailPage() {
     const handleDeletePost = async (postId: number, category: string) => {
         if (!confirm("정말 이 게시글을 삭제하시겠습니까?")) return
         try {
-            const endpoint = category === 'FLEA' ? `/flea/${postId}` :
-                category === 'CAR' ? `/cars/${postId}` :
-                    category === 'HOUSING' ? `/housings/${postId}` :
-                        category === 'JOB' ? `/jobs/${postId}` :
-                            category === 'FREE' ? `/free/${postId}` : null;
+            const endpoint =
+                category === 'FLEA' ? `/flea/${postId}` :
+                    category === 'CAR' ? `/cars/${postId}` :
+                        category === 'HOUSING' ? `/housings/${postId}` :
+                            category === 'JOB' ? `/jobs/${postId}` :
+                                category === 'FREE' ? `/free/${postId}` :
+                                    category === 'RECRUIT' ? `/market/recruit/${postId}` :
+                                        category === 'CONSULTING' ? `/job/consulting/${postId}` :
+                                            category === 'NEWS' ? `/news/${postId}` : null;
 
             if (!endpoint) return;
 
@@ -148,7 +158,7 @@ export function UserDetailPage() {
         return <div className="p-20 text-center">Access Denied. You must be an administrator to view this page.</div>
     }
 
-    if (!user) return <div className="p-20 text-center">User not found</div>
+    if (!user || !userData) return <div className="p-20 text-center">User not found</div>
 
     return (
         <div className="container mx-auto py-10 px-4 max-w-4xl">
@@ -163,18 +173,18 @@ export function UserDetailPage() {
                 <Card>
                     <CardHeader className="flex flex-row items-center gap-4">
                         <Avatar className="h-16 w-16">
-                            <AvatarImage src={user.profileImageUrl} />
-                            <AvatarFallback>{user.name[0]}</AvatarFallback>
+                            <AvatarImage src={userData.profileImageUrl} />
+                            <AvatarFallback>{userData.nickname?.[0] || userData.name?.[0] || 'U'}</AvatarFallback>
                         </Avatar>
                         <div className="flex-1">
-                            <CardTitle className="text-2xl">{user.nickname || user.name}</CardTitle>
-                            <CardDescription>{user.email} • {user.clerkId}</CardDescription>
+                            <CardTitle className="text-2xl">{userData.nickname || userData.name}</CardTitle>
+                            <CardDescription>{userData.email} • {userData.clerkId}</CardDescription>
                         </div>
                         <div className="flex flex-col gap-2 items-end">
-                            <Badge variant={user.role === 'MASTER' ? "default" : user.role === 'ADMIN' ? "secondary" : "outline"}>
-                                {user.role}
+                            <Badge variant={userData.role === 'MASTER' ? "default" : userData.role === 'ADMIN' ? "secondary" : "outline"}>
+                                {userData.role}
                             </Badge>
-                            {user.banned ? (
+                            {userData.banned ? (
                                 <Badge variant="destructive">BANNED</Badge>
                             ) : (
                                 <Badge variant="outline" className="text-green-600 border-green-200">ACTIVE</Badge>
@@ -183,18 +193,18 @@ export function UserDetailPage() {
                     </CardHeader>
                     <CardContent className="border-t pt-6">
                         <div className="flex flex-wrap gap-4">
-                            {user.banned ? (
+                            {userData.banned ? (
                                 <div className="flex-1 flex flex-col gap-2">
                                     <div className="flex gap-2">
                                         <Input
-                                            value={`Reason: ${user.banReason || "None"}`}
+                                            value={`Reason: ${userData.banReason || "None"}`}
                                             readOnly
                                             className="bg-muted flex-1"
                                         />
                                         <Button variant="outline" onClick={handleUnban}>Unban User</Button>
                                     </div>
                                     <div className="text-sm text-destructive font-medium">
-                                        Ban Expires: {user.banExpiresAt ? new Date(user.banExpiresAt).toLocaleString() : "Permanent"}
+                                        Ban Expires: {userData.banExpiresAt ? new Date(userData.banExpiresAt).toLocaleString() : "Permanent"}
                                     </div>
                                 </div>
                             ) : (
@@ -247,17 +257,17 @@ export function UserDetailPage() {
                             {/* MASTER Actions */}
                             {currentUser?.role === 'MASTER' && (
                                 <>
-                                    {user.role === 'USER' && (
+                                    {userData.role === 'USER' && (
                                         <Button onClick={handlePromote}>Promote to ADMIN</Button>
                                     )}
-                                    {user.role === 'ADMIN' && (
+                                    {userData.role === 'ADMIN' && (
                                         <Button variant="outline" onClick={handleDemote}>Demote to USER</Button>
                                     )}
                                 </>
                             )}
 
                             {/* ADMIN Actions */}
-                            {currentUser?.role === 'ADMIN' && user.role === 'USER' && (
+                            {currentUser?.role === 'ADMIN' && userData.role === 'USER' && (
                                 <Button onClick={handlePromote}>Promote to ADMIN</Button>
                             )}
                         </div>
@@ -295,6 +305,9 @@ export function UserDetailPage() {
                                                 case 'HOUSING': return `/market/housing/${postId}`;
                                                 case 'JOB': return `/market/job/${postId}`;
                                                 case 'FREE': return `/community/free/${postId}`;
+                                                case 'RECRUIT': return `/market/recruit/${postId}`;
+                                                case 'CONSULTING': return `/job/consulting/${postId}`;
+                                                case 'NEWS': return `/community/news/${postId}`;
                                                 default: return '#';
                                             }
                                         }
@@ -306,6 +319,10 @@ export function UserDetailPage() {
                                                 case 'HOUSING': return '하우징';
                                                 case 'JOB': return '구인구직';
                                                 case 'FREE': return '자유게시판';
+                                                case 'RECRUIT': return '채용공고';
+                                                case 'CONSULTING': return '취업박람회/상담';
+                                                case 'NEWS': return 'KSA 소식';
+                                                case 'UNKNOWN': return '기타';
                                                 default: return category || 'General';
                                             }
                                         }

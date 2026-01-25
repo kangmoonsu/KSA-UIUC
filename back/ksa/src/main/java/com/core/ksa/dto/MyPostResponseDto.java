@@ -34,16 +34,23 @@ public class MyPostResponseDto {
     }
 
     private static String determineCategory(Post post) {
-        if (post instanceof MarketPost)
+        String className = post.getClass().getSimpleName();
+        if (post instanceof MarketPost || className.contains("MarketPost"))
             return "FLEA";
-        if (post instanceof JobPost)
+        if (post instanceof JobPost || className.contains("JobPost"))
             return "JOB";
-        if (post instanceof HousingPost)
+        if (post instanceof HousingPost || className.contains("HousingPost"))
             return "HOUSING";
-        if (post instanceof CarPost)
+        if (post instanceof CarPost || className.contains("CarPost"))
             return "CAR";
-        if (post instanceof FreePost)
+        if (post instanceof FreePost || className.contains("FreePost"))
             return "FREE";
+        if (post instanceof RecruitPost || className.contains("RecruitPost"))
+            return "RECRUIT";
+        if (post instanceof ConsultingPost || className.contains("ConsultingPost"))
+            return "CONSULTING";
+        if (post instanceof NewsPost || className.contains("NewsPost"))
+            return "NEWS";
         return "UNKNOWN";
     }
 

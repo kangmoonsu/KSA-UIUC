@@ -178,6 +178,9 @@ export function MyPage() {
             case "JOB": apiPath = `/jobs/${id}`; break;
             case "HOUSING": apiPath = `/housing/${id}`; break;
             case "CAR": apiPath = `/cars/${id}`; break;
+            case "RECRUIT": apiPath = `/market/recruit/${id}`; break;
+            case "CONSULTING": apiPath = `/job/consulting/${id}`; break;
+            case "NEWS": apiPath = `/news/${id}`; break;
             default: return;
         }
 
@@ -199,6 +202,10 @@ export function MyPage() {
             case "JOB": navigate(`/market/job/${id}/edit`); break;
             case "HOUSING": navigate(`/market/housing/${id}/edit`); break;
             case "CAR": navigate(`/market/cars/${id}/edit`); break;
+            case "RECRUIT": navigate(`/market/recruit/${id}/edit`); break;
+            case "CONSULTING": navigate(`/job/consulting/${id}/edit`); break;
+            case "NEWS": navigate(`/community/news/${id}/edit`); break;
+            case "FREE": navigate(`/community/free/${id}/edit`); break;
         }
     }
 
@@ -208,6 +215,10 @@ export function MyPage() {
             case "JOB": navigate(`/market/job/${id}`); break;
             case "HOUSING": navigate(`/market/housing/${id}`); break;
             case "CAR": navigate(`/market/cars/${id}`); break;
+            case "RECRUIT": navigate(`/market/recruit/${id}`); break;
+            case "CONSULTING": navigate(`/job/consulting/${id}`); break;
+            case "NEWS": navigate(`/community/news/${id}`); break;
+            case "FREE": navigate(`/community/free/${id}`); break;
         }
     }
 
@@ -475,6 +486,10 @@ function CategoryBadge({ category }: { category: string }) {
         JOB: "bg-pink-50 text-pink-700 border-pink-100",
         HOUSING: "bg-blue-50 text-blue-700 border-blue-100",
         CAR: "bg-orange-50 text-orange-700 border-orange-100",
+        RECRUIT: "bg-indigo-50 text-indigo-700 border-indigo-100",
+        CONSULTING: "bg-purple-50 text-purple-700 border-purple-100",
+        NEWS: "bg-red-50 text-red-700 border-red-100",
+        FREE: "bg-slate-50 text-slate-700 border-slate-100",
         UNKNOWN: "bg-gray-50 text-gray-600"
     }
 
@@ -483,6 +498,10 @@ function CategoryBadge({ category }: { category: string }) {
         JOB: "구인구직",
         HOUSING: "하우징",
         CAR: "자동차",
+        RECRUIT: "채용공고",
+        CONSULTING: "취업박람회/상담",
+        NEWS: "KSA 소식",
+        FREE: "자유게시판",
         UNKNOWN: "기타"
     }
 
