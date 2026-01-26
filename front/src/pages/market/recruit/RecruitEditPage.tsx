@@ -39,15 +39,25 @@ export function RecruitEditPage() {
         }
     }, [post])
 
+    const normalizeUrl = (url: string) => {
+        if (!url) return "";
+        if (url.startsWith('http://') || url.startsWith('https://')) {
+            return url;
+        }
+        return `https://${url}`;
+    }
+
     const handleAddLink = (e: React.KeyboardEvent<HTMLInputElement>) => {
         if (e.key === 'Enter' && linkInput.trim()) {
             e.preventDefault()
-            if (!applicationLinks.includes(linkInput.trim())) {
-                setApplicationLinks([...applicationLinks, linkInput.trim()])
+            const normalizedLink = normalizeUrl(linkInput.trim());
+            if (!applicationLinks.includes(normalizedLink)) {
+                setApplicationLinks([...applicationLinks, normalizedLink])
             }
             setLinkInput("")
         }
     }
+
 
     const removeLink = (linkToRemove: string) => {
         setApplicationLinks(applicationLinks.filter(link => link !== linkToRemove))
@@ -79,8 +89,11 @@ export function RecruitEditPage() {
         }
 
         let finalLinks = [...applicationLinks]
-        if (linkInput.trim() && !finalLinks.includes(linkInput.trim())) {
-            finalLinks.push(linkInput.trim())
+        if (linkInput.trim()) {
+            const normalizedLink = normalizeUrl(linkInput.trim());
+            if (!finalLinks.includes(normalizedLink)) {
+                finalLinks.push(normalizedLink)
+            }
         }
 
         if (!title.trim() || !companyName.trim() || !content.trim()) {

@@ -44,6 +44,14 @@ export function RecruitDetailPage() {
         ALLOWED_ATTR: ['href', 'target', 'rel', 'class', 'style', 'src', 'alt', 'width', 'height']
     }
 
+    const ensureAbsoluteUrl = (url: string) => {
+        if (!url) return '#';
+        if (url.startsWith('http://') || url.startsWith('https://')) {
+            return url;
+        }
+        return `https://${url}`;
+    }
+
     return (
         <div className="container max-w-4xl mx-auto py-10 px-4">
             <div className="flex justify-between items-center mb-6">
@@ -113,7 +121,7 @@ export function RecruitDetailPage() {
                                     {post.applicationLinks.map((link, index) => (
                                         <a
                                             key={index}
-                                            href={link}
+                                            href={ensureAbsoluteUrl(link)}
                                             target="_blank"
                                             rel="noopener noreferrer"
                                             className="text-blue-600 hover:underline break-all block text-sm"
