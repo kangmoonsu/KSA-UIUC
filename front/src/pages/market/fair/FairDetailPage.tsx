@@ -10,14 +10,14 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { toast } from "sonner"
-import { useConsultingPost, useDeleteConsultingPost } from "@/lib/api/consulting"
+import { useFairPost, useDeleteFairPost } from "@/lib/api/fair"
 import { format } from "date-fns"
 
-export function ConsultingDetailPage() {
+export function FairDetailPage() {
     const { id } = useParams()
     const navigate = useNavigate()
-    const { data: post, isLoading, error } = useConsultingPost(id!)
-    const { mutate: deletePost } = useDeleteConsultingPost()
+    const { data: post, isLoading, error } = useFairPost(id!)
+    const { mutate: deletePost } = useDeleteFairPost()
     const { user } = useAuth()
 
     if (isLoading) return <div className="container py-20 text-center">로딩중...</div>
@@ -31,7 +31,7 @@ export function ConsultingDetailPage() {
         deletePost(id!, {
             onSuccess: () => {
                 toast.success("게시글이 삭제되었습니다.")
-                navigate("/job/consulting")
+                navigate("/market/fair")
             },
             onError: () => {
                 toast.error("삭제에 실패했습니다.")
@@ -47,7 +47,7 @@ export function ConsultingDetailPage() {
     return (
         <div className="container max-w-4xl mx-auto py-10 px-4">
             <div className="flex justify-between items-center mb-6">
-                <Button variant="ghost" onClick={() => navigate('/job/consulting')} className="-ml-4 text-muted-foreground">
+                <Button variant="ghost" onClick={() => navigate('/market/fair')} className="-ml-4 text-muted-foreground">
                     <ArrowLeft className="h-4 w-4 mr-2" />
                     목록으로 돌아가기
                 </Button>
@@ -59,7 +59,7 @@ export function ConsultingDetailPage() {
                             </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
-                            <DropdownMenuItem onClick={() => navigate(`/job/consulting/${id}/edit`)}>
+                            <DropdownMenuItem onClick={() => navigate(`/market/fair/${id}/edit`)}>
                                 수정하기
                             </DropdownMenuItem>
                             <DropdownMenuItem className="text-red-600" onClick={handleDelete}>

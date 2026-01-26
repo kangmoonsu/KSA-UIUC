@@ -6,6 +6,6 @@ import org.springframework.data.domain.Page;
 
 @Getter
 @AllArgsConstructor
-public class ConsultingPostListResponseDto {
-    private Page<ConsultingPostResponseDto> posts;
+public class FairPostListResponseDto {
+    private Page<FairPostResponseDto> posts;
 }

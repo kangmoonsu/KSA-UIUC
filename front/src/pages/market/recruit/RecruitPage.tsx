@@ -74,8 +74,6 @@ export function RecruitPage() {
                                     <TableHead className="w-[80px] text-center">번호</TableHead>
                                     <TableHead>제목</TableHead>
                                     <TableHead className="w-[150px] text-center">기업명</TableHead>
-                                    <TableHead className="w-[100px] text-center">지역</TableHead>
-                                    <TableHead className="w-[100px] text-center">고용형태</TableHead>
                                     <TableHead className="w-[120px] text-center">등록일</TableHead>
                                 </TableRow>
                             </TableHeader>
@@ -113,14 +111,6 @@ export function RecruitPage() {
                                         </TableCell>
                                         <TableCell className="text-center font-medium text-primary">
                                             {post.companyName}
-                                        </TableCell>
-                                        <TableCell className="text-center text-sm text-muted-foreground">
-                                            {post.location}
-                                        </TableCell>
-                                        <TableCell className="text-center">
-                                            <Badge variant="outline" className="font-normal">
-                                                {post.employmentType}
-                                            </Badge>
                                         </TableCell>
                                         <TableCell className="text-center text-sm text-muted-foreground">
                                             {format(new Date(post.createdDate), 'yyyy.MM.dd')}

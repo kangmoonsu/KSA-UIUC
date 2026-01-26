@@ -1,4 +1,4 @@
-export interface ConsultingPostResponseDto {
+export interface FairPostResponseDto {
     id: number;
     title: string;
     content: string;
@@ -44,11 +44,11 @@ export interface Page<T> {
     empty: boolean;
 }
 
-export interface ConsultingPostListResponseDto {
-    posts: Page<ConsultingPostResponseDto>;
+export interface FairPostListResponseDto {
+    posts: Page<FairPostResponseDto>;
 }
 
-export interface ConsultingPostCreateRequestDto {
+export interface FairPostCreateRequestDto {
     title: string;
     content: string;
     eventDate: string;

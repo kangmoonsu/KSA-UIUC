@@ -45,10 +45,10 @@ import { RecruitPage } from '@/pages/market/recruit/RecruitPage'
 import { RecruitNewPage } from '@/pages/market/recruit/RecruitNewPage'
 import { RecruitDetailPage } from '@/pages/market/recruit/RecruitDetailPage'
 import { RecruitEditPage } from '@/pages/market/recruit/RecruitEditPage'
-import { ConsultingPage } from '@/pages/job/consulting/ConsultingPage'
-import { ConsultingNewPage } from '@/pages/job/consulting/ConsultingNewPage'
-import { ConsultingDetailPage } from '@/pages/job/consulting/ConsultingDetailPage'
-import { ConsultingEditPage } from '@/pages/job/consulting/ConsultingEditPage'
+import { FairPage } from '@/pages/market/fair/FairPage'
+import { FairNewPage } from '@/pages/market/fair/FairNewPage'
+import { FairDetailPage } from '@/pages/market/fair/FairDetailPage'
+import { FairEditPage } from '@/pages/market/fair/FairEditPage'
 
 function App() {
   return (
@@ -74,6 +74,16 @@ function App() {
           <Route path="/market/housing/:id" element={<HousingDetailPage />} />
           <Route path="/market/housing/:id/edit" element={<ProtectedRoute allowedRoles={['USER']}><HousingEditPage /></ProtectedRoute>} />
 
+          <Route path="/market/recruit" element={<RecruitPage />} />
+          <Route path="/market/recruit/new" element={<ProtectedRoute allowedRoles={['ADMIN', 'MASTER']}><RecruitNewPage /></ProtectedRoute>} />
+          <Route path="/market/recruit/:id" element={<RecruitDetailPage />} />
+          <Route path="/market/recruit/:id/edit" element={<ProtectedRoute allowedRoles={['ADMIN', 'MASTER']}><RecruitEditPage /></ProtectedRoute>} />
+
+          <Route path="/market/fair" element={<FairPage />} />
+          <Route path="/market/fair/new" element={<ProtectedRoute allowedRoles={['ADMIN', 'MASTER']}><FairNewPage /></ProtectedRoute>} />
+          <Route path="/market/fair/:id" element={<FairDetailPage />} />
+          <Route path="/market/fair/:id/edit" element={<ProtectedRoute allowedRoles={['ADMIN', 'MASTER']}><FairEditPage /></ProtectedRoute>} />
+
           {/* Community Routes */}
           <Route path="/community/news" element={<NewsBoardList />} />
           <Route path="/community/news/new" element={<ProtectedRoute allowedRoles={['ADMIN', 'MASTER']}><NewsBoardNew /></ProtectedRoute>} />
@@ -83,19 +93,13 @@ function App() {
           <Route path="/community/free/new" element={<ProtectedRoute allowedRoles={['USER', 'ADMIN', 'MASTER']}><FreeBoardNew /></ProtectedRoute>} />
           <Route path="/community/free/:id" element={<FreeBoardDetail />} />
           <Route path="/community/free/:id/edit" element={<ProtectedRoute allowedRoles={['USER', 'ADMIN', 'MASTER']}><FreeBoardEdit /></ProtectedRoute>} />
-          <Route path="/market/recruit" element={<RecruitPage />} />
-          <Route path="/market/recruit/new" element={<ProtectedRoute allowedRoles={['ADMIN', 'MASTER']}><RecruitNewPage /></ProtectedRoute>} />
-          <Route path="/market/recruit/:id" element={<RecruitDetailPage />} />
-          <Route path="/market/recruit/:id/edit" element={<ProtectedRoute allowedRoles={['ADMIN', 'MASTER']}><RecruitEditPage /></ProtectedRoute>} />
+
           <Route path="/info" element={<div className="container max-w-screen-2xl mx-auto py-20 px-4"><h2>정보게시판 (준비중)</h2></div>} />
 
           <Route path="/ksa/greeting" element={<div className="container max-w-screen-2xl mx-auto py-20 px-4"><h2>인사말 (준비중)</h2></div>} />
           <Route path="/ksa/executives" element={<div className="container max-w-screen-2xl mx-auto py-20 px-4"><h2>KSA 임원진 (준비중)</h2></div>} />
           <Route path="/ksa/history" element={<div className="container max-w-screen-2xl mx-auto py-20 px-4"><h2>역대 임원진 (준비중)</h2></div>} />
-          <Route path="/job/consulting" element={<ConsultingPage />} />
-          <Route path="/job/consulting/new" element={<ProtectedRoute allowedRoles={['ADMIN', 'MASTER']}><ConsultingNewPage /></ProtectedRoute>} />
-          <Route path="/job/consulting/:id" element={<ConsultingDetailPage />} />
-          <Route path="/job/consulting/:id/edit" element={<ProtectedRoute allowedRoles={['ADMIN', 'MASTER']}><ConsultingEditPage /></ProtectedRoute>} />
+
           <Route path="/contact" element={<ContactPage />} />
 
 

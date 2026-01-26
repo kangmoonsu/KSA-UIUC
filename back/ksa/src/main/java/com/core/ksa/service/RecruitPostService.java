@@ -36,12 +36,8 @@ public class RecruitPostService {
                                 .author(author)
                                 .companyName(requestDto.getCompanyName())
                                 .roles(requestDto.getRoles())
-                                .salary(requestDto.getSalary())
-                                .location(requestDto.getLocation())
-                                .employmentType(requestDto.getEmploymentType())
-                                .deadline(requestDto.getDeadline())
-                                .experienceLevel(requestDto.getExperienceLevel())
-                                .applicationUrl(requestDto.getApplicationUrl())
+                                .applicationLinks(requestDto.getApplicationLinks())
+                                .locations(requestDto.getLocations())
                                 .build();
 
                 return recruitPostRepository.save(post).getId();
@@ -57,7 +53,7 @@ public class RecruitPostService {
         public RecruitPostResponseDto getPost(Long id) {
                 RecruitPost post = recruitPostRepository.findById(id)
                                 .orElseThrow(() -> new IllegalArgumentException("Post not found"));
-                post.setViewCount(post.getViewCount() + 1);
+                // View count increment removed as per requirement
                 return new RecruitPostResponseDto(post);
         }
 
@@ -78,12 +74,8 @@ public class RecruitPostService {
                 post.setContent(requestDto.getContent());
                 post.setCompanyName(requestDto.getCompanyName());
                 post.setRoles(requestDto.getRoles());
-                post.setSalary(requestDto.getSalary());
-                post.setLocation(requestDto.getLocation());
-                post.setEmploymentType(requestDto.getEmploymentType());
-                post.setDeadline(requestDto.getDeadline());
-                post.setExperienceLevel(requestDto.getExperienceLevel());
-                post.setApplicationUrl(requestDto.getApplicationUrl());
+                post.setApplicationLinks(requestDto.getApplicationLinks());
+                post.setLocations(requestDto.getLocations());
         }
 
         @Transactional

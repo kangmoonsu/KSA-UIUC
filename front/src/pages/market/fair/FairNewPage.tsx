@@ -4,12 +4,12 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { toast } from "sonner"
-import { useCreateConsultingPost } from "@/lib/api/consulting"
+import { useCreateFairPost } from "@/lib/api/fair"
 import { RichTextEditorWithImage } from "@/components/ui/rich-text-editor-with-image"
 
-export function ConsultingNewPage() {
+export function FairNewPage() {
     const navigate = useNavigate()
-    const { mutate: createPost, isPending } = useCreateConsultingPost()
+    const { mutate: createPost, isPending } = useCreateFairPost()
 
     const [title, setTitle] = useState("")
     const [eventDate, setEventDate] = useState("")
@@ -32,7 +32,7 @@ export function ConsultingNewPage() {
         } as any, {
             onSuccess: () => {
                 toast.success("등록되었습니다")
-                navigate("/job/consulting")
+                navigate("/market/fair")
             },
             onError: (error) => {
                 console.error(error)
@@ -43,7 +43,7 @@ export function ConsultingNewPage() {
 
     return (
         <div className="container max-w-3xl mx-auto py-10 px-4">
-            <h1 className="text-2xl font-bold mb-6">채용설명회/상담 등록</h1>
+            <h1 className="text-2xl font-bold mb-6">채용박람회 등록</h1>
 
             <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="space-y-2">

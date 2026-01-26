@@ -25,12 +25,8 @@ public class RecruitPostResponseDto {
 
     private String companyName;
     private List<String> roles;
-    private String salary;
-    private String location;
-    private String employmentType;
-    private LocalDateTime deadline;
-    private String experienceLevel;
-    private String applicationUrl;
+    private List<String> locations;
+    private List<String> applicationLinks;
 
     public RecruitPostResponseDto(RecruitPost entity) {
         this.id = entity.getId();
@@ -52,12 +48,12 @@ public class RecruitPostResponseDto {
         this.modifiedDate = entity.getUpdatedAt();
 
         this.companyName = entity.getCompanyName();
-        this.roles = entity.getRoles() != null ? new java.util.ArrayList<>(entity.getRoles()) : null;
-        this.salary = entity.getSalary();
-        this.location = entity.getLocation();
-        this.employmentType = entity.getEmploymentType();
-        this.deadline = entity.getDeadline();
-        this.experienceLevel = entity.getExperienceLevel();
-        this.applicationUrl = entity.getApplicationUrl();
+        this.roles = entity.getRoles() != null ? new java.util.ArrayList<>(entity.getRoles())
+                : new java.util.ArrayList<>();
+        this.locations = entity.getLocations() != null ? new java.util.ArrayList<>(entity.getLocations())
+                : new java.util.ArrayList<>();
+        this.applicationLinks = entity.getApplicationLinks() != null
+                ? new java.util.ArrayList<>(entity.getApplicationLinks())
+                : new java.util.ArrayList<>();
     }
 }
