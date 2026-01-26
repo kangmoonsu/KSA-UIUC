@@ -1,7 +1,7 @@
 import { useParams, useNavigate } from "react-router-dom"
 import DOMPurify from "dompurify"
 import { Button } from "@/components/ui/button"
-import { ArrowLeft, MapPin, DollarSign, MoreHorizontal, Building2, Briefcase, ExternalLink } from "lucide-react"
+import { ArrowLeft, MapPin, MoreHorizontal, Building2, Briefcase, ExternalLink } from "lucide-react"
 import { useAuth } from "@/context/auth-context"
 import {
     DropdownMenu,
@@ -10,7 +10,6 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { toast } from "sonner"
-import { Badge } from "@/components/ui/badge"
 import { useRecruitPost, useDeleteRecruitPost } from "@/lib/api/recruit"
 import { format } from "date-fns"
 
@@ -74,16 +73,6 @@ export function RecruitDetailPage() {
             <div className="space-y-8">
                 {/* Header */}
                 <div className="border-b pb-8">
-                    <div className="flex gap-2 mb-4">
-                        <Badge variant="secondary">{post.experienceLevel}</Badge>
-                        <Badge variant="outline">{post.employmentType}</Badge>
-                        {post.deadline && (
-                            <Badge variant="destructive" className="bg-rose-500 hover:bg-rose-600">
-                                ~ {format(new Date(post.deadline), 'yyyy.MM.dd')} 마감
-                            </Badge>
-                        )}
-                    </div>
-
                     <h1 className="text-3xl font-bold mb-2">{post.title}</h1>
                     <div className="text-xl text-muted-foreground flex items-center gap-2 mb-6">
                         <Building2 className="h-5 w-5" />
@@ -92,32 +81,46 @@ export function RecruitDetailPage() {
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 bg-muted/20 p-6 rounded-xl border">
                         <div className="space-y-4">
-                            <div className="flex items-center gap-3">
-                                <Briefcase className="h-5 w-5 text-primary shrink-0" />
-                                <div className="flex flex-wrap gap-1">
-                                    {post.roles.map((role: string, i: number) => (
-                                        <span key={i} className="bg-white border px-2 py-0.5 rounded text-sm font-medium">
-                                            {role}
-                                        </span>
-                                    ))}
+                            <div className="flex items-start gap-3">
+                                <Briefcase className="h-5 w-5 text-primary shrink-0 mt-0.5" />
+                                <div>
+                                    <div className="font-semibold mb-1">모집 분야</div>
+                                    <div className="flex flex-wrap gap-1">
+                                        {post.roles.map((role: string, i: number) => (
+                                            <span key={i} className="bg-white border px-2 py-0.5 rounded text-sm font-medium">
+                                                {role}
+                                            </span>
+                                        ))}
+                                    </div>
                                 </div>
                             </div>
-                            <div className="flex items-center gap-3">
-                                <DollarSign className="h-5 w-5 text-primary shrink-0" />
-                                <span className="font-medium">{post.salary}</span>
-                            </div>
-                        </div>
-                        <div className="space-y-4">
-                            <div className="flex items-center gap-3">
-                                <MapPin className="h-5 w-5 text-primary shrink-0" />
-                                <span>{post.location}</span>
-                            </div>
-                            {post.applicationUrl && (
+
+                            {post.location && (
                                 <div className="flex items-center gap-3">
-                                    <ExternalLink className="h-5 w-5 text-primary shrink-0" />
-                                    <a href={post.applicationUrl} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline break-all">
-                                        지원 페이지 바로가기
-                                    </a>
+                                    <MapPin className="h-5 w-5 text-primary shrink-0" />
+                                    <span>{post.location}</span>
+                                </div>
+                            )}
+                        </div>
+
+                        <div className="space-y-4">
+                            {post.applicationLinks && post.applicationLinks.length > 0 && (
+                                <div className="flex flex-col gap-2">
+                                    <div className="flex items-center gap-2 font-semibold">
+                                        <ExternalLink className="h-5 w-5 text-primary shrink-0" />
+                                        지원 링크
+                                    </div>
+                                    {post.applicationLinks.map((link, index) => (
+                                        <a
+                                            key={index}
+                                            href={link}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="text-blue-600 hover:underline break-all block text-sm"
+                                        >
+                                            {link}
+                                        </a>
+                                    ))}
                                 </div>
                             )}
                         </div>

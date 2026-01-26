@@ -5,6 +5,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -15,10 +16,6 @@ public class RecruitPostRequestDto {
     private String content;
     private String companyName;
     private List<String> roles;
-    private String salary;
     private String location;
-    private String employmentType;
-    private LocalDateTime deadline;
-    private String experienceLevel;
-    private String applicationUrl;
+    private List<String> applicationLinks = new ArrayList<>();
 }

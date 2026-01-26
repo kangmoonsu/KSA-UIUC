@@ -6,7 +6,6 @@ import { Label } from "@/components/ui/label"
 import { toast } from "sonner"
 import { useCreateRecruitPost } from "@/lib/api/recruit"
 import { RichTextEditorWithImage } from "@/components/ui/rich-text-editor-with-image"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { X } from "lucide-react"
 
 export function RecruitNewPage() {
@@ -15,17 +14,30 @@ export function RecruitNewPage() {
 
     const [title, setTitle] = useState("")
     const [companyName, setCompanyName] = useState("")
-    const [salary, setSalary] = useState("")
     const [location, setLocation] = useState("")
-    const [employmentType, setEmploymentType] = useState("Full-time")
-    const [experienceLevel, setExperienceLevel] = useState("Newcomer") // Junior -> Newcomer/Experienced
-    const [deadline, setDeadline] = useState("")
-    const [applicationUrl, setApplicationUrl] = useState("")
     const [content, setContent] = useState("")
 
-    // Role Tags Logic
+    // Application Links Logic
+    const [linkInput, setLinkInput] = useState("")
+    const [applicationLinks, setApplicationLinks] = useState<string[]>([])
+
+    // Role Tags Logic (Recruitment Field)
     const [roleInput, setRoleInput] = useState("")
     const [roles, setRoles] = useState<string[]>([])
+
+    const handleAddLink = (e: React.KeyboardEvent<HTMLInputElement>) => {
+        if (e.key === 'Enter' && linkInput.trim()) {
+            e.preventDefault()
+            if (!applicationLinks.includes(linkInput.trim())) {
+                setApplicationLinks([...applicationLinks, linkInput.trim()])
+            }
+            setLinkInput("")
+        }
+    }
+
+    const removeLink = (linkToRemove: string) => {
+        setApplicationLinks(applicationLinks.filter(link => link !== linkToRemove))
+    }
 
     const handleAddRole = (e: React.KeyboardEvent<HTMLInputElement>) => {
         if (e.key === 'Enter' && roleInput.trim()) {
@@ -44,14 +56,19 @@ export function RecruitNewPage() {
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault()
 
-        // Auto-add current role input if user forgot to press Enter
+        // Auto-add current inputs if user forgot to press Enter
         let finalRoles = [...roles]
         if (roleInput.trim() && !finalRoles.includes(roleInput.trim())) {
             finalRoles.push(roleInput.trim())
         }
 
-        if (!title.trim() || !companyName.trim() || !content.trim() || finalRoles.length === 0) {
-            toast.error("필수 정보를 모두 입력해주세요 (제목, 회사명, 직무, 내용)")
+        let finalLinks = [...applicationLinks]
+        if (linkInput.trim() && !finalLinks.includes(linkInput.trim())) {
+            finalLinks.push(linkInput.trim())
+        }
+
+        if (!title.trim() || !companyName.trim() || !content.trim()) {
+            toast.error("필수 정보를 모두 입력해주세요 (제목, 회사명, 내용)")
             return
         }
 
@@ -59,12 +76,8 @@ export function RecruitNewPage() {
             title,
             companyName,
             roles: finalRoles,
-            salary,
             location,
-            employmentType,
-            experienceLevel,
-            deadline: deadline ? new Date(deadline).toISOString() : undefined,
-            applicationUrl,
+            applicationLinks: finalLinks,
             content
         }, {
             onSuccess: () => {
@@ -105,7 +118,7 @@ export function RecruitNewPage() {
                         />
                     </div>
                     <div className="space-y-2">
-                        <Label htmlFor="location">근무지 *</Label>
+                        <Label htmlFor="location">근무지 (선택)</Label>
                         <Input
                             id="location"
                             value={location}
@@ -116,7 +129,7 @@ export function RecruitNewPage() {
                 </div>
 
                 <div className="space-y-2">
-                    <Label>모집 직무 (엔터로 추가) *</Label>
+                    <Label>모집 분야 (엔터로 추가)</Label>
                     <div className="flex flex-wrap gap-2 mb-2">
                         {roles.map((role) => (
                             <span key={role} className="bg-primary/10 text-primary px-2 py-1 rounded-md text-sm flex items-center gap-1">
@@ -131,74 +144,28 @@ export function RecruitNewPage() {
                         value={roleInput}
                         onChange={(e) => setRoleInput(e.target.value)}
                         onKeyDown={handleAddRole}
-                        placeholder="직무 입력 후 Enter (예: Frontend Developer)"
+                        placeholder="분야 입력 후 Enter (예: Frontend Developer)"
                     />
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div className="space-y-2">
-                        <Label htmlFor="salary">연봉/급여</Label>
-                        <Input
-                            id="salary"
-                            value={salary}
-                            onChange={(e) => setSalary(e.target.value)}
-                            placeholder="예: 6,000만원, $80k - $120k"
-                        />
+                <div className="space-y-2">
+                    <Label>지원 링크 (엔터로 추가)</Label>
+                    <div className="flex flex-col gap-2 mb-2">
+                        {applicationLinks.map((link) => (
+                            <div key={link} className="flex items-center gap-2 bg-muted/50 px-3 py-2 rounded-md">
+                                <span className="flex-1 text-sm truncate">{link}</span>
+                                <button type="button" onClick={() => removeLink(link)} className="hover:text-red-500">
+                                    <X className="h-4 w-4" />
+                                </button>
+                            </div>
+                        ))}
                     </div>
-                    <div className="space-y-2">
-                        <Label htmlFor="applicationUrl">지원 링크 (선택)</Label>
-                        <Input
-                            id="applicationUrl"
-                            value={applicationUrl}
-                            onChange={(e) => setApplicationUrl(e.target.value)}
-                            placeholder="https://..."
-                        />
-                    </div>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <div className="space-y-2">
-                        <Label>고용 형태</Label>
-                        <Select value={employmentType} onValueChange={setEmploymentType}>
-                            <SelectTrigger>
-                                <SelectValue />
-                            </SelectTrigger>
-                            <SelectContent>
-                                <SelectItem value="Full-time">Full-time</SelectItem>
-                                <SelectItem value="Part-time">Part-time</SelectItem>
-                                <SelectItem value="Contract">Contract</SelectItem>
-                                <SelectItem value="Intern">Intern</SelectItem>
-                                <SelectItem value="Freelance">Freelance</SelectItem>
-                            </SelectContent>
-                        </Select>
-                    </div>
-
-                    <div className="space-y-2">
-                        <Label>경력</Label>
-                        <Select value={experienceLevel} onValueChange={setExperienceLevel}>
-                            <SelectTrigger>
-                                <SelectValue />
-                            </SelectTrigger>
-                            <SelectContent>
-                                <SelectItem value="Newcomer">신입</SelectItem>
-                                <SelectItem value="Junior">주니어 (1-3년)</SelectItem>
-                                <SelectItem value="Middle">미들 (4-8년)</SelectItem>
-                                <SelectItem value="Senior">시니어 (9년+)</SelectItem>
-                                <SelectItem value="Lead">리드/CTO</SelectItem>
-                                <SelectItem value="All">경력무관</SelectItem>
-                            </SelectContent>
-                        </Select>
-                    </div>
-
-                    <div className="space-y-2">
-                        <Label htmlFor="deadline">마감일 (선택)</Label>
-                        <Input
-                            id="deadline"
-                            type="datetime-local"
-                            value={deadline}
-                            onChange={(e) => setDeadline(e.target.value)}
-                        />
-                    </div>
+                    <Input
+                        value={linkInput}
+                        onChange={(e) => setLinkInput(e.target.value)}
+                        onKeyDown={handleAddLink}
+                        placeholder="링크 입력 후 Enter (https://...)"
+                    />
                 </div>
 
                 <div className="space-y-2">

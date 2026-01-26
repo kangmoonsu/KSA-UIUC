@@ -13,12 +13,8 @@ export interface RecruitPostResponseDto {
 
     companyName: string;
     roles: string[];
-    salary: string;
-    location: string;
-    employmentType: string;
-    deadline?: string;
-    experienceLevel: string;
-    applicationUrl?: string;
+    location?: string;
+    applicationLinks?: string[];
 }
 
 export interface RecruitPostCreateRequestDto {
@@ -26,10 +22,6 @@ export interface RecruitPostCreateRequestDto {
     content: string;
     companyName: string;
     roles: string[];
-    salary: string;
-    location: string;
-    employmentType: string;
-    deadline?: string;
-    experienceLevel: string;
-    applicationUrl?: string;
+    location?: string;
+    applicationLinks?: string[];
 }

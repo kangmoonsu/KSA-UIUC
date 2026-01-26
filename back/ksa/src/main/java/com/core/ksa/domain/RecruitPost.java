@@ -29,31 +29,28 @@ public class RecruitPost extends Post {
     @Column(name = "role")
     private List<String> roles = new ArrayList<>();
 
-    private String salary; // e.g., "$60k - $80k" or "$20/hr"
+    // Deprecated fields kept db column but removed from usage
+    // private String salary;
+    // private String employmentType;
+    // private LocalDateTime deadline;
+    // private String experienceLevel;
+    // private String applicationUrl;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private String location;
 
-    private String employmentType; // Full-time, Part-time, Intern, etc.
-
-    private LocalDateTime deadline; // Application deadline
-
-    private String experienceLevel; // Junior, Senior, etc.
-
-    private String applicationUrl; // External link for application
+    @ElementCollection
+    @CollectionTable(name = "recruit_post_links", joinColumns = @JoinColumn(name = "recruit_post_id"))
+    @Column(name = "link_url")
+    private List<String> applicationLinks = new ArrayList<>();
 
     @Builder
     public RecruitPost(String title, String content, User author, String companyName, List<String> roles,
-            String salary, String location, String employmentType, LocalDateTime deadline,
-            String experienceLevel, String applicationUrl) {
+            String location, List<String> applicationLinks) {
         super(title, content, author);
         this.companyName = companyName;
         this.roles = roles != null ? roles : new ArrayList<>();
-        this.salary = salary;
         this.location = location;
-        this.employmentType = employmentType;
-        this.deadline = deadline;
-        this.experienceLevel = experienceLevel;
-        this.applicationUrl = applicationUrl;
+        this.applicationLinks = applicationLinks != null ? applicationLinks : new ArrayList<>();
     }
 }

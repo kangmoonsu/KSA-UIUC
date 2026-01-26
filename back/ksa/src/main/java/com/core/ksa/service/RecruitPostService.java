@@ -36,12 +36,8 @@ public class RecruitPostService {
                                 .author(author)
                                 .companyName(requestDto.getCompanyName())
                                 .roles(requestDto.getRoles())
-                                .salary(requestDto.getSalary())
                                 .location(requestDto.getLocation())
-                                .employmentType(requestDto.getEmploymentType())
-                                .deadline(requestDto.getDeadline())
-                                .experienceLevel(requestDto.getExperienceLevel())
-                                .applicationUrl(requestDto.getApplicationUrl())
+                                .applicationLinks(requestDto.getApplicationLinks())
                                 .build();
 
                 return recruitPostRepository.save(post).getId();
@@ -78,12 +74,8 @@ public class RecruitPostService {
                 post.setContent(requestDto.getContent());
                 post.setCompanyName(requestDto.getCompanyName());
                 post.setRoles(requestDto.getRoles());
-                post.setSalary(requestDto.getSalary());
                 post.setLocation(requestDto.getLocation());
-                post.setEmploymentType(requestDto.getEmploymentType());
-                post.setDeadline(requestDto.getDeadline());
-                post.setExperienceLevel(requestDto.getExperienceLevel());
-                post.setApplicationUrl(requestDto.getApplicationUrl());
+                post.setApplicationLinks(requestDto.getApplicationLinks());
         }
 
         @Transactional
