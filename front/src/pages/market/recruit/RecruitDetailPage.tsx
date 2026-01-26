@@ -1,7 +1,7 @@
 import { useParams, useNavigate } from "react-router-dom"
 import DOMPurify from "dompurify"
 import { Button } from "@/components/ui/button"
-import { ArrowLeft, MoreHorizontal, Building2, Briefcase, ExternalLink, MapPin, Eye, Calendar, Share2 } from "lucide-react"
+import { ArrowLeft, MoreHorizontal, Building2, Briefcase, ExternalLink, MapPin, Calendar, Share2 } from "lucide-react"
 import { useAuth } from "@/context/auth-context"
 import {
     DropdownMenu,
@@ -101,11 +101,6 @@ export function RecruitDetailPage() {
                             <span className="flex items-center gap-1">
                                 <Calendar className="h-3.5 w-3.5" />
                                 {format(new Date(post.createdDate), 'yyyy.MM.dd')}
-                            </span>
-                            <Separator orientation="vertical" className="h-3" />
-                            <span className="flex items-center gap-1">
-                                <Eye className="h-3.5 w-3.5" />
-                                {post.viewCount}
                             </span>
                         </div>
                     </div>

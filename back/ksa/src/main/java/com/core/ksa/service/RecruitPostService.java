@@ -53,7 +53,7 @@ public class RecruitPostService {
         public RecruitPostResponseDto getPost(Long id) {
                 RecruitPost post = recruitPostRepository.findById(id)
                                 .orElseThrow(() -> new IllegalArgumentException("Post not found"));
-                post.setViewCount(post.getViewCount() + 1);
+                // View count increment removed as per requirement
                 return new RecruitPostResponseDto(post);
         }
 
