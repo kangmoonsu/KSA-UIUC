@@ -1,19 +1,19 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import client from './client';
-import type { ConsultingPostResponseDto, ConsultingPostCreateRequestDto, ConsultingPostListResponseDto } from '@/types/consulting';
+import type { FairPostResponseDto, FairPostCreateRequestDto, FairPostListResponseDto } from '@/types/fair';
 
 // List (Infinite Scroll)
 // List (Standard Pagination)
-export const useConsultingPosts = (page: number = 0, size: number = 10) => {
+export const useFairPosts = (page: number = 0, size: number = 10) => {
     return useQuery({
-        queryKey: ['consulting-posts', page, size],
+        queryKey: ['fair-posts', page, size],
         queryFn: async () => {
             const params = new URLSearchParams();
             params.append('page', page.toString());
             params.append('size', size.toString());
             params.append('sort', 'createdAt,desc');
 
-            const { data } = await client.get<ConsultingPostListResponseDto>(`/job/consulting?${params.toString()}`);
+            const { data } = await client.get<FairPostListResponseDto>(`/market/fair?${params.toString()}`);
             return data.posts;
         },
         placeholderData: (previousData) => previousData,
@@ -21,11 +21,11 @@ export const useConsultingPosts = (page: number = 0, size: number = 10) => {
 };
 
 // Detail
-export const useConsultingPost = (id: string) => {
+export const useFairPost = (id: string) => {
     return useQuery({
-        queryKey: ['consulting-post', id],
+        queryKey: ['fair-post', id],
         queryFn: async () => {
-            const { data } = await client.get<ConsultingPostResponseDto>(`/job/consulting/${id}`);
+            const { data } = await client.get<FairPostResponseDto>(`/market/fair/${id}`);
             return data;
         },
         enabled: !!id,
@@ -33,42 +33,42 @@ export const useConsultingPost = (id: string) => {
 };
 
 // Create
-export const useCreateConsultingPost = () => {
+export const useCreateFairPost = () => {
     const queryClient = useQueryClient();
     return useMutation({
-        mutationFn: async (postData: ConsultingPostCreateRequestDto) => {
-            const { data } = await client.post<number>('/job/consulting', postData);
+        mutationFn: async (postData: FairPostCreateRequestDto) => {
+            const { data } = await client.post<number>('/market/fair', postData);
             return data;
         },
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ['consulting-posts'] });
+            queryClient.invalidateQueries({ queryKey: ['fair-posts'] });
         },
     });
 };
 
 // Update
-export const useUpdateConsultingPost = () => {
+export const useUpdateFairPost = () => {
     const queryClient = useQueryClient();
     return useMutation({
-        mutationFn: async ({ id, data }: { id: string, data: ConsultingPostCreateRequestDto }) => {
-            await client.put(`/job/consulting/${id}`, data);
+        mutationFn: async ({ id, data }: { id: string, data: FairPostCreateRequestDto }) => {
+            await client.put(`/market/fair/${id}`, data);
         },
         onSuccess: (_, variables) => {
-            queryClient.invalidateQueries({ queryKey: ['consulting-posts'] });
-            queryClient.invalidateQueries({ queryKey: ['consulting-post', variables.id] });
+            queryClient.invalidateQueries({ queryKey: ['fair-posts'] });
+            queryClient.invalidateQueries({ queryKey: ['fair-post', variables.id] });
         },
     });
 };
 
 // Delete
-export const useDeleteConsultingPost = () => {
+export const useDeleteFairPost = () => {
     const queryClient = useQueryClient();
     return useMutation({
         mutationFn: async (id: string) => {
-            await client.delete(`/job/consulting/${id}`);
+            await client.delete(`/market/fair/${id}`);
         },
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ['consulting-posts'] });
+            queryClient.invalidateQueries({ queryKey: ['fair-posts'] });
         },
     });
 };

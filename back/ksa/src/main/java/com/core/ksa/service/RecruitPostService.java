@@ -36,7 +36,6 @@ public class RecruitPostService {
                                 .author(author)
                                 .companyName(requestDto.getCompanyName())
                                 .roles(requestDto.getRoles())
-                                .location(requestDto.getLocation())
                                 .applicationLinks(requestDto.getApplicationLinks())
                                 .build();
 
@@ -74,7 +73,6 @@ public class RecruitPostService {
                 post.setContent(requestDto.getContent());
                 post.setCompanyName(requestDto.getCompanyName());
                 post.setRoles(requestDto.getRoles());
-                post.setLocation(requestDto.getLocation());
                 post.setApplicationLinks(requestDto.getApplicationLinks());
         }
 

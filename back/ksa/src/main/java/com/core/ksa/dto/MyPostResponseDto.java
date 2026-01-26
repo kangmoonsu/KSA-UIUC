@@ -47,8 +47,8 @@ public class MyPostResponseDto {
             return "FREE";
         if (post instanceof RecruitPost || className.contains("RecruitPost"))
             return "RECRUIT";
-        if (post instanceof ConsultingPost || className.contains("ConsultingPost"))
-            return "CONSULTING";
+        if (post instanceof FairPost || className.contains("FairPost"))
+            return "FAIR";
         if (post instanceof NewsPost || className.contains("NewsPost"))
             return "NEWS";
         return "UNKNOWN";

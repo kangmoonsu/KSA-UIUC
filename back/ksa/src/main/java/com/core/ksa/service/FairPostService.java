@@ -1,11 +1,11 @@
 package com.core.ksa.service;
 
-import com.core.ksa.domain.ConsultingPost;
+import com.core.ksa.domain.FairPost;
 import com.core.ksa.domain.User;
-import com.core.ksa.dto.ConsultingPostListResponseDto;
-import com.core.ksa.dto.ConsultingPostRequestDto;
-import com.core.ksa.dto.ConsultingPostResponseDto;
-import com.core.ksa.repository.ConsultingPostRepository;
+import com.core.ksa.dto.FairPostListResponseDto;
+import com.core.ksa.dto.FairPostRequestDto;
+import com.core.ksa.dto.FairPostResponseDto;
+import com.core.ksa.repository.FairPostRepository;
 import com.core.ksa.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -16,21 +16,21 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-public class ConsultingPostService {
+public class FairPostService {
 
-        private final ConsultingPostRepository consultingPostRepository;
+        private final FairPostRepository fairPostRepository;
         private final UserRepository userRepository;
 
         @Transactional
-        public Long createPost(ConsultingPostRequestDto requestDto, String clerkId) {
+        public Long createPost(FairPostRequestDto requestDto, String clerkId) {
                 User author = userRepository.findByClerkId(clerkId)
                                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
 
                 if (author.getRole() != User.Role.ADMIN && author.getRole() != User.Role.MASTER) {
-                        throw new IllegalStateException("Only ADMIN or MASTER can create consulting posts");
+                        throw new IllegalStateException("Only ADMIN or MASTER can create fair posts");
                 }
 
-                ConsultingPost post = ConsultingPost.builder()
+                FairPost post = FairPost.builder()
                                 .title(requestDto.getTitle())
                                 .content(requestDto.getContent())
                                 .author(author)
@@ -38,26 +38,26 @@ public class ConsultingPostService {
                                 .location(requestDto.getLocation())
                                 .build();
 
-                return consultingPostRepository.save(post).getId();
+                return fairPostRepository.save(post).getId();
         }
 
-        public ConsultingPostListResponseDto getPosts(Pageable pageable) {
-                Page<ConsultingPostResponseDto> posts = consultingPostRepository.findAll(pageable)
-                                .map(ConsultingPostResponseDto::new);
-                return new ConsultingPostListResponseDto(posts);
+        public FairPostListResponseDto getPosts(Pageable pageable) {
+                Page<FairPostResponseDto> posts = fairPostRepository.findAll(pageable)
+                                .map(FairPostResponseDto::new);
+                return new FairPostListResponseDto(posts);
         }
 
         @Transactional
-        public ConsultingPostResponseDto getPost(Long id) {
-                ConsultingPost post = consultingPostRepository.findById(id)
+        public FairPostResponseDto getPost(Long id) {
+                FairPost post = fairPostRepository.findById(id)
                                 .orElseThrow(() -> new IllegalArgumentException("Post not found"));
                 post.setViewCount(post.getViewCount() + 1);
-                return new ConsultingPostResponseDto(post);
+                return new FairPostResponseDto(post);
         }
 
         @Transactional
-        public void updatePost(Long id, ConsultingPostRequestDto requestDto, String clerkId) {
-                ConsultingPost post = consultingPostRepository.findById(id)
+        public void updatePost(Long id, FairPostRequestDto requestDto, String clerkId) {
+                FairPost post = fairPostRepository.findById(id)
                                 .orElseThrow(() -> new IllegalArgumentException("Post not found"));
 
                 User user = userRepository.findByClerkId(clerkId)
@@ -76,7 +76,7 @@ public class ConsultingPostService {
 
         @Transactional
         public void deletePost(Long id, String clerkId) {
-                ConsultingPost post = consultingPostRepository.findById(id)
+                FairPost post = fairPostRepository.findById(id)
                                 .orElseThrow(() -> new IllegalArgumentException("Post not found"));
 
                 User user = userRepository.findByClerkId(clerkId)
@@ -87,6 +87,6 @@ public class ConsultingPostService {
                         throw new IllegalStateException("Not authorized to delete this post");
                 }
 
-                consultingPostRepository.delete(post);
+                fairPostRepository.delete(post);
         }
 }

@@ -13,7 +13,6 @@ export interface RecruitPostResponseDto {
 
     companyName: string;
     roles: string[];
-    location?: string;
     applicationLinks?: string[];
 }
 
@@ -22,6 +21,5 @@ export interface RecruitPostCreateRequestDto {
     content: string;
     companyName: string;
     roles: string[];
-    location?: string;
     applicationLinks?: string[];
 }

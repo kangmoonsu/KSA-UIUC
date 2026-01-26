@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @NoArgsConstructor
-public class ConsultingPostRequestDto {
+public class FairPostRequestDto {
     private String title;
     private String content;
     private LocalDateTime eventDate;

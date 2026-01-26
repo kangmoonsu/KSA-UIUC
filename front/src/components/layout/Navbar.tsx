@@ -135,7 +135,7 @@ export function Navbar() {
     // New Job Routes
     const jobRoutes = [
         { name: "취업정보", href: "/market/recruit" }, // Linking to existing job board for now
-        { name: "채용설명회", href: "/job/consulting" },
+        { name: "채용박람회", href: "/market/fair" },
     ]
 
     // Existing Market Routes (renamed label to 중고마켓)

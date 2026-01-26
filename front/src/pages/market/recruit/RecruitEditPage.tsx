@@ -16,7 +16,6 @@ export function RecruitEditPage() {
 
     const [title, setTitle] = useState("")
     const [companyName, setCompanyName] = useState("")
-    const [location, setLocation] = useState("")
     const [content, setContent] = useState("")
 
     // Application Links Logic
@@ -31,7 +30,6 @@ export function RecruitEditPage() {
         if (post) {
             setTitle(post.title)
             setCompanyName(post.companyName)
-            setLocation(post.location || "")
             // handle potentially undefined applicationLinks if old data doesn't have it (though DTO says optional)
             setApplicationLinks(post.applicationLinks || [])
             setContent(post.content)
@@ -107,7 +105,6 @@ export function RecruitEditPage() {
                 title,
                 companyName,
                 roles: finalRoles,
-                location,
                 applicationLinks: finalLinks,
                 content
             }
@@ -149,15 +146,6 @@ export function RecruitEditPage() {
                             value={companyName}
                             onChange={(e) => setCompanyName(e.target.value)}
                             placeholder="회사 이름을 입력하세요"
-                        />
-                    </div>
-                    <div className="space-y-2">
-                        <Label htmlFor="location">근무지 (선택)</Label>
-                        <Input
-                            id="location"
-                            value={location}
-                            onChange={(e) => setLocation(e.target.value)}
-                            placeholder="예: Seoul, Pangyo, Remote"
                         />
                     </div>
                 </div>

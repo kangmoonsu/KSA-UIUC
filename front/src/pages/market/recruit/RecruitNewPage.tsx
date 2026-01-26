@@ -14,7 +14,6 @@ export function RecruitNewPage() {
 
     const [title, setTitle] = useState("")
     const [companyName, setCompanyName] = useState("")
-    const [location, setLocation] = useState("")
     const [content, setContent] = useState("")
 
     // Application Links Logic
@@ -88,7 +87,6 @@ export function RecruitNewPage() {
             title,
             companyName,
             roles: finalRoles,
-            location,
             applicationLinks: finalLinks,
             content
         }, {
@@ -127,15 +125,6 @@ export function RecruitNewPage() {
                             value={companyName}
                             onChange={(e) => setCompanyName(e.target.value)}
                             placeholder="회사 이름을 입력하세요"
-                        />
-                    </div>
-                    <div className="space-y-2">
-                        <Label htmlFor="location">근무지 (선택)</Label>
-                        <Input
-                            id="location"
-                            value={location}
-                            onChange={(e) => setLocation(e.target.value)}
-                            placeholder="예: Seoul, Pangyo, Remote"
                         />
                     </div>
                 </div>

@@ -13,14 +13,13 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class ConsultingPost extends Post {
+public class FairPost extends Post {
 
     private LocalDateTime eventDate; // Date of the session/consulting
-
-    private String location; // Physical or Virtual location
+    private String location;
 
     @Builder
-    public ConsultingPost(String title, String content, User author, LocalDateTime eventDate, String location) {
+    public FairPost(String title, String content, User author, LocalDateTime eventDate, String location) {
         super(title, content, author);
         this.eventDate = eventDate;
         this.location = location;

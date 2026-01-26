@@ -48,10 +48,10 @@ public class RecruitPostResponseDto {
         this.modifiedDate = entity.getUpdatedAt();
 
         this.companyName = entity.getCompanyName();
-        this.roles = entity.getRoles() != null ? new java.util.ArrayList<>(entity.getRoles()) : null;
-        this.location = entity.getLocation();
+        this.roles = entity.getRoles() != null ? new java.util.ArrayList<>(entity.getRoles())
+                : new java.util.ArrayList<>();
         this.applicationLinks = entity.getApplicationLinks() != null
                 ? new java.util.ArrayList<>(entity.getApplicationLinks())
-                : null;
+                : new java.util.ArrayList<>();
     }
 }

@@ -1,7 +1,7 @@
 import { useParams, useNavigate } from "react-router-dom"
 import DOMPurify from "dompurify"
 import { Button } from "@/components/ui/button"
-import { ArrowLeft, MapPin, MoreHorizontal, Building2, Briefcase, ExternalLink } from "lucide-react"
+import { ArrowLeft, MoreHorizontal, Building2, Briefcase, ExternalLink } from "lucide-react"
 import { useAuth } from "@/context/auth-context"
 import {
     DropdownMenu,
@@ -103,51 +103,46 @@ export function RecruitDetailPage() {
                                 </div>
                             </div>
 
-                            {post.location && (
-                                <div className="flex items-center gap-3">
-                                    <MapPin className="h-5 w-5 text-primary shrink-0" />
-                                    <span>{post.location}</span>
-                                </div>
-                            )}
-                        </div>
-
-                        <div className="space-y-4">
-                            {post.applicationLinks && post.applicationLinks.length > 0 && (
-                                <div className="flex flex-col gap-2">
-                                    <div className="flex items-center gap-2 font-semibold">
-                                        <ExternalLink className="h-5 w-5 text-primary shrink-0" />
-                                        지원 링크
-                                    </div>
-                                    {post.applicationLinks.map((link, index) => (
-                                        <a
-                                            key={index}
-                                            href={ensureAbsoluteUrl(link)}
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                            className="text-blue-600 hover:underline break-all block text-sm"
-                                        >
-                                            {link}
-                                        </a>
-                                    ))}
-                                </div>
-                            )}
                         </div>
                     </div>
-                </div>
 
-                {/* Content */}
-                <div className="space-y-4">
-                    <h2 className="text-xl font-semibold border-l-4 border-primary pl-3">상세 요강</h2>
-                    <div
-                        className="prose max-w-none text-gray-800 bg-white min-h-[200px]"
-                        dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(post.content, sanitizeConfig) }}
-                    />
-                </div>
-
-                <div className="text-right text-sm text-muted-foreground mt-8 pt-4 border-t">
-                    등록일: {format(new Date(post.createdDate), 'yyyy.MM.dd')}
+                    <div className="space-y-4">
+                        {post.applicationLinks && post.applicationLinks.length > 0 && (
+                            <div className="flex flex-col gap-2">
+                                <div className="flex items-center gap-2 font-semibold">
+                                    <ExternalLink className="h-5 w-5 text-primary shrink-0" />
+                                    지원 링크
+                                </div>
+                                {post.applicationLinks.map((link, index) => (
+                                    <a
+                                        key={index}
+                                        href={ensureAbsoluteUrl(link)}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="text-blue-600 hover:underline break-all block text-sm"
+                                    >
+                                        {link}
+                                    </a>
+                                ))}
+                            </div>
+                        )}
+                    </div>
                 </div>
             </div>
+
+            {/* Content */}
+            <div className="space-y-4">
+                <h2 className="text-xl font-semibold border-l-4 border-primary pl-3">상세 요강</h2>
+                <div
+                    className="prose max-w-none text-gray-800 bg-white min-h-[200px]"
+                    dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(post.content, sanitizeConfig) }}
+                />
+            </div>
+
+            <div className="text-right text-sm text-muted-foreground mt-8 pt-4 border-t">
+                등록일: {format(new Date(post.createdDate), 'yyyy.MM.dd')}
+            </div>
         </div>
+
     )
 }

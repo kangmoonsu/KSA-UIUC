@@ -5,8 +5,8 @@ import { useAuth } from "@/context/auth-context"
 import { Plus } from "lucide-react"
 import { isAfter, subHours, format } from "date-fns"
 import { Badge } from "@/components/ui/badge"
-import { useConsultingPosts } from "@/lib/api/consulting"
-import type { ConsultingPostResponseDto } from "@/types/consulting"
+import { useFairPosts } from "@/lib/api/fair"
+import type { FairPostResponseDto } from "@/types/fair"
 import {
     Table,
     TableBody,
@@ -24,11 +24,11 @@ import {
     PaginationPrevious,
 } from "@/components/ui/pagination"
 
-export function ConsultingPage() {
+export function FairPage() {
     const navigate = useNavigate()
     const { user } = useAuth()
     const [page, setPage] = useState(0)
-    const { data, status } = useConsultingPosts(page)
+    const { data, status } = useFairPosts(page)
 
     const isNew = (createdAt: string) => {
         const postDate = new Date(createdAt)
@@ -48,12 +48,12 @@ export function ConsultingPage() {
         <div className="container max-w-7xl mx-auto py-10 px-4">
             <div className="flex justify-between items-center mb-8">
                 <div>
-                    <h1 className="text-3xl font-bold text-navy mb-2">채용설명회/상담</h1>
-                    <p className="text-muted-foreground">기업 설명회 및 상담 일정을 확인하세요.</p>
+                    <h1 className="text-3xl font-bold text-navy mb-2">채용박람회</h1>
+                    <p className="text-muted-foreground">기업 채용박람회 일정을 확인하세요.</p>
                 </div>
                 {canWrite && (
                     <Button className="gap-2" onClick={() => {
-                        navigate("/job/consulting/new")
+                        navigate("/market/fair/new")
                     }}>
                         <Plus className="h-4 w-4" />
                         일정 등록
@@ -79,11 +79,11 @@ export function ConsultingPage() {
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
-                                {data?.content.map((post: ConsultingPostResponseDto, index: number) => (
+                                {data?.content.map((post: FairPostResponseDto, index: number) => (
                                     <TableRow
                                         key={post.id}
                                         className="cursor-pointer hover:bg-slate-50/50"
-                                        onClick={() => navigate(`/job/consulting/${post.id}`)}
+                                        onClick={() => navigate(`/market/fair/${post.id}`)}
                                     >
                                         <TableCell className="text-center font-medium text-muted-foreground">
                                             {getRowNumber(index)}
@@ -111,7 +111,7 @@ export function ConsultingPage() {
                                 ))}
                                 {data?.content.length === 0 && (
                                     <TableRow>
-                                        <TableCell colSpan={5} className="h-24 text-center">
+                                        <TableCell colSpan={4} className="h-24 text-center">
                                             등록된 일정이 없습니다.
                                         </TableCell>
                                     </TableRow>

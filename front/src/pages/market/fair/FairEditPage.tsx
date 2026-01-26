@@ -4,14 +4,14 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { toast } from "sonner"
-import { useConsultingPost, useUpdateConsultingPost } from "@/lib/api/consulting"
+import { useFairPost, useUpdateFairPost } from "@/lib/api/fair"
 import { RichTextEditorWithImage } from "@/components/ui/rich-text-editor-with-image"
 
-export function ConsultingEditPage() {
+export function FairEditPage() {
     const { id } = useParams<{ id: string }>()
     const navigate = useNavigate()
-    const { data: post, isLoading } = useConsultingPost(id!)
-    const { mutate: updatePost, isPending } = useUpdateConsultingPost()
+    const { data: post, isLoading } = useFairPost(id!)
+    const { mutate: updatePost, isPending } = useUpdateFairPost()
 
     const [title, setTitle] = useState("")
     const [eventDate, setEventDate] = useState("")
@@ -48,7 +48,7 @@ export function ConsultingEditPage() {
         }, {
             onSuccess: () => {
                 toast.success("수정되었습니다")
-                navigate(`/job/consulting/${id}`)
+                navigate(`/market/fair/${id}`)
             },
             onError: (error) => {
                 console.error(error)
@@ -61,7 +61,7 @@ export function ConsultingEditPage() {
 
     return (
         <div className="container max-w-3xl mx-auto py-10 px-4">
-            <h1 className="text-2xl font-bold mb-6">채용설명회/상담 수정</h1>
+            <h1 className="text-2xl font-bold mb-6">채용박람회 수정</h1>
 
             <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="space-y-2">

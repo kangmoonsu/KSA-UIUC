@@ -36,9 +36,6 @@ public class RecruitPost extends Post {
     // private String experienceLevel;
     // private String applicationUrl;
 
-    @Column(nullable = true)
-    private String location;
-
     @ElementCollection
     @CollectionTable(name = "recruit_post_links", joinColumns = @JoinColumn(name = "recruit_post_id"))
     @Column(name = "link_url")
@@ -46,11 +43,10 @@ public class RecruitPost extends Post {
 
     @Builder
     public RecruitPost(String title, String content, User author, String companyName, List<String> roles,
-            String location, List<String> applicationLinks) {
+            List<String> applicationLinks) {
         super(title, content, author);
         this.companyName = companyName;
         this.roles = roles != null ? roles : new ArrayList<>();
-        this.location = location;
         this.applicationLinks = applicationLinks != null ? applicationLinks : new ArrayList<>();
     }
 }
