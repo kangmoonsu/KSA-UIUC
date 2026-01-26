@@ -17,4 +17,5 @@ public class RecruitPostRequestDto {
     private String companyName;
     private List<String> roles;
     private List<String> applicationLinks = new ArrayList<>();
+    private List<String> locations = new ArrayList<>();
 }

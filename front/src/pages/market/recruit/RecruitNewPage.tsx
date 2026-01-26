@@ -24,6 +24,10 @@ export function RecruitNewPage() {
     const [roleInput, setRoleInput] = useState("")
     const [roles, setRoles] = useState<string[]>([])
 
+    // Locations Logic
+    const [locationInput, setLocationInput] = useState("")
+    const [locations, setLocations] = useState<string[]>([])
+
     const normalizeUrl = (url: string) => {
         if (!url) return "";
         if (url.startsWith('http://') || url.startsWith('https://')) {
@@ -61,6 +65,20 @@ export function RecruitNewPage() {
         setRoles(roles.filter(role => role !== roleToRemove))
     }
 
+    const handleAddLocation = (e: React.KeyboardEvent<HTMLInputElement>) => {
+        if (e.key === 'Enter' && locationInput.trim()) {
+            e.preventDefault()
+            if (!locations.includes(locationInput.trim())) {
+                setLocations([...locations, locationInput.trim()])
+            }
+            setLocationInput("")
+        }
+    }
+
+    const removeLocation = (locationToRemove: string) => {
+        setLocations(locations.filter(loc => loc !== locationToRemove))
+    }
+
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault()
 
@@ -78,6 +96,11 @@ export function RecruitNewPage() {
             }
         }
 
+        let finalLocations = [...locations]
+        if (locationInput.trim() && !finalLocations.includes(locationInput.trim())) {
+            finalLocations.push(locationInput.trim())
+        }
+
         if (!title.trim() || !companyName.trim() || !content.trim()) {
             toast.error("필수 정보를 모두 입력해주세요 (제목, 회사명, 내용)")
             return
@@ -88,6 +111,7 @@ export function RecruitNewPage() {
             companyName,
             roles: finalRoles,
             applicationLinks: finalLinks,
+            locations: finalLocations,
             content
         }, {
             onSuccess: () => {
@@ -127,8 +151,31 @@ export function RecruitNewPage() {
                             placeholder="회사 이름을 입력하세요"
                         />
                     </div>
-                </div>
 
+                    <div className="space-y-2">
+                        <Label>근무지 (엔터로 추가)</Label>
+                        <div className="relative">
+                            <Input
+                                value={locationInput}
+                                onChange={(e) => setLocationInput(e.target.value)}
+                                onKeyDown={handleAddLocation}
+                                placeholder="근무지 입력 후 Enter (예: Chicago)"
+                            />
+                        </div>
+                        {locations.length > 0 && (
+                            <div className="flex flex-wrap gap-2 mt-2">
+                                {locations.map((loc) => (
+                                    <span key={loc} className="bg-secondary text-secondary-foreground px-2 py-1 rounded-md text-sm flex items-center gap-1">
+                                        {loc}
+                                        <button type="button" onClick={() => removeLocation(loc)} className="hover:text-red-500">
+                                            <X className="h-3 w-3" />
+                                        </button>
+                                    </span>
+                                ))}
+                            </div>
+                        )}
+                    </div>
+                </div>
                 <div className="space-y-2">
                     <Label>모집 분야 (엔터로 추가)</Label>
                     <div className="flex flex-wrap gap-2 mb-2">
@@ -186,7 +233,7 @@ export function RecruitNewPage() {
                         {isPending ? "등록 중..." : "등록하기"}
                     </Button>
                 </div>
-            </form>
-        </div>
+            </form >
+        </div >
     )
 }

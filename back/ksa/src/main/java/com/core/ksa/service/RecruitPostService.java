@@ -37,6 +37,7 @@ public class RecruitPostService {
                                 .companyName(requestDto.getCompanyName())
                                 .roles(requestDto.getRoles())
                                 .applicationLinks(requestDto.getApplicationLinks())
+                                .locations(requestDto.getLocations())
                                 .build();
 
                 return recruitPostRepository.save(post).getId();
@@ -74,6 +75,7 @@ public class RecruitPostService {
                 post.setCompanyName(requestDto.getCompanyName());
                 post.setRoles(requestDto.getRoles());
                 post.setApplicationLinks(requestDto.getApplicationLinks());
+                post.setLocations(requestDto.getLocations());
         }
 
         @Transactional

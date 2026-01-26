@@ -14,6 +14,7 @@ export interface RecruitPostResponseDto {
     companyName: string;
     roles: string[];
     applicationLinks?: string[];
+    locations?: string[];
 }
 
 export interface RecruitPostCreateRequestDto {
@@ -22,4 +23,5 @@ export interface RecruitPostCreateRequestDto {
     companyName: string;
     roles: string[];
     applicationLinks?: string[];
+    locations?: string[];
 }

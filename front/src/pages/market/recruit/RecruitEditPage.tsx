@@ -26,6 +26,10 @@ export function RecruitEditPage() {
     const [roleInput, setRoleInput] = useState("")
     const [roles, setRoles] = useState<string[]>([])
 
+    // Locations Logic
+    const [locationInput, setLocationInput] = useState("")
+    const [locations, setLocations] = useState<string[]>([])
+
     useEffect(() => {
         if (post) {
             setTitle(post.title)
@@ -34,6 +38,7 @@ export function RecruitEditPage() {
             setApplicationLinks(post.applicationLinks || [])
             setContent(post.content)
             setRoles(post.roles || [])
+            setLocations(post.locations || [])
         }
     }, [post])
 
@@ -75,6 +80,20 @@ export function RecruitEditPage() {
         setRoles(roles.filter(role => role !== roleToRemove))
     }
 
+    const handleAddLocation = (e: React.KeyboardEvent<HTMLInputElement>) => {
+        if (e.key === 'Enter' && locationInput.trim()) {
+            e.preventDefault()
+            if (!locations.includes(locationInput.trim())) {
+                setLocations([...locations, locationInput.trim()])
+            }
+            setLocationInput("")
+        }
+    }
+
+    const removeLocation = (locationToRemove: string) => {
+        setLocations(locations.filter(loc => loc !== locationToRemove))
+    }
+
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault()
 
@@ -94,6 +113,11 @@ export function RecruitEditPage() {
             }
         }
 
+        let finalLocations = [...locations]
+        if (locationInput.trim() && !finalLocations.includes(locationInput.trim())) {
+            finalLocations.push(locationInput.trim())
+        }
+
         if (!title.trim() || !companyName.trim() || !content.trim()) {
             toast.error("필수 정보를 모두 입력해주세요 (제목, 회사명, 내용)")
             return
@@ -106,6 +130,7 @@ export function RecruitEditPage() {
                 companyName,
                 roles: finalRoles,
                 applicationLinks: finalLinks,
+                locations: finalLocations,
                 content
             }
         }, {
@@ -147,6 +172,30 @@ export function RecruitEditPage() {
                             onChange={(e) => setCompanyName(e.target.value)}
                             placeholder="회사 이름을 입력하세요"
                         />
+                    </div>
+
+                    <div className="space-y-2">
+                        <Label>근무지 (엔터로 추가)</Label>
+                        <div className="relative">
+                            <Input
+                                value={locationInput}
+                                onChange={(e) => setLocationInput(e.target.value)}
+                                onKeyDown={handleAddLocation}
+                                placeholder="근무지 입력 후 Enter (예: Chicago)"
+                            />
+                        </div>
+                        {locations.length > 0 && (
+                            <div className="flex flex-wrap gap-2 mt-2">
+                                {locations.map((loc) => (
+                                    <span key={loc} className="bg-secondary text-secondary-foreground px-2 py-1 rounded-md text-sm flex items-center gap-1">
+                                        {loc}
+                                        <button type="button" onClick={() => removeLocation(loc)} className="hover:text-red-500">
+                                            <X className="h-3 w-3" />
+                                        </button>
+                                    </span>
+                                ))}
+                            </div>
+                        )}
                     </div>
                 </div>
 

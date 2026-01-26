@@ -41,12 +41,18 @@ public class RecruitPost extends Post {
     @Column(name = "link_url")
     private List<String> applicationLinks = new ArrayList<>();
 
+    @ElementCollection
+    @CollectionTable(name = "recruit_post_locations", joinColumns = @JoinColumn(name = "recruit_post_id"))
+    @Column(name = "location")
+    private List<String> locations = new ArrayList<>();
+
     @Builder
     public RecruitPost(String title, String content, User author, String companyName, List<String> roles,
-            List<String> applicationLinks) {
+            List<String> applicationLinks, List<String> locations) {
         super(title, content, author);
         this.companyName = companyName;
         this.roles = roles != null ? roles : new ArrayList<>();
         this.applicationLinks = applicationLinks != null ? applicationLinks : new ArrayList<>();
+        this.locations = locations != null ? locations : new ArrayList<>();
     }
 }

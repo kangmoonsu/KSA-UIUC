@@ -25,7 +25,7 @@ public class RecruitPostResponseDto {
 
     private String companyName;
     private List<String> roles;
-    private String location;
+    private List<String> locations;
     private List<String> applicationLinks;
 
     public RecruitPostResponseDto(RecruitPost entity) {
@@ -49,6 +49,8 @@ public class RecruitPostResponseDto {
 
         this.companyName = entity.getCompanyName();
         this.roles = entity.getRoles() != null ? new java.util.ArrayList<>(entity.getRoles())
+                : new java.util.ArrayList<>();
+        this.locations = entity.getLocations() != null ? new java.util.ArrayList<>(entity.getLocations())
                 : new java.util.ArrayList<>();
         this.applicationLinks = entity.getApplicationLinks() != null
                 ? new java.util.ArrayList<>(entity.getApplicationLinks())
