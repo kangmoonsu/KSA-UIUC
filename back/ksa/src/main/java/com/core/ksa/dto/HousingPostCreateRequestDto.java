@@ -10,8 +10,8 @@ import java.util.List;
 @NoArgsConstructor
 public class HousingPostCreateRequestDto {
     private String title;
-    private String content; // Keep content for compatibility or safety
-    private String detail; // New specific field
+    private String content;
+    private String detail; // Deprecated, but kept for safety during transition
     private int price;
     private String location; // Mapped to address in Entity
     private HousingPost.HousingType housingType;

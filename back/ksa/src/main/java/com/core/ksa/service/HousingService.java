@@ -50,8 +50,8 @@ public class HousingService {
 
                 com.core.ksa.domain.HousingPost post = com.core.ksa.domain.HousingPost.builder()
                                 .title(request.getTitle())
-                                .content(request.getDetail()) // Use detail for Post.content too
-                                .detail(request.getDetail()) // And HousingPost.detail
+                                .content(request.getContent() != null ? request.getContent()
+                                                : (request.getDetail() != null ? request.getDetail() : ""))
                                 .author(user)
                                 .price(request.getPrice())
                                 .address(request.getLocation())
@@ -75,12 +75,12 @@ public class HousingService {
 
                 // Update fields
                 post.setTitle(request.getTitle());
-                post.setContent(request.getContent());
+                post.setContent(request.getContent() != null ? request.getContent()
+                                : (request.getDetail() != null ? request.getDetail() : ""));
                 post.setPrice(request.getPrice());
                 post.setAddress(request.getLocation());
                 post.setHousingType(request.getHousingType());
                 post.setItemStatus(request.getStatus());
-                post.setDetail(request.getDetail());
 
                 // Update images
                 if (request.getImageUrls() != null) {

@@ -43,6 +43,16 @@ export function HousingPage() {
         ROOMMATE: "룸메이트",
     }
 
+    const statusBadgeClassMap: Record<string, string> = {
+        AVAILABLE: "bg-green-100 text-green-700",
+        COMPLETED: "bg-gray-100 text-gray-700",
+    }
+
+    const statusTextMap: Record<string, string> = {
+        AVAILABLE: "구하는 중",
+        COMPLETED: "완료",
+    }
+
     return (
         <div className="container max-w-7xl mx-auto py-10 px-4">
             <div className="flex justify-between items-center mb-8">
@@ -81,6 +91,11 @@ export function HousingPage() {
                                             <span className="text-xs font-semibold px-2 py-1 bg-blue-50 text-blue-600 rounded-md uppercase">
                                                 {typeMap[post.housingType] || post.housingType}
                                             </span>
+                                            {post.status && (
+                                                <Badge className={`${statusBadgeClassMap[post.status] || "bg-gray-100 text-gray-700"} border-0 px-2 py-0.5 h-auto text-[10px]`}>
+                                                    {statusTextMap[post.status] || post.status}
+                                                </Badge>
+                                            )}
                                         </div>
                                         <span className="text-muted-foreground text-xs">{new Date(post.createdAt).toLocaleDateString()}</span>
                                     </div>

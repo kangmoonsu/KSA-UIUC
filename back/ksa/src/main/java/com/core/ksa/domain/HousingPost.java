@@ -21,9 +21,6 @@ public class HousingPost extends Post {
     private int price; // Per month
     private String address;
 
-    @jakarta.persistence.Column(columnDefinition = "TEXT")
-    private String detail;
-
     @Enumerated(EnumType.STRING)
     private HousingType housingType;
 
@@ -34,17 +31,16 @@ public class HousingPost extends Post {
     @ElementCollection(fetch = jakarta.persistence.FetchType.EAGER)
     private List<String> imageUrls;
 
-    private String itemStatus; // AVAILABLE, RESERVED, SOLD
+    private String itemStatus; // AVAILABLE, COMPLETED
 
     @Builder
     public HousingPost(String title, String content, User author, int price, String address, HousingType housingType,
-            List<String> imageUrls, String detail, String itemStatus) {
+            List<String> imageUrls, String itemStatus) {
         super(title, content, author);
         this.price = price;
         this.address = address;
         this.housingType = housingType;
         this.imageUrls = imageUrls;
-        this.detail = detail;
         this.itemStatus = itemStatus != null ? itemStatus : "AVAILABLE";
     }
 }

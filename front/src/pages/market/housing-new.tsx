@@ -60,7 +60,6 @@ export function HousingNewPage() {
                 ...formData,
                 price: Number(formData.price),
                 housingType: formData.housingType,
-                detail: formData.content, // Pass content as detail
                 imageUrls: uploadedUrls
             })
             toast.success("게시글이 등록되었습니다.")

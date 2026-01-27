@@ -49,6 +49,9 @@ import { FairPage } from '@/pages/market/fair/FairPage'
 import { FairNewPage } from '@/pages/market/fair/FairNewPage'
 import { FairDetailPage } from '@/pages/market/fair/FairDetailPage'
 import { FairEditPage } from '@/pages/market/fair/FairEditPage'
+import { ExecutivesPage } from '@/pages/about/ExecutivesPage'
+import { HistoryPage } from '@/pages/about/HistoryPage'
+import { GreetingPage } from '@/pages/about/GreetingPage'
 
 function App() {
   return (
@@ -96,9 +99,9 @@ function App() {
 
           <Route path="/info" element={<div className="container max-w-screen-2xl mx-auto py-20 px-4"><h2>정보게시판 (준비중)</h2></div>} />
 
-          <Route path="/ksa/greeting" element={<div className="container max-w-screen-2xl mx-auto py-20 px-4"><h2>인사말 (준비중)</h2></div>} />
-          <Route path="/ksa/executives" element={<div className="container max-w-screen-2xl mx-auto py-20 px-4"><h2>KSA 임원진 (준비중)</h2></div>} />
-          <Route path="/ksa/history" element={<div className="container max-w-screen-2xl mx-auto py-20 px-4"><h2>역대 임원진 (준비중)</h2></div>} />
+          <Route path="/ksa/greeting" element={<GreetingPage />} />
+          <Route path="/ksa/executives" element={<ExecutivesPage />} />
+          <Route path="/ksa/history" element={<HistoryPage />} />
 
           <Route path="/contact" element={<ContactPage />} />
 
