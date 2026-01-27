@@ -21,6 +21,7 @@ public class NewsPostService {
         private final NewsPostRepository newsPostRepository;
         private final UserRepository userRepository;
         private final ViewCountService viewCountService;
+        private final S3ImageService s3ImageService;
 
         @Transactional
         public Long createPost(NewsPostCreateRequestDto requestDto, String clerkId) {
@@ -82,6 +83,11 @@ public class NewsPostService {
                 if (!newsPost.getAuthor().getClerkId().equals(clerkId) &&
                                 user.getRole() != User.Role.MASTER && user.getRole() != User.Role.ADMIN) {
                         throw new IllegalStateException("Not authorized to delete this post");
+                }
+
+                // Delete images from content
+                if (newsPost.getContent() != null) {
+                        s3ImageService.deleteImagesFromHtml(newsPost.getContent());
                 }
 
                 newsPostRepository.delete(newsPost);

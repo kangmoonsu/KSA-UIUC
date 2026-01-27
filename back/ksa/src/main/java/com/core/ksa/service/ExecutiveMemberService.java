@@ -18,6 +18,7 @@ import java.util.stream.Collectors;
 public class ExecutiveMemberService {
 
     private final ExecutiveMemberRepository repository;
+    private final S3ImageService s3ImageService;
 
     public List<ExecutiveMemberResponseDto> getCurrentExecutives() {
         return repository.findByIsCurrentTrueOrderByDisplayOrderAsc().stream()
@@ -51,6 +52,12 @@ public class ExecutiveMemberService {
     public ExecutiveMemberResponseDto updateExecutive(Long id, ExecutiveMemberRequestDto dto) {
         ExecutiveMember member = repository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Member not found"));
+
+        // Delete old image if it changed
+        if (member.getImageUrl() != null && !member.getImageUrl().equals(dto.getImageUrl())) {
+            s3ImageService.deleteImage(member.getImageUrl());
+        }
+
         member.update(
                 dto.getName(),
                 dto.getPosition(),
@@ -81,6 +88,11 @@ public class ExecutiveMemberService {
 
     @Transactional
     public void deleteExecutive(Long id) {
-        repository.deleteById(id);
+        repository.findById(id).ifPresent(member -> {
+            if (member.getImageUrl() != null) {
+                s3ImageService.deleteImage(member.getImageUrl());
+            }
+            repository.delete(member);
+        });
     }
 }

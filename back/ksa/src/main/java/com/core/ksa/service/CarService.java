@@ -25,6 +25,7 @@ public class CarService {
         private final ChatMessageRepository chatMessageRepository;
         private final NotificationRepository notificationRepository;
         private final UserActionLogRepository logRepository;
+        private final S3ImageService s3ImageService;
 
         @Transactional(readOnly = true)
         public org.springframework.data.domain.Page<CarPostResponseDto> getAllCars(
@@ -87,6 +88,12 @@ public class CarService {
 
                 // Update images
                 if (request.getImageUrls() != null) {
+                        // Delete old images that are not in the new list
+                        for (String oldUrl : post.getImageUrls()) {
+                                if (!request.getImageUrls().contains(oldUrl)) {
+                                        s3ImageService.deleteImage(oldUrl);
+                                }
+                        }
                         post.getImageUrls().clear();
                         post.getImageUrls().addAll(request.getImageUrls());
                 }
@@ -106,6 +113,13 @@ public class CarService {
                                 currentUser.getRole() == User.Role.USER) {
                         throw new org.springframework.web.server.ResponseStatusException(
                                         org.springframework.http.HttpStatus.FORBIDDEN, "You are not the owner");
+                }
+
+                // Delete images
+                if (post.getImageUrls() != null) {
+                        for (String url : post.getImageUrls()) {
+                                s3ImageService.deleteImage(url);
+                        }
                 }
 
                 // Chat rooms and related content must be deleted first to avoid FK constraints

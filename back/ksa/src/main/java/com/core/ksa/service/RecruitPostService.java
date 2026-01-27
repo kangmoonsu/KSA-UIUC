@@ -20,6 +20,7 @@ public class RecruitPostService {
 
         private final RecruitPostRepository recruitPostRepository;
         private final UserRepository userRepository;
+        private final S3ImageService s3ImageService;
 
         @Transactional
         public Long createPost(RecruitPostRequestDto requestDto, String clerkId) {
@@ -89,6 +90,11 @@ public class RecruitPostService {
                 if (!post.getAuthor().getClerkId().equals(clerkId) &&
                                 user.getRole() != User.Role.MASTER && user.getRole() != User.Role.ADMIN) {
                         throw new IllegalStateException("Not authorized to delete this post");
+                }
+
+                // Delete images from content
+                if (post.getContent() != null) {
+                        s3ImageService.deleteImagesFromHtml(post.getContent());
                 }
 
                 recruitPostRepository.delete(post);

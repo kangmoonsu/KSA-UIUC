@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button"
 import { Plus, Edit2, Trash2, ArrowRight, History } from "lucide-react"
 import { Link } from "react-router-dom"
 import { toast } from "sonner"
-import communityImg from "@/assets/images/Community.png"
+import { CarouselSection } from "./CarouselSection"
 import { ExecutiveModal } from "./ExecutiveModal"
 import {
     Dialog,
@@ -90,14 +90,10 @@ export function ExecutivesPage() {
                         </p>
                     </div>
 
-                    <div className="flex flex-col lg:flex-row items-center justify-center gap-12">
-                        {/* Illustration */}
-                        <div className="flex-1 max-w-xl">
-                            <img
-                                src={communityImg}
-                                alt="Community"
-                                className="w-full h-auto object-contain drop-shadow-2xl"
-                            />
+                    <div className="flex flex-col lg:flex-row items-stretch justify-center gap-12">
+                        {/* Carousel Section */}
+                        <div className="flex-1 w-full max-w-lg bg-white rounded-3xl shadow-xl border border-slate-100 overflow-hidden flex flex-col">
+                            <CarouselSection isAdmin={isAdmin} />
                         </div>
 
                         {/* Goals Card */}

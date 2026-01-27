@@ -20,6 +20,7 @@ public class FairPostService {
 
         private final FairPostRepository fairPostRepository;
         private final UserRepository userRepository;
+        private final S3ImageService s3ImageService;
 
         @Transactional
         public Long createPost(FairPostRequestDto requestDto, String clerkId) {
@@ -85,6 +86,11 @@ public class FairPostService {
                 if (!post.getAuthor().getClerkId().equals(clerkId) &&
                                 user.getRole() != User.Role.MASTER && user.getRole() != User.Role.ADMIN) {
                         throw new IllegalStateException("Not authorized to delete this post");
+                }
+
+                // Delete images from content
+                if (post.getContent() != null) {
+                        s3ImageService.deleteImagesFromHtml(post.getContent());
                 }
 
                 fairPostRepository.delete(post);

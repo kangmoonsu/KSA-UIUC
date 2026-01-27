@@ -22,6 +22,7 @@ public class PopupService {
 
     private final PopupRepository popupRepository;
     private final UserRepository userRepository;
+    private final S3ImageService s3ImageService;
 
     public List<PopupResponseDto> getActivePopups() {
         LocalDateTime chicagoNow = LocalDateTime.now(ZoneId.of("America/Chicago"));
@@ -67,6 +68,11 @@ public class PopupService {
         Popup popup = popupRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Popup not found"));
 
+        // Delete old image if it changed
+        if (popup.getImageUrl() != null && !popup.getImageUrl().equals(requestDto.getImageUrl())) {
+            s3ImageService.deleteImage(popup.getImageUrl());
+        }
+
         popup.setTitle(requestDto.getTitle());
         popup.setImageUrl(requestDto.getImageUrl());
         popup.setLinkUrl(requestDto.getLinkUrl());
@@ -79,6 +85,11 @@ public class PopupService {
 
     @Transactional
     public void deletePopup(Long id) {
-        popupRepository.deleteById(id);
+        popupRepository.findById(id).ifPresent(popup -> {
+            if (popup.getImageUrl() != null) {
+                s3ImageService.deleteImage(popup.getImageUrl());
+            }
+            popupRepository.delete(popup);
+        });
     }
 }
