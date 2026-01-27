@@ -66,6 +66,7 @@ export function RichTextEditorWithImage({ value, onChange, placeholder, classNam
                 [{ header: [1, 2, 3, false] }],
                 ['bold', 'italic', 'underline', 'strike'],
                 [{ list: 'ordered' }, { list: 'bullet' }],
+                [{ align: [] }],
                 ['image', 'link'],
                 ['clean'],
             ],
@@ -79,6 +80,7 @@ export function RichTextEditorWithImage({ value, onChange, placeholder, classNam
         'header',
         'bold', 'italic', 'underline', 'strike',
         'list',
+        'align',
         'image', 'link',
     ];
 

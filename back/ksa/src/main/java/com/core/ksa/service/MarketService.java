@@ -35,6 +35,7 @@ public class MarketService {
         private final ChatMessageRepository chatMessageRepository;
         private final NotificationRepository notificationRepository;
         private final UserActionLogRepository logRepository;
+        private final S3ImageService s3ImageService;
 
         @Transactional
         public Long createMarketPost(MarketPostCreateRequestDto requestDto, String clerkId) {
@@ -135,8 +136,13 @@ public class MarketService {
                                 .filter(item -> !requestItemIds.contains(item.getId()))
                                 .collect(Collectors.toList());
 
-                // 2. Delete chat rooms for items to remove
+                // 2. Delete chat rooms and images for items to remove
                 if (!itemsToRemove.isEmpty()) {
+                        for (MarketItem item : itemsToRemove) {
+                                if (item.getImageUrls() != null) {
+                                        s3ImageService.deleteImage(item.getImageUrls());
+                                }
+                        }
                         List<com.core.ksa.domain.ChatRoom> roomsToDelete = chatRoomRepository
                                         .findAllByMarketItemIn(itemsToRemove);
                         if (!roomsToDelete.isEmpty()) {
@@ -200,6 +206,13 @@ public class MarketService {
                                 currentUser.getRole() == User.Role.USER) {
                         throw new org.springframework.web.server.ResponseStatusException(
                                         org.springframework.http.HttpStatus.FORBIDDEN, "You are not the owner");
+                }
+
+                // 2.1 Delete images of all items in the post
+                for (MarketItem item : post.getItems()) {
+                        if (item.getImageUrls() != null) {
+                                s3ImageService.deleteImage(item.getImageUrls());
+                        }
                 }
 
                 // Chat rooms and related content must be deleted first to avoid FK constraints

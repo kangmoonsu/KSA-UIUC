@@ -50,7 +50,7 @@ export function HousingEditPage() {
                     price: data.price.toString(),
                     location: data.location,
                     housingType: data.housingType,
-                    content: data.detail || data.content,
+                    content: data.content,
                     status: data.status || "AVAILABLE",
                 })
                 setExistingImages(data.imageUrls || [])
@@ -114,8 +114,7 @@ export function HousingEditPage() {
 
             await housingApi.update(id, {
                 title: formData.title,
-                content: formData.content, // sync content and detail
-                detail: formData.content,
+                content: formData.content,
                 location: formData.location,
                 price: Number(formData.price),
                 housingType: formData.housingType,
@@ -183,9 +182,8 @@ export function HousingEditPage() {
                                 <SelectValue placeholder="상태 선택" />
                             </SelectTrigger>
                             <SelectContent>
-                                <SelectItem value="AVAILABLE">판매중</SelectItem>
-                                <SelectItem value="RESERVED">예약중</SelectItem>
-                                <SelectItem value="SOLD">판매완료</SelectItem>
+                                <SelectItem value="AVAILABLE">구하는 중</SelectItem>
+                                <SelectItem value="COMPLETED">완료</SelectItem>
                             </SelectContent>
                         </Select>
                     </div>

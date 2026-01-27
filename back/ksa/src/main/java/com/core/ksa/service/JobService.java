@@ -25,6 +25,7 @@ public class JobService {
         private final ChatMessageRepository chatMessageRepository;
         private final NotificationRepository notificationRepository;
         private final UserActionLogRepository logRepository;
+        private final S3ImageService s3ImageService;
 
         @Transactional(readOnly = true)
         public org.springframework.data.domain.Page<JobPostResponseDto> getAllJobs(
@@ -96,6 +97,11 @@ public class JobService {
                                 currentUser.getRole() == User.Role.USER) {
                         throw new org.springframework.web.server.ResponseStatusException(
                                         org.springframework.http.HttpStatus.FORBIDDEN, "You are not the owner");
+                }
+
+                // Delete images from content
+                if (post.getContent() != null) {
+                        s3ImageService.deleteImagesFromHtml(post.getContent());
                 }
 
                 // Chat rooms and related content must be deleted first to avoid FK constraints

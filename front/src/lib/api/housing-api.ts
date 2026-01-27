@@ -6,7 +6,6 @@ export interface HousingPost {
     id: number;
     title: string;
     content: string;
-    detail: string;
     location: string;
     price: number;
     housingType: HousingType;
@@ -23,7 +22,6 @@ export interface HousingPost {
 export interface HousingPostCreateRequest {
     title: string;
     content: string;
-    detail: string;
     location: string;
     price: number;
     housingType: HousingType;
@@ -33,7 +31,6 @@ export interface HousingPostCreateRequest {
 export interface HousingPostUpdateRequest {
     title: string;
     content: string;
-    detail: string;
     location: string;
     price: number;
     housingType: HousingType;

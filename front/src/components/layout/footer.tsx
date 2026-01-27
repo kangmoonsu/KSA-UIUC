@@ -6,7 +6,7 @@ export function Footer() {
                     © 2026 UIUC Korean Student Association. All rights reserved.
                 </p>
                 <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                    <span>Contact: help@illinoisksa.org</span>
+                    <span>Contact: contact.ksaweb@gmail.com</span>
                 </div>
             </div>
         </footer>

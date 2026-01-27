@@ -16,6 +16,7 @@ import {
 import { toast } from "sonner"
 
 export function HousingDetailPage() {
+    const { user } = useAuth()
     const { id } = useParams()
     const navigate = useNavigate()
     const [post, setPost] = useState<HousingPost | null>(null)
@@ -62,19 +63,16 @@ export function HousingDetailPage() {
         ROOMMATE: "룸메이트",
     }
 
-    const { user } = useAuth()
     const isOwner = user?.sub === post.writerClerkId
 
     const statusBadgeClassMap: Record<string, string> = {
         AVAILABLE: "bg-green-100 text-green-700",
-        RESERVED: "bg-yellow-100 text-yellow-700",
-        SOLD: "bg-gray-100 text-gray-700",
+        COMPLETED: "bg-gray-100 text-gray-700",
     }
 
     const statusTextMap: Record<string, string> = {
-        AVAILABLE: "판매중",
-        RESERVED: "예약중",
-        SOLD: "판매완료",
+        AVAILABLE: "구하는 중",
+        COMPLETED: "완료",
     }
 
     return (
@@ -202,7 +200,7 @@ export function HousingDetailPage() {
                         <h3 className="text-xl font-semibold mb-4">상세 정보</h3>
                         <div
                             className="text-gray-700 leading-relaxed min-h-[200px]"
-                            dangerouslySetInnerHTML={{ __html: post.detail || post.content }} // Fallback to content
+                            dangerouslySetInnerHTML={{ __html: post.content }}
                         />
                     </div>
                 </div>

@@ -22,6 +22,7 @@ public class FreePostService {
     private final FreePostRepository freePostRepository;
     private final UserRepository userRepository;
     private final ViewCountService viewCountService;
+    private final S3ImageService s3ImageService;
 
     @Transactional
     public Long createPost(FreePostCreateRequestDto requestDto, String clerkId) {
@@ -95,8 +96,11 @@ public class FreePostService {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Not authorized to delete this post");
         }
 
+        // Delete images from content
+        if (post.getContent() != null) {
+            s3ImageService.deleteImagesFromHtml(post.getContent());
+        }
+
         freePostRepository.delete(post);
     }
 }
-
-

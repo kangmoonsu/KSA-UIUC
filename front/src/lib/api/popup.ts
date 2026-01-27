@@ -1,12 +1,23 @@
 import client from "./client"
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
 import type { PopupResponseDto, PopupCreateRequestDto } from "@/types/post-popup"
+import imageCompression from 'browser-image-compression'
 
 export const useUploadImage = () => {
     return useMutation({
         mutationFn: async (file: File) => {
+            // Compression options
+            const options = {
+                maxWidthOrHeight: 800,
+                maxSizeMB: 0.5,
+                useWebWorker: true,
+                fileType: 'image/webp' as const,
+            };
+
+            const compressedFile = await imageCompression(file, options);
             const formData = new FormData();
-            formData.append('file', file);
+            formData.append('file', compressedFile);
+
             const { data } = await client.post<{ imageUrl: string }>('/images', formData, {
                 headers: { 'Content-Type': 'multipart/form-data' },
             });

@@ -19,6 +19,7 @@ public class HousingService {
         private final com.core.ksa.repository.ChatMessageRepository chatMessageRepository;
         private final com.core.ksa.repository.NotificationRepository notificationRepository;
         private final com.core.ksa.repository.UserActionLogRepository logRepository;
+        private final S3ImageService s3ImageService;
 
         @Transactional(readOnly = true)
         public org.springframework.data.domain.Page<HousingPostResponseDto> getAllHousings(
@@ -50,8 +51,8 @@ public class HousingService {
 
                 com.core.ksa.domain.HousingPost post = com.core.ksa.domain.HousingPost.builder()
                                 .title(request.getTitle())
-                                .content(request.getDetail()) // Use detail for Post.content too
-                                .detail(request.getDetail()) // And HousingPost.detail
+                                .content(request.getContent() != null ? request.getContent()
+                                                : (request.getDetail() != null ? request.getDetail() : ""))
                                 .author(user)
                                 .price(request.getPrice())
                                 .address(request.getLocation())
@@ -75,15 +76,21 @@ public class HousingService {
 
                 // Update fields
                 post.setTitle(request.getTitle());
-                post.setContent(request.getContent());
+                post.setContent(request.getContent() != null ? request.getContent()
+                                : (request.getDetail() != null ? request.getDetail() : ""));
                 post.setPrice(request.getPrice());
                 post.setAddress(request.getLocation());
                 post.setHousingType(request.getHousingType());
                 post.setItemStatus(request.getStatus());
-                post.setDetail(request.getDetail());
 
                 // Update images
                 if (request.getImageUrls() != null) {
+                        // Delete old images that are not in the new list
+                        for (String oldUrl : post.getImageUrls()) {
+                                if (!request.getImageUrls().contains(oldUrl)) {
+                                        s3ImageService.deleteImage(oldUrl);
+                                }
+                        }
                         post.getImageUrls().clear();
                         post.getImageUrls().addAll(request.getImageUrls());
                 }
@@ -104,6 +111,13 @@ public class HousingService {
                                 currentUser.getRole() == com.core.ksa.domain.User.Role.USER) {
                         throw new org.springframework.web.server.ResponseStatusException(
                                         org.springframework.http.HttpStatus.FORBIDDEN, "You are not the owner");
+                }
+
+                // Delete images
+                if (post.getImageUrls() != null) {
+                        for (String url : post.getImageUrls()) {
+                                s3ImageService.deleteImage(url);
+                        }
                 }
 
                 // Chat rooms and related content must be deleted first to avoid FK constraints
