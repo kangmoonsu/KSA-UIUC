@@ -4,7 +4,6 @@ import { PostCarousel } from "./PostCarousel";
 import { CarouselItem } from "@/components/ui/carousel";
 import { Link } from "react-router-dom";
 import { ShoppingBag, MapPin } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
 
 interface MarketPost {
     id: number;
@@ -57,11 +56,7 @@ export function MarketCarousel() {
                                             <ShoppingBag className="w-12 h-12" />
                                         </div>
                                     )}
-                                    {firstItem?.status && (
-                                        <Badge className="absolute top-4 left-4 bg-green-500 hover:bg-green-600 text-white border-none px-3 py-1">
-                                            {firstItem.status === 'SALE' ? '판매중' : '완료'}
-                                        </Badge>
-                                    )}
+
                                 </div>
                                 <div className="p-5 flex-1 flex flex-col">
                                     <h3 className="text-lg font-bold text-navy line-clamp-1 mb-2 group-hover:text-orange transition-colors">
