@@ -4,15 +4,16 @@ import type { PopupResponseDto } from "@/types/post-popup"
 import { useLocation } from "react-router-dom"
 import {
     Dialog,
-    DialogContent,
     DialogPortal,
-    DialogOverlay,
     DialogTitle,
 } from "@/components/ui/dialog"
+import * as DialogPrimitive from "@radix-ui/react-dialog"
+import { ChevronLeft, ChevronRight } from "lucide-react"
 
 export function AnnouncementPopup() {
     const { data: popups, isLoading } = useActivePopups()
     const [currentPopupIndex, setCurrentPopupIndex] = useState(0)
+    const [visiblePopups, setVisiblePopups] = useState<PopupResponseDto[]>([])
     const [open, setOpen] = useState(false)
     const location = useLocation()
 
@@ -24,19 +25,29 @@ export function AnnouncementPopup() {
         }
 
         if (!isLoading && popups && popups.length > 0) {
-            // Find the first popup that hasn't been dismissed within last 24 hours
-            const firstActiveIndex = popups.findIndex((popup: PopupResponseDto) => {
+            // Check if all popups have been dismissed globally
+            const allDismissedAt = localStorage.getItem('popup_all_dismissed_today')
+            if (allDismissedAt) {
+                const lastDismissedTime = parseInt(allDismissedAt)
+                if (Date.now() - lastDismissedTime <= 24 * 60 * 60 * 1000) {
+                    setOpen(false)
+                    return
+                }
+            }
+
+            // Filter popups that haven't been dismissed individually (optional but good for consistency)
+            const filtered = popups.filter((popup: PopupResponseDto) => {
                 const dismissedAt = localStorage.getItem(`popup_dismissed_${popup.id}`)
                 if (!dismissedAt) return true
 
                 const lastDismissedTime = parseInt(dismissedAt)
                 const now = Date.now()
-                // Show if dismissed more than 24 hours ago
                 return now - lastDismissedTime > 24 * 60 * 60 * 1000
             })
 
-            if (firstActiveIndex !== -1) {
-                setCurrentPopupIndex(firstActiveIndex)
+            setVisiblePopups(filtered)
+            if (filtered.length > 0) {
+                setCurrentPopupIndex(0)
                 setOpen(true)
             } else {
                 setOpen(false)
@@ -46,9 +57,9 @@ export function AnnouncementPopup() {
         }
     }, [popups, isLoading, location.pathname])
 
-    if (isLoading || !popups || popups.length === 0 || !open) return null
+    if (isLoading || visiblePopups.length === 0 || !open) return null
 
-    const currentPopup = popups[currentPopupIndex]
+    const currentPopup = visiblePopups[currentPopupIndex]
     if (!currentPopup) return null
 
     const handleClose = () => {
@@ -56,8 +67,19 @@ export function AnnouncementPopup() {
     }
 
     const handleDontShowToday = () => {
-        localStorage.setItem(`popup_dismissed_${currentPopup.id}`, Date.now().toString())
+        // Set a global dismissal flag for all popups
+        localStorage.setItem('popup_all_dismissed_today', Date.now().toString())
         setOpen(false)
+    }
+
+    const handleNext = (e: React.MouseEvent) => {
+        e.stopPropagation()
+        setCurrentPopupIndex((prev) => (prev + 1) % visiblePopups.length)
+    }
+
+    const handlePrev = (e: React.MouseEvent) => {
+        e.stopPropagation()
+        setCurrentPopupIndex((prev) => (prev - 1 + visiblePopups.length) % visiblePopups.length)
     }
 
     const handleImageClick = () => {
@@ -69,31 +91,52 @@ export function AnnouncementPopup() {
     return (
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogPortal>
-                <DialogOverlay className="bg-transparent" />
-                <DialogContent className="max-w-[400px] p-0 overflow-hidden border-none bg-transparent shadow-2xl transition-all duration-300">
+                {/* Custom Overlay to ensure it's fully transparent and doesn't darken */}
+                <DialogPrimitive.Overlay className="fixed inset-0 z-50 bg-transparent pointer-events-none" />
+                <DialogPrimitive.Content
+                    className="fixed left-[50%] top-[50%] z-50 flex w-full max-w-[400px] translate-x-[-50%] translate-y-[-50%] flex-col overflow-hidden border-none bg-transparent shadow-2xl transition-all duration-300 focus:outline-none"
+                >
                     <DialogTitle className="sr-only">공지사항 팝업</DialogTitle>
-                    <div className="relative group">
+                    <div className="relative group bg-white rounded-lg overflow-hidden border border-slate-200 shadow-xl">
                         {/* Popup Image */}
                         <div
-                            className={`cursor-pointer overflow-hidden rounded-t-lg ${currentPopup.linkUrl ? 'hover:opacity-95' : ''}`}
+                            className={`relative cursor-pointer overflow-hidden ${currentPopup.linkUrl ? 'hover:opacity-95' : ''}`}
                             onClick={handleImageClick}
                         >
                             <img
                                 src={currentPopup.imageUrl}
                                 alt={currentPopup.title}
-                                className="w-full aspect-square object-cover display-block"
+                                className="w-full aspect-[4/5] object-cover block"
                             />
+
+                            {/* Navigation Arrows */}
+                            {visiblePopups.length > 1 && (
+                                <>
+                                    <button
+                                        onClick={handlePrev}
+                                        className="absolute left-2 top-1/2 -translate-y-1/2 bg-black/30 hover:bg-black/50 text-white rounded-full p-1 transition-all opacity-0 group-hover:opacity-100"
+                                    >
+                                        <ChevronLeft className="w-6 h-6" />
+                                    </button>
+                                    <button
+                                        onClick={handleNext}
+                                        className="absolute right-2 top-1/2 -translate-y-1/2 bg-black/30 hover:bg-black/50 text-white rounded-full p-1 transition-all opacity-0 group-hover:opacity-100"
+                                    >
+                                        <ChevronRight className="w-6 h-6" />
+                                    </button>
+                                </>
+                            )}
                         </div>
 
-                        {/* Pagination if multiple (Optional enhancement) */}
-                        {popups.length > 1 && (
-                            <div className="absolute bottom-16 right-4 bg-black/50 text-white text-[10px] px-2 py-1 rounded-full">
-                                {String(currentPopupIndex + 1).padStart(2, '0')} / {String(popups.length).padStart(2, '0')}
+                        {/* Pagination if multiple */}
+                        {visiblePopups.length > 1 && (
+                            <div className="absolute top-4 right-4 bg-black/50 text-white text-[10px] px-2 py-1 rounded-full pointer-events-none">
+                                {currentPopupIndex + 1} / {visiblePopups.length}
                             </div>
                         )}
 
                         {/* Footer Buttons */}
-                        <div className="flex w-full bg-white border-t rounded-b-lg">
+                        <div className="flex w-full bg-white border-t">
                             <button
                                 onClick={handleDontShowToday}
                                 className="flex-1 py-4 text-sm font-medium text-slate-600 hover:bg-slate-50 transition-colors border-r"
@@ -108,7 +151,7 @@ export function AnnouncementPopup() {
                             </button>
                         </div>
                     </div>
-                </DialogContent>
+                </DialogPrimitive.Content>
             </DialogPortal>
         </Dialog>
     )

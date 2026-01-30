@@ -7,7 +7,7 @@ export function HomePage() {
     return (
         <div className="flex flex-col items-center w-full bg-white pb-20">
             {/* Hero Section - Clean & Minimal */}
-            <section className="w-full py-20 md:py-32 lg:py-40 flex flex-col items-center text-center px-4 animate-in fade-in duration-700 slide-in-from-bottom-4">
+            <section className="w-full pt-16 md:pt-24 lg:pt-32 pb-12 flex flex-col items-center text-center px-4 animate-in fade-in duration-700 slide-in-from-bottom-4">
                 <div className="space-y-6 max-w-4xl">
                     <div className="inline-block rounded-full bg-orange/10 px-4 py-1.5 text-sm font-semibold text-orange mb-4">
                         샴페인-어바나 한인들을 위한
@@ -23,9 +23,8 @@ export function HomePage() {
                 </div>
             </section>
 
-            <AdSection />
-
             <div className="w-full space-y-12">
+                <AdSection />
                 <NewsCarousel />
                 <MarketCarousel />
                 <HousingCarousel />
