@@ -4,6 +4,7 @@ import { HomePage } from '@/pages/home'
 import { OAuthCallback } from '@/pages/oauth-callback'
 import { MyPage } from '@/pages/mypage'
 import { Toaster } from "@/components/ui/sonner"
+import GoogleAnalytics from '@/components/common/GoogleAnalytics'
 
 // Market Pages
 import { FleaPage } from '@/pages/market/flea'
@@ -58,6 +59,7 @@ import { GreetingPage } from '@/pages/about/GreetingPage'
 function App() {
   return (
     <AuthProvider>
+      <GoogleAnalytics />
       <Routes>
         <Route element={<Layout />}>
           <Route path="/" element={<HomePage />} />
