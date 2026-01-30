@@ -30,6 +30,7 @@ interface UserAdminResponse {
     nickname: string;
     role: string;
     banned: boolean;
+    banReason?: string;
     banExpiresAt?: string;
     createdAt: string;
 }
@@ -147,7 +148,7 @@ export function AdminDashboard() {
                                                 <div className="flex flex-col gap-1">
                                                     <Badge variant="destructive">Banned</Badge>
                                                     <span className="text-[10px] text-destructive font-medium">
-                                                        {u.banExpiresAt ? new Date(u.banExpiresAt).toLocaleDateString() : "Permanent"}
+                                                        {u.banExpiresAt ? new Date(u.banExpiresAt).toLocaleString() : "Permanent"}
                                                     </span>
                                                 </div>
                                             ) : (
@@ -155,7 +156,7 @@ export function AdminDashboard() {
                                             )}
                                         </TableCell>
                                         <TableCell className="text-muted-foreground text-sm">
-                                            {new Date(u.createdAt).toLocaleDateString()}
+                                            {u.createdAt ? new Date(u.createdAt).toLocaleString() : "-"}
                                         </TableCell>
                                     </TableRow>
                                 ))

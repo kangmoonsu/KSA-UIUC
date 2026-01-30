@@ -1,7 +1,11 @@
+import { AdSection } from "@/components/home/AdSection";
+import { NewsCarousel } from "@/components/home/NewsCarousel";
+import { MarketCarousel } from "@/components/home/MarketCarousel";
+import { HousingCarousel } from "@/components/home/HousingCarousel";
 
 export function HomePage() {
     return (
-        <div className="flex flex-col items-center w-full bg-white">
+        <div className="flex flex-col items-center w-full bg-white pb-20">
             {/* Hero Section - Clean & Minimal */}
             <section className="w-full py-20 md:py-32 lg:py-40 flex flex-col items-center text-center px-4 animate-in fade-in duration-700 slide-in-from-bottom-4">
                 <div className="space-y-6 max-w-4xl">
@@ -18,6 +22,14 @@ export function HomePage() {
                     </p>
                 </div>
             </section>
+
+            <AdSection />
+
+            <div className="w-full space-y-12">
+                <NewsCarousel />
+                <MarketCarousel />
+                <HousingCarousel />
+            </div>
         </div>
     )
 }

@@ -38,6 +38,8 @@ import { AdminDashboard } from '@/pages/admin/AdminDashboard'
 import { UserDetailPage } from '@/pages/admin/UserDetailPage'
 import { PopupManagement } from '@/pages/admin/PopupManagement'
 import { PopupForm } from '@/pages/admin/PopupForm'
+import { AdManagement } from '@/pages/admin/AdManagement'
+import { AdForm } from '@/pages/admin/AdForm'
 import { BannedPage } from '@/pages/BannedPage'
 import { ProtectedRoute } from '@/components/auth/protected-route'
 
@@ -111,6 +113,9 @@ function App() {
           <Route path="/admin/popups" element={<ProtectedRoute allowedRoles={['ADMIN', 'MASTER']}><PopupManagement /></ProtectedRoute>} />
           <Route path="/admin/popups/new" element={<ProtectedRoute allowedRoles={['ADMIN', 'MASTER']}><PopupForm /></ProtectedRoute>} />
           <Route path="/admin/popups/:id/edit" element={<ProtectedRoute allowedRoles={['ADMIN', 'MASTER']}><PopupForm /></ProtectedRoute>} />
+          <Route path="/admin/ads" element={<ProtectedRoute allowedRoles={['ADMIN', 'MASTER']}><AdManagement /></ProtectedRoute>} />
+          <Route path="/admin/ads/new" element={<ProtectedRoute allowedRoles={['ADMIN', 'MASTER']}><AdForm /></ProtectedRoute>} />
+          <Route path="/admin/ads/:id/edit" element={<ProtectedRoute allowedRoles={['ADMIN', 'MASTER']}><AdForm /></ProtectedRoute>} />
           <Route path="/banned" element={<BannedPage />} />
           <Route path="/mypage" element={<ProtectedRoute allowedRoles={['USER', 'ADMIN', 'MASTER']}><MyPage /></ProtectedRoute>} />
           <Route path="/chat/room/:id" element={<ProtectedRoute allowedRoles={['USER', 'ADMIN', 'MASTER']}><ChatRoomPage /></ProtectedRoute>} />

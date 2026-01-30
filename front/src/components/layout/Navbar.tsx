@@ -255,15 +255,13 @@ export function Navbar() {
                                                 <Link to="/admin/popups">팝업 관리</Link>
                                             </DropdownMenuItem>
                                             <DropdownMenuItem asChild>
-                                                <Link to="/mypage">마이페이지</Link>
+                                                <Link to="/admin/ads">광고 관리</Link>
                                             </DropdownMenuItem>
                                         </>
                                     )}
-                                    {!(user.role === 'ADMIN' || user.role === 'MASTER') && (
-                                        <DropdownMenuItem asChild>
-                                            <Link to="/mypage">마이페이지</Link>
-                                        </DropdownMenuItem>
-                                    )}
+                                    <DropdownMenuItem asChild>
+                                        <Link to="/mypage">마이페이지</Link>
+                                    </DropdownMenuItem>
                                     <DropdownMenuSeparator />
                                     <DropdownMenuItem onClick={handleLogout} className="cursor-pointer text-red-600 focus:text-red-600">
                                         로그아웃
@@ -342,11 +340,23 @@ export function Navbar() {
                                             </div>
                                             <div className="flex flex-col gap-2 w-full mb-3">
                                                 {(user.role === 'ADMIN' || user.role === 'MASTER') && (
-                                                    <Link to="/admin" className="w-full">
-                                                        <Button variant="outline" className="w-full">
-                                                            대시보드
-                                                        </Button>
-                                                    </Link>
+                                                    <>
+                                                        <Link to="/admin" className="w-full">
+                                                            <Button variant="outline" className="w-full">
+                                                                대시보드
+                                                            </Button>
+                                                        </Link>
+                                                        <Link to="/admin/popups" className="w-full">
+                                                            <Button variant="outline" className="w-full">
+                                                                팝업 관리
+                                                            </Button>
+                                                        </Link>
+                                                        <Link to="/admin/ads" className="w-full">
+                                                            <Button variant="outline" className="w-full">
+                                                                광고 관리
+                                                            </Button>
+                                                        </Link>
+                                                    </>
                                                 )}
                                                 <Link to="/mypage" className="w-full">
                                                     <Button variant="outline" className="w-full">

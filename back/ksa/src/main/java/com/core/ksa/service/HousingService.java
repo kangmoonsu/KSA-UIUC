@@ -29,6 +29,18 @@ public class HousingService {
         }
 
         @Transactional(readOnly = true)
+        public java.util.List<HousingPostResponseDto> getLatestPosts(int limit) {
+                org.springframework.data.domain.PageRequest pageRequest = org.springframework.data.domain.PageRequest
+                                .of(0, limit, org.springframework.data.domain.Sort
+                                                .by(org.springframework.data.domain.Sort.Direction.DESC, "id"));
+                return housingPostRepository.findAll(pageRequest)
+                                .getContent()
+                                .stream()
+                                .map(HousingPostResponseDto::from)
+                                .collect(java.util.stream.Collectors.toList());
+        }
+
+        @Transactional(readOnly = true)
         public HousingPostResponseDto getHousingById(Long id) {
                 com.core.ksa.domain.HousingPost post = housingPostRepository.findById(id)
                                 .orElseThrow(() -> new org.springframework.web.server.ResponseStatusException(

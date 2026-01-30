@@ -28,6 +28,7 @@ interface UserAdminResponse {
     banned: boolean;
     banReason?: string;
     banExpiresAt?: string;
+    createdAt?: string;
 }
 
 interface UserDetailResponse {
@@ -178,7 +179,10 @@ export function UserDetailPage() {
                         </Avatar>
                         <div className="flex-1">
                             <CardTitle className="text-2xl">{userData.nickname || userData.name}</CardTitle>
-                            <CardDescription>{userData.email} • {userData.clerkId}</CardDescription>
+                            <CardDescription>
+                                {userData.email} • {userData.clerkId}
+                                {userData.createdAt && ` • 가입일: ${new Date(userData.createdAt).toLocaleString()}`}
+                            </CardDescription>
                         </div>
                         <div className="flex flex-col gap-2 items-end">
                             <Badge variant={userData.role === 'MASTER' ? "default" : userData.role === 'ADMIN' ? "secondary" : "outline"}>
@@ -340,7 +344,7 @@ export function UserDetailPage() {
                                                     <Badge variant="outline">{getCategoryLabel(post.category)}</Badge>
                                                 </TableCell>
                                                 <TableCell className="text-muted-foreground text-sm">
-                                                    {new Date(post.createdAt).toLocaleDateString()}
+                                                    {post.createdAt ? new Date(post.createdAt).toLocaleString() : "-"}
                                                 </TableCell>
                                                 <TableCell className="text-right">
                                                     <Button

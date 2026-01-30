@@ -61,6 +61,7 @@ public class UserDto {
         private String role;
         private boolean isBanned;
         private LocalDateTime banExpiresAt;
+        private LocalDateTime createdAt;
 
         public static UserAdminResponse from(User user) {
             return UserAdminResponse.builder()
@@ -72,6 +73,7 @@ public class UserDto {
                     .role(user.getRole().name())
                     .isBanned(user.isBanned())
                     .banExpiresAt(user.getCurrentBan() != null ? user.getCurrentBan().getExpiresAt() : null)
+                    .createdAt(user.getCreatedAt())
                     .build();
         }
     }

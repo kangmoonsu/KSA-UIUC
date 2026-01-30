@@ -151,7 +151,7 @@ export function PopupForm() {
                             <Label>팝업 이미지</Label>
                             <div className="flex flex-col gap-4">
                                 {previewUrl ? (
-                                    <div className="relative group rounded-lg overflow-hidden border bg-slate-50 aspect-4/5 flex items-center justify-center">
+                                    <div className="relative group rounded-lg overflow-hidden border bg-slate-50 aspect-square flex items-center justify-center">
                                         <img
                                             src={previewUrl}
                                             alt="Preview"

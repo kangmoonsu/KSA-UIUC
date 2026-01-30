@@ -1,14 +1,9 @@
 package com.core.ksa.controller;
 
-import com.core.ksa.domain.MarketPost;
 import com.core.ksa.dto.MarketPostCreateRequestDto;
 import com.core.ksa.dto.MarketPostResponseDto;
 import com.core.ksa.service.MarketService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
@@ -22,10 +17,16 @@ public class FleaController {
     private final MarketService marketService;
 
     @GetMapping
-    public Page<MarketPostResponseDto> getAllFleaMarkets(
-            @RequestParam(name = "type", required = false) MarketPost.TradeType type,
-            @PageableDefault(size = 12, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
-        return marketService.getMarketPosts(type, pageable);
+    public ResponseEntity<org.springframework.data.domain.Page<com.core.ksa.dto.MarketPostResponseDto>> getPosts(
+            @RequestParam(name = "type", required = false) com.core.ksa.domain.MarketPost.TradeType type,
+            @org.springframework.data.web.PageableDefault(size = 10) org.springframework.data.domain.Pageable pageable) {
+        return ResponseEntity.ok(marketService.getMarketPosts(type, pageable));
+    }
+
+    @GetMapping("/latest")
+    public ResponseEntity<java.util.List<com.core.ksa.dto.MarketPostResponseDto>> getLatestPosts(
+            @RequestParam(name = "limit", defaultValue = "4") int limit) {
+        return ResponseEntity.ok(marketService.getLatestPosts(limit));
     }
 
     @GetMapping("/{id}")

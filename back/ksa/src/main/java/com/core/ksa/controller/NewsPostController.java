@@ -36,6 +36,12 @@ public class NewsPostController {
         return ResponseEntity.ok(newsPostService.getPosts(pageable));
     }
 
+    @GetMapping("/latest")
+    public ResponseEntity<java.util.List<NewsPostResponseDto>> getLatestPosts(
+            @RequestParam(name = "limit", defaultValue = "5") int limit) {
+        return ResponseEntity.ok(newsPostService.getLatestPosts(limit));
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<NewsPostResponseDto> getPost(@PathVariable(name = "id") Long id,
             HttpServletRequest request,

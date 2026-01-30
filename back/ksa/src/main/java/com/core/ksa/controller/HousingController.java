@@ -4,10 +4,6 @@ import com.core.ksa.dto.HousingPostCreateRequestDto;
 import com.core.ksa.dto.HousingPostResponseDto;
 import com.core.ksa.service.HousingService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
@@ -21,9 +17,15 @@ public class HousingController {
     private final HousingService housingService;
 
     @GetMapping
-    public Page<HousingPostResponseDto> getAllHousings(
-            @PageableDefault(size = 12, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
-        return housingService.getAllHousings(pageable);
+    public ResponseEntity<org.springframework.data.domain.Page<HousingPostResponseDto>> getHousings(
+            @org.springframework.data.web.PageableDefault(size = 10) org.springframework.data.domain.Pageable pageable) {
+        return ResponseEntity.ok(housingService.getAllHousings(pageable));
+    }
+
+    @GetMapping("/latest")
+    public ResponseEntity<java.util.List<HousingPostResponseDto>> getLatestPosts(
+            @RequestParam(name = "limit", defaultValue = "4") int limit) {
+        return ResponseEntity.ok(housingService.getLatestPosts(limit));
     }
 
     @GetMapping("/{id}")

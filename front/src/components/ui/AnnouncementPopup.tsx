@@ -7,8 +7,8 @@ import {
     DialogContent,
     DialogPortal,
     DialogOverlay,
+    DialogTitle,
 } from "@/components/ui/dialog"
-import { X } from "lucide-react"
 
 export function AnnouncementPopup() {
     const { data: popups, isLoading } = useActivePopups()
@@ -71,6 +71,7 @@ export function AnnouncementPopup() {
             <DialogPortal>
                 <DialogOverlay className="bg-transparent" />
                 <DialogContent className="max-w-[400px] p-0 overflow-hidden border-none bg-transparent shadow-2xl transition-all duration-300">
+                    <DialogTitle className="sr-only">공지사항 팝업</DialogTitle>
                     <div className="relative group">
                         {/* Popup Image */}
                         <div
@@ -80,7 +81,7 @@ export function AnnouncementPopup() {
                             <img
                                 src={currentPopup.imageUrl}
                                 alt={currentPopup.title}
-                                className="w-full h-auto object-cover display-block"
+                                className="w-full aspect-square object-cover display-block"
                             />
                         </div>
 
@@ -106,14 +107,6 @@ export function AnnouncementPopup() {
                                 팝업 닫기
                             </button>
                         </div>
-
-                        {/* Close Icon (Top Right) */}
-                        <button
-                            onClick={handleClose}
-                            className="absolute top-2 right-2 p-1 bg-black/20 hover:bg-black/40 rounded-full text-white transition-all opacity-0 group-hover:opacity-100"
-                        >
-                            <X className="h-4 w-4" />
-                        </button>
                     </div>
                 </DialogContent>
             </DialogPortal>

@@ -43,6 +43,16 @@ public class NewsPostService {
                 return new NewsBoardListResponseDto(posts);
         }
 
+        public java.util.List<NewsPostResponseDto> getLatestPosts(int limit) {
+                org.springframework.data.domain.PageRequest pageRequest = org.springframework.data.domain.PageRequest
+                                .of(0, limit, org.springframework.data.domain.Sort
+                                                .by(org.springframework.data.domain.Sort.Direction.DESC, "id"));
+                return newsPostRepository.findAll(pageRequest)
+                                .stream()
+                                .map(NewsPostResponseDto::new)
+                                .collect(java.util.stream.Collectors.toList());
+        }
+
         @Transactional
         public NewsPostResponseDto getPost(Long id, String clientIdentifier) {
                 NewsPost newsPost = newsPostRepository.findById(id)

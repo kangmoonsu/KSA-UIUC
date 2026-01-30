@@ -95,6 +95,24 @@ public class MarketService {
                                 itemsByPostId.getOrDefault(post.getId(), List.of())));
         }
 
+        public List<MarketPostResponseDto> getLatestPosts(int limit) {
+                org.springframework.data.domain.PageRequest pageRequest = org.springframework.data.domain.PageRequest
+                                .of(0, limit, org.springframework.data.domain.Sort
+                                                .by(org.springframework.data.domain.Sort.Direction.DESC, "id"));
+                org.springframework.data.domain.Page<MarketPost> posts = marketPostRepository.findAll(pageRequest);
+
+                List<MarketPost> postList = posts.getContent();
+                List<MarketItem> allItems = marketItemRepository.findAllByMarketPostIn(postList);
+
+                Map<Long, List<MarketItem>> itemsByPostId = allItems.stream()
+                                .collect(Collectors.groupingBy(item -> item.getMarketPost().getId()));
+
+                return postList.stream()
+                                .map(post -> new MarketPostResponseDto(post,
+                                                itemsByPostId.getOrDefault(post.getId(), List.of())))
+                                .collect(Collectors.toList());
+        }
+
         public MarketPostResponseDto getMarketPost(Long id) {
                 MarketPost post = marketPostRepository.findById(id)
                                 .orElseThrow(() -> new org.springframework.web.server.ResponseStatusException(
