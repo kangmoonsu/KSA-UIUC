@@ -14,6 +14,7 @@ export function FreeBoardNew() {
     const [title, setTitle] = useState("")
     const [content, setContent] = useState("")
     const [isNotice, setIsNotice] = useState(false)
+    const [isCommentEnabled, setIsCommentEnabled] = useState(true)
     const { user } = useAuth()
     const navigate = useNavigate()
     const { mutate: createPost, isPending } = useCreateFreePost()
@@ -29,7 +30,7 @@ export function FreeBoardNew() {
             return
         }
 
-        createPost({ title, content, notice: isNotice }, {
+        createPost({ title, content, notice: isNotice, commentEnabled: isCommentEnabled }, {
             onSuccess: () => {
                 toast.success("게시글이 등록되었습니다")
                 navigate("/community/free")
@@ -73,6 +74,17 @@ export function FreeBoardNew() {
                                 </Label>
                             </div>
                         )}
+
+                        <div className="flex items-center space-x-2">
+                            <Checkbox
+                                id="commentEnabled"
+                                checked={isCommentEnabled}
+                                onCheckedChange={(checked: boolean) => setIsCommentEnabled(checked)}
+                            />
+                            <Label htmlFor="commentEnabled" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                                댓글 허용
+                            </Label>
+                        </div>
 
                         <div className="space-y-2">
                             <Label>내용</Label>

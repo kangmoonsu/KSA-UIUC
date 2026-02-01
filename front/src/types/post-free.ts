@@ -6,6 +6,8 @@ export interface FreePostResponseDto {
     authorClerkId: string;
     notice: boolean;
     viewCount: number;
+    commentCount: number;
+    commentEnabled: boolean;
     createdAt: string;
 }
 
@@ -18,6 +20,25 @@ export interface FreePostCreateRequestDto {
     title: string;
     content: string;
     notice: boolean;
+    commentEnabled: boolean;
+}
+
+export interface CommentRequestDto {
+    content: string;
+    parentId?: number;
+    isSecret: boolean;
+}
+
+export interface CommentResponseDto {
+    id: number;
+    content: string;
+    authorName: string;
+    authorProfileImage: string;
+    authorClerkId: string;
+    createdAt: string;
+    isSecret: boolean;
+    isDeleted: boolean;
+    children: CommentResponseDto[];
 }
 
 export interface PageResponse<T> {

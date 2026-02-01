@@ -7,6 +7,7 @@ import { format } from "date-fns"
 import { toast } from "sonner"
 import { ChevronLeft, Edit, Trash2 } from "lucide-react"
 import DOMPurify from "dompurify"
+import { CommentSection } from "@/components/community/CommentSection"
 
 export function FreeBoardDetail() {
     const { id } = useParams<{ id: string }>()
@@ -82,6 +83,13 @@ export function FreeBoardDetail() {
                     />
                 </CardContent>
             </Card>
+
+            <CommentSection
+                postId={post.id}
+                commentCount={post.commentCount}
+                commentEnabled={post.commentEnabled}
+                postAuthorId={post.authorClerkId}
+            />
         </div>
     )
 }

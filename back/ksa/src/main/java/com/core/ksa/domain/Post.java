@@ -30,10 +30,22 @@ public abstract class Post extends BaseEntity {
 
     private int viewCount;
 
+    @Column(nullable = false, columnDefinition = "integer default 0")
+    private int commentCount = 0;
+
+    @Column(nullable = false, columnDefinition = "boolean default true")
+    private boolean commentEnabled = true;
+
     protected Post(String title, String content, User author) {
+        this(title, content, author, true);
+    }
+
+    protected Post(String title, String content, User author, boolean commentEnabled) {
         this.title = title;
         this.content = content;
         this.author = author;
         this.viewCount = 0;
+        this.commentCount = 0;
+        this.commentEnabled = commentEnabled;
     }
 }

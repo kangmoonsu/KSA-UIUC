@@ -16,8 +16,8 @@ public class FreePost extends Post {
     private boolean isNotice;
 
     @Builder
-    public FreePost(String title, String content, User author, boolean isNotice) {
-        super(title, content, author);
+    public FreePost(String title, String content, User author, boolean isNotice, boolean commentEnabled) {
+        super(title, content, author, commentEnabled);
         this.isNotice = isNotice;
     }
 }

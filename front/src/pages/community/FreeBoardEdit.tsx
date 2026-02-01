@@ -20,12 +20,14 @@ export function FreeBoardEdit() {
     const [title, setTitle] = useState("")
     const [content, setContent] = useState("")
     const [isNotice, setIsNotice] = useState(false)
+    const [isCommentEnabled, setIsCommentEnabled] = useState(true)
 
     useEffect(() => {
         if (post) {
             setTitle(post.title)
             setContent(post.content)
             setIsNotice(post.notice)
+            setIsCommentEnabled(post.commentEnabled)
 
             // Ownership check
             if (user && user.sub !== post.authorClerkId && user.role === "USER") {
@@ -46,7 +48,7 @@ export function FreeBoardEdit() {
             return
         }
 
-        updatePost({ title, content, notice: isNotice }, {
+        updatePost({ title, content, notice: isNotice, commentEnabled: isCommentEnabled }, {
             onSuccess: () => {
                 toast.success("게시글이 수정되었습니다")
                 navigate(`/community/free/${id}`)
@@ -92,6 +94,17 @@ export function FreeBoardEdit() {
                                 </Label>
                             </div>
                         )}
+
+                        <div className="flex items-center space-x-2">
+                            <Checkbox
+                                id="commentEnabled"
+                                checked={isCommentEnabled}
+                                onCheckedChange={(checked: boolean) => setIsCommentEnabled(checked)}
+                            />
+                            <Label htmlFor="commentEnabled" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                                댓글 허용
+                            </Label>
+                        </div>
 
                         <div className="space-y-2">
                             <Label>내용</Label>

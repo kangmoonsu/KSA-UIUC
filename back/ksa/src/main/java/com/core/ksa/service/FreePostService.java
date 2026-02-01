@@ -38,6 +38,7 @@ public class FreePostService {
                 .content(requestDto.getContent())
                 .author(user)
                 .isNotice(requestDto.isNotice())
+                .commentEnabled(requestDto.isCommentEnabled())
                 .build();
 
         return freePostRepository.save(post).getId();
@@ -82,6 +83,7 @@ public class FreePostService {
         post.setTitle(requestDto.getTitle());
         post.setContent(requestDto.getContent());
         post.setNotice(requestDto.isNotice());
+        post.setCommentEnabled(requestDto.isCommentEnabled());
     }
 
     @Transactional

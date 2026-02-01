@@ -12,6 +12,8 @@ public class FreePostResponseDto {
     private String authorClerkId;
     private boolean isNotice;
     private int viewCount;
+    private int commentCount;
+    private boolean commentEnabled;
     private String createdAt;
 
     public FreePostResponseDto(FreePost post) {
@@ -23,6 +25,8 @@ public class FreePostResponseDto {
         this.authorClerkId = post.getAuthor().getClerkId();
         this.isNotice = post.isNotice();
         this.viewCount = post.getViewCount();
+        this.commentCount = post.getCommentCount();
+        this.commentEnabled = post.isCommentEnabled();
         this.createdAt = post.getCreatedAt().toString();
     }
 }

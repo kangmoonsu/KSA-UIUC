@@ -14,13 +14,17 @@ if (!PUBLISHABLE_KEY) {
 
 const queryClient = new QueryClient()
 
+import ErrorBoundary from './components/ErrorBoundary'
+
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <ClerkProvider publishableKey={PUBLISHABLE_KEY}>
       <QueryClientProvider client={queryClient}>
-        <BrowserRouter>
-          <App />
-        </BrowserRouter>
+        <ErrorBoundary>
+          <BrowserRouter>
+            <App />
+          </BrowserRouter>
+        </ErrorBoundary>
       </QueryClientProvider>
     </ClerkProvider>
   </React.StrictMode>,

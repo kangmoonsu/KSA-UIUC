@@ -1,6 +1,12 @@
 import client from "./client"
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
-import type { FreePostResponseDto, FreePostCreateRequestDto, FreeBoardListResponse } from "@/types/post-free"
+import type {
+    FreePostResponseDto,
+    FreeBoardListResponse,
+    FreePostCreateRequestDto,
+    CommentRequestDto,
+    CommentResponseDto
+} from "@/types/post-free"
 
 export const useFreePosts = (page: number = 0) => {
     return useQuery<FreeBoardListResponse>({
@@ -57,6 +63,46 @@ export const useDeleteFreePost = () => {
         },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["freePosts"] });
+        }
+    });
+}
+
+// Comments
+export const useComments = (postId: number) => {
+    return useQuery<CommentResponseDto[]>({
+        queryKey: ["comments", postId],
+        queryFn: async () => {
+            const res = await client.get(`/posts/${postId}/comments`);
+            return res.data;
+        }
+    });
+}
+
+export const useCreateComment = () => {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: async ({ postId, data }: { postId: number, data: CommentRequestDto }) => {
+            const res = await client.post(`/posts/${postId}/comments`, data);
+            return res.data;
+        },
+        onSuccess: (_data, variables) => {
+            queryClient.invalidateQueries({ queryKey: ["comments", variables.postId] });
+            queryClient.invalidateQueries({ queryKey: ["freePost", variables.postId.toString()] });
+        }
+    });
+}
+
+export const useDeleteComment = () => {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: async ({ commentId }: { commentId: number }) => {
+            await client.delete(`/comments/${commentId}`);
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["comments"] });
+            queryClient.invalidateQueries({ queryKey: ["freePost"] });
         }
     });
 }

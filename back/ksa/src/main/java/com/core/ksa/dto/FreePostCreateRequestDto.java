@@ -11,4 +11,5 @@ public class FreePostCreateRequestDto {
     private String title;
     private String content;
     private boolean isNotice;
+    private boolean commentEnabled;
 }
